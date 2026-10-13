@@ -1,0 +1,1004 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sidanta Parajuli</title>
+<meta name="description" content="Sidanta Parajuli, data analyst and engineer. SQL Server, Azure Data Factory, Databricks, Snowflake and dbt pipelines, from source system to dashboard.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: warm dark editorial column (after scottypeterson.net). Hero figure is an interactive medallion pipeline; sections open with short epigraphs; SQL-comment markers; a separate skimmable resume view at #resume. */
+:root{
+  --bg:#1c1915; --surface:#24201b; --line:#3a342c; --fg:#eee9df; --muted:#a39b8d; --faint:#756e62;
+  --accent:#86bfdc; --ok:#9ccf8f; --bad:#e3907e;
+  --bronze:#c08a52; --silver:#b9bec4; --gold:#dcb54a;
+  --code-bg:#171511; --code-cm:#857d70;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --wrap:1120px;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#eeebe4; --surface:#e5e1d8; --line:#cdc6b8; --fg:#1d1a16; --muted:#5f584d; --faint:#867e71;
+  --accent:#1f6a8e; --ok:#3f7a35; --bad:#b0472f;--bronze:#9a632b; --silver:#6f757c; --gold:#9c7a12;
+  --code-bg:#f6f4ef; --code-cm:#8b8376; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#eeebe4; --surface:#e5e1d8; --line:#cdc6b8; --fg:#1d1a16; --muted:#5f584d; --faint:#867e71;
+  --accent:#1f6a8e; --ok:#3f7a35; --bad:#b0472f;--bronze:#9a632b; --silver:#6f757c; --gold:#9c7a12;
+  --code-bg:#f6f4ef; --code-cm:#8b8376; color-scheme:light}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+[id]{scroll-margin-top:72px}
+body{background:var(--bg);color:var(--fg);font:400 1.0625rem/1.6 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:clamp(16px,4vw,40px)}
+.mono{font-family:var(--mono);font-size:.75rem;letter-spacing:.02em}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.brand{font-family:var(--display);font-size:1.2rem;text-decoration:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand i{display:inline-block;width:7px;height:15px;background:var(--accent);animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.links{display:flex;gap:clamp(14px,2.6vw,32px);font-size:.95rem}
+.links a{color:var(--muted);text-decoration:none}
+.links a:hover{color:var(--fg)}
+.nav-r{display:flex;gap:10px;align-items:center}
+.theme{background:none;border:1px solid var(--line);color:var(--fg);width:36px;height:36px;border-radius:8px;cursor:pointer;display:grid;place-items:center}
+.theme svg{width:16px;height:16px}
+.cv-btn{font-size:.85rem;font-weight:600;text-decoration:none;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+@media (max-width:820px){.links{display:none}}
+
+/* epigraphs */
+.epi{margin:0;display:grid;gap:6px;max-width:46ch}
+.epi blockquote{margin:0;font-family:var(--display);font-style:italic;font-weight:300;font-size:1.15rem;line-height:1.4;color:var(--muted)}
+.epi figcaption{color:var(--faint)}
+
+/* hero */
+.hero{padding-block:clamp(44px,7vw,88px) 40px}
+.meta{display:flex;justify-content:space-between;gap:16px;color:var(--faint);flex-wrap:wrap;margin-bottom:40px}
+.hero h1{font-size:clamp(2.4rem,5.6vw,4.4rem);line-height:1.04;letter-spacing:-.02em;margin-top:24px;max-width:17ch;font-variation-settings:"opsz" 144}
+.lede{color:var(--muted);max-width:60ch;margin:28px 0 0;font-size:1.125rem}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.btn{font-family:var(--mono);font-size:.78rem;text-decoration:none;padding:11px 16px;border:1px solid var(--line);border-radius:4px;background:none;color:var(--fg);cursor:pointer}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn:hover{border-color:var(--accent)}
+
+/* pipeline story figure */
+.fig{margin:56px 0 0;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden}
+.fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.fig-head .cap{color:var(--muted)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{font-family:var(--mono);font-size:.74rem;padding:7px 11px;border:1px solid transparent;border-radius:4px;background:none;color:var(--muted);cursor:pointer}
+.tab[aria-selected="true"]{border-color:var(--line);background:var(--bg);color:var(--fg)}
+.story-title{font-family:var(--display);font-size:clamp(1.35rem,2.6vw,1.85rem);line-height:1.2;padding:26px 20px 0;margin:0;max-width:36ch;text-wrap:balance}
+.rail{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:26px 20px 18px}
+.rail::before,.rail .fill{content:"";position:absolute;left:calc(20px + (100% - 40px) * .1);top:39px;height:2px}
+.rail::before{right:calc(20px + (100% - 40px) * .1);background:var(--line)}
+.rail .fill{width:0;background:var(--accent);transition:width .45s ease}
+.node{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;position:relative;z-index:1}
+.node .dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font:500 .7rem var(--mono);color:var(--faint);transition:background .3s,border-color .3s,color .3s}
+.node .dot[data-l="bronze"]{box-shadow:0 0 0 4px color-mix(in srgb,var(--bronze) 30%,transparent)}
+.node .dot[data-l="silver"]{box-shadow:0 0 0 4px color-mix(in srgb,var(--silver) 30%,transparent)}
+.node .dot[data-l="gold"]{box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 30%,transparent)}
+.node.done .dot{border-color:var(--accent);color:var(--accent)}
+.node[aria-current="step"] .dot{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.node .nm{font-size:.95rem;font-weight:500;color:var(--muted);margin-top:4px}
+.node[aria-current="step"] .nm{color:var(--fg)}
+.node .ly{color:var(--faint);font-size:.68rem}
+.node:focus-visible .dot{outline:2px solid var(--accent);outline-offset:3px}
+.node:hover .nm{color:var(--fg)}
+
+.stage{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);border-top:1px solid var(--line)}
+.viz{min-height:360px;padding:28px 24px;background-color:var(--bg);background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:18px 18px;border-right:1px solid var(--line);display:flex;align-items:center;min-width:0}
+.viz-in{width:100%;display:grid;gap:14px;animation:rise .45s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+.vlabel{display:flex;justify-content:space-between;gap:10px;color:var(--faint);flex-wrap:wrap}
+.tw{overflow-x:auto;min-width:0}
+.vt{width:100%;border-collapse:separate;border-spacing:0;font:400 .76rem/1.4 var(--mono);background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.vt caption{text-align:left;color:var(--faint);padding-bottom:6px;font-size:.7rem}
+.vt th{text-align:left;font-weight:500;color:var(--faint);padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.vt td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:pre;color:var(--fg)}
+.vt tr:last-child td{border-bottom:0}
+.vt tr.del td{opacity:.4;text-decoration:line-through;text-decoration-color:var(--bad);animation:unstrike .5s .6s ease backwards}
+@keyframes unstrike{from{opacity:1;text-decoration-color:transparent}}
+.vt td.chg{background:color-mix(in srgb,var(--accent) 16%,transparent);animation:flash 1.1s .5s ease backwards}
+@keyframes flash{from{background:transparent}40%{background:color-mix(in srgb,var(--accent) 40%,transparent)}}
+.vt td.warn{color:var(--bad)}
+.pair{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:12px;align-items:start}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:400 .7rem/1.3 var(--mono);padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);animation:rise .4s backwards}
+.chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
+.chip.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+
+.star{position:relative;isolation:isolate;display:grid;grid-template-columns:1fr auto 1fr;gap:18px 14px;align-items:center;justify-items:center;padding:6px 0}
+.star::before{content:"";position:absolute;left:50%;top:14%;bottom:14%;border-left:1px dashed var(--faint);z-index:-1}
+.star::after{content:"";position:absolute;top:50%;left:12%;right:12%;border-top:1px dashed var(--faint);z-index:-1}
+.star .fact{grid-column:2;grid-row:2;padding:14px 18px;border:1.5px solid var(--accent);border-radius:8px;background:var(--surface);font:.76rem/1.6 var(--mono);white-space:pre}
+.star .fact b{display:block;color:var(--accent);font-weight:500;margin-bottom:2px}
+.dim{padding:9px 13px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:.86rem;text-align:center;animation:rise .45s backwards}
+.dim small{display:block;font:.66rem var(--mono);color:var(--faint)}
+.dim.d1{grid-column:2;grid-row:1}.dim.d2{grid-column:1;grid-row:2;justify-self:end}.dim.d3{grid-column:3;grid-row:2;justify-self:start}.dim.d4{grid-column:2;grid-row:3}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.panel-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line);font:.7rem var(--mono);color:var(--faint)}
+.panel-bar i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.panel-bar span{margin-left:6px}
+.panel-body{padding:18px;display:grid;gap:14px}
+.kpi{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.kpi b{font-family:var(--display);font-weight:400;font-size:3rem;line-height:1;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--muted);font-size:.9rem}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:84px minmax(0,1fr) 28px;gap:10px;align-items:center;font:.72rem var(--mono);color:var(--muted)}
+.bar i{display:block;height:12px;background:var(--accent);border-radius:2px;transform-origin:left;animation:grow .7s ease backwards}
+@keyframes grow{from{transform:scaleX(0)}}
+.callout{border-top:1px solid var(--line);padding-top:12px;font:.74rem/1.5 var(--mono);color:var(--fg);display:flex;gap:8px;align-items:baseline}
+.callout::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--accent);transform:translateY(-1px)}
+.bubbles{display:flex;justify-content:space-around;align-items:flex-end;gap:16px;flex-wrap:wrap;padding:8px 0}
+.bub{display:grid;justify-items:center;gap:8px;font:.72rem/1.4 var(--mono);color:var(--muted);text-align:center}
+.bub i{display:block;border-radius:50%;background:color-mix(in srgb,var(--accent) 28%,transparent);border:1.5px solid var(--accent);animation:pop .55s cubic-bezier(.3,1.4,.6,1) backwards}
+@keyframes pop{from{transform:scale(0)}}
+.calc{display:grid;gap:0;font:.82rem/1.5 var(--mono)}
+.calc div{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-bottom:1px dashed var(--line);animation:rise .4s backwards}
+.calc div span{color:var(--muted)}
+.calc div.total{border-bottom:0;border-top:1px solid var(--fg);margin-top:4px;font-size:.95rem}
+.calc div.total b{color:var(--accent);font-weight:500}
+.runbtn{justify-self:start;font:500 .74rem var(--mono);padding:8px 14px;background:var(--accent);color:var(--bg);border-radius:4px}
+.picked{list-style:none;margin:0;padding:0;display:grid;gap:6px;font:.76rem var(--mono)}
+.picked li{display:flex;justify-content:space-between;gap:12px;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);animation:rise .4s backwards}
+.picked li span{color:var(--faint)}
+
+.explain{padding:28px 24px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.explain .step{color:var(--faint)}
+.explain h3{font-size:1.5rem;line-height:1.2}
+.explain p{margin:0;color:var(--muted)}
+.explain .why{border-left:2px solid var(--accent);padding-left:14px;color:var(--fg)}
+.explain details summary{cursor:pointer;font:.74rem var(--mono);color:var(--accent);list-style:none;padding:4px 0}
+.explain details summary::-webkit-details-marker{display:none}
+.explain details[open] summary{margin-bottom:8px}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:10px}
+.ctrl .btn:disabled{opacity:.4;cursor:default}
+pre.code{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:4px;padding:14px;overflow-x:auto;font:400 .72rem/1.65 var(--mono);color:var(--fg);tab-size:2}
+pre.code .cm{color:var(--code-cm)}
+@media (max-width:880px){.stage{grid-template-columns:1fr}.viz{border-right:0;border-bottom:1px solid var(--line);min-height:0}}
+@media (max-width:560px){.rail{padding-inline:8px}.rail .ly{display:none}.node .nm{font-size:.78rem}.pair{grid-template-columns:1fr}.viz,.explain{padding:20px 16px}.star .fact{white-space:normal}}
+@media (prefers-reduced-motion:reduce){.viz-in,.viz-in *{animation:none!important}.rail .fill{transition:none}}
+
+/* status strip */
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:56px}
+.strip>div{padding:22px 20px 24px 0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.strip>div+div{padding-left:20px;border-left:1px solid var(--line)}
+.strip .k{color:var(--accent)}
+.strip p{margin:0;font-size:.95rem;color:var(--muted)}
+.strip strong{font-weight:500;color:var(--fg)}
+.strip a{font-size:.95rem}
+.strip ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+@media (max-width:860px){.strip{grid-template-columns:1fr 1fr}.strip>div:nth-child(3){padding-left:0;border-left:0}.strip>div:nth-child(n+3){border-top:1px solid var(--line)}}
+@media (max-width:480px){.strip{grid-template-columns:1fr}.strip>div,.strip>div+div{padding-left:0;border-left:0}.strip>div+div{border-top:1px solid var(--line)}}
+
+/* sections */
+section.s{padding-block:clamp(72px,10vw,120px)}
+.s-head{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px 40px;margin-bottom:56px}
+.s-head .mark{color:var(--accent);padding-top:10px}
+.s-head h2{font-size:clamp(2rem,4.2vw,3.2rem);line-height:1.08;letter-spacing:-.015em;max-width:21ch;margin-top:22px}
+.s-head p{color:var(--muted);max-width:60ch;margin:18px 0 0}
+.indent{margin-left:240px}
+@media (max-width:860px){.s-head{grid-template-columns:1fr}.indent{margin-left:0}}
+
+.prose{max-width:62ch;display:grid;gap:18px}
+.prose p{margin:0}
+.prose p:first-child::first-letter{font-family:var(--display);float:left;font-size:3.4em;line-height:.9;padding:4px 10px 0 0;color:var(--accent)}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:64px;border-top:1px solid var(--line);padding-top:32px}
+.trio h3{font-size:1.35rem;margin-bottom:10px}
+.trio p{margin:0;color:var(--muted);font-size:.97rem}
+@media (max-width:760px){.trio{grid-template-columns:1fr}}
+
+/* experience */
+.figures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:6px;margin-bottom:64px}
+.figures>div{padding:24px;min-width:0}
+.figures>div+div{border-left:1px solid var(--line)}
+.figures b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(2.2rem,4.5vw,3.2rem);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.figures span{display:block;margin-top:10px;color:var(--muted);font-size:.92rem}
+@media (max-width:640px){.figures{grid-template-columns:1fr}.figures>div+div{border-left:0;border-top:1px solid var(--line)}}
+.roles{list-style:none;margin:0;padding:0}
+.role{display:grid;grid-template-columns:200px minmax(0,1fr);gap:8px 40px;padding-block:32px;border-top:1px solid var(--line)}
+.role:last-child{border-bottom:1px solid var(--line)}
+.role .when{color:var(--faint);padding-top:6px;font-variant-numeric:tabular-nums}
+.role h3{font-size:1.5rem}
+.role .org{color:var(--muted);margin-top:4px}
+.role .ctx{color:var(--faint);margin-top:2px;font-size:.92rem}
+.role ul{margin:16px 0 0;padding-left:1.1em;display:grid;gap:8px;max-width:68ch;color:var(--muted)}
+.role li::marker{color:var(--faint)}
+.role.minor h3{font-size:1.25rem}
+.role li strong{color:var(--fg);font-weight:500}
+@media (max-width:760px){.role{grid-template-columns:1fr}}
+
+/* builds */
+.builds{list-style:none;margin:0;padding:0}
+.build{border-top:1px solid var(--line)}
+.build:last-child{border-bottom:1px solid var(--line)}
+.build>button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:16px;align-items:baseline;padding:22px 0}
+.build>button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.build .n{color:var(--faint)}
+.build h3{font-size:clamp(1.25rem,2.5vw,1.65rem)}
+.build .where{color:var(--muted);text-align:right;white-space:nowrap}
+.build .tog{display:inline-block;transition:transform .2s;margin-left:10px;color:var(--accent)}
+.build>button[aria-expanded="true"] .tog{transform:rotate(45deg)}
+.build .body{display:grid;grid-template-columns:48px minmax(0,1fr);gap:16px;padding-bottom:28px}
+.build .body>div{grid-column:2;max-width:68ch;display:grid;gap:14px}
+.build .body p{margin:0;color:var(--muted)}
+.impact{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.impact .k{color:var(--accent)}
+.extlink{font-family:var(--mono);font-size:.82rem;color:var(--accent);text-underline-offset:3px;overflow-wrap:anywhere}
+.ai-rule{margin-top:40px;padding:22px 24px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:4px;background:var(--surface);font-family:var(--display);font-size:1.25rem;line-height:1.45;max-width:60ch}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:var(--mono);font-size:.72rem;padding:4px 9px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+@media (max-width:640px){.build>button{grid-template-columns:28px minmax(0,1fr)}.build .where{display:none}.build .body{grid-template-columns:28px minmax(0,1fr)}}
+.edu{display:grid;grid-template-columns:200px minmax(0,1fr);gap:8px 40px;margin-top:72px;padding-top:32px;border-top:1px solid var(--line)}
+.edu .k{color:var(--accent);padding-top:6px}
+.edu h3{font-size:1.5rem}
+.edu p{margin:6px 0 0;color:var(--muted)}
+@media (max-width:760px){.edu{grid-template-columns:1fr}}
+
+/* stack */
+.schema{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line);border-radius:6px}
+.tbl{padding:24px;min-width:0;border-bottom:1px solid var(--line)}
+.tbl:nth-child(odd){border-right:1px solid var(--line)}
+.tbl:nth-last-child(-n+2){border-bottom:0}
+.tbl .name{color:var(--accent)}
+.tbl h3{font-size:1.3rem;margin:6px 0 4px}
+.tbl p{margin:0 0 16px;color:var(--muted);font-size:.95rem}
+.tbl.dim .tag{border-style:dashed}
+@media (max-width:760px){.schema{grid-template-columns:1fr}.tbl:nth-child(odd){border-right:0}.tbl:nth-last-child(2){border-bottom:1px solid var(--line)}}
+
+/* contact */
+.contact{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:56px;align-items:start}
+.contact h2{font-size:clamp(2rem,4.6vw,3.4rem);line-height:1.06;letter-spacing:-.015em}
+.contact .side{display:grid;gap:28px;border-left:1px solid var(--line);padding-left:40px}
+.contact .k{color:var(--accent);display:block;margin-bottom:8px}
+.email{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.email span{font-family:var(--display);font-size:1.35rem;user-select:all;overflow-wrap:anywhere}
+.side p{margin:0;color:var(--muted)}
+.side ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+@media (max-width:760px){.contact{grid-template-columns:1fr}.contact .side{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:32px}}
+
+/* resume view */
+.cv{padding-block:40px 96px}
+.cv-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:16px;border-top:1px solid var(--line);color:var(--faint)}
+.cv-top a{color:var(--accent);text-decoration:none}
+.cv-id{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px 40px;align-items:end;padding-block:48px 40px}
+.cv-id h1{font-size:clamp(2.6rem,6vw,4rem);line-height:1;letter-spacing:-.02em}
+.cv-id .title{color:var(--muted);font-size:1.2rem;margin-top:12px}
+.cv-id ul{list-style:none;margin:0;padding:0 0 0 24px;border-left:1px solid var(--line);display:grid;gap:4px;color:var(--muted)}
+.cv-id ul span{user-select:all}
+@media (max-width:700px){.cv-id{grid-template-columns:1fr}.cv-id ul{padding-left:0;border-left:0}}
+.cv-sec{display:grid;gap:18px;padding-block:28px;border-top:1px solid var(--line)}
+.cv-sec>.mark{color:var(--accent)}
+.cv-sec>p{margin:0;max-width:68ch}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:4px}
+.kpis>div{padding:18px;min-width:0}
+.kpis>div+div{border-left:1px solid var(--line)}
+.kpis b{display:block;font-family:var(--display);font-weight:400;font-size:2rem;line-height:1;font-variant-numeric:tabular-nums}
+.kpis span{display:block;margin-top:8px;color:var(--faint)}
+@media (max-width:760px){.kpis{grid-template-columns:1fr 1fr}.kpis>div:nth-child(3){border-left:0}.kpis>div:nth-child(n+3){border-top:1px solid var(--line)}}
+.cv-role{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;padding-block:18px}
+.cv-role+.cv-role{border-top:1px dashed var(--line)}
+.cv-role h3{font-size:1.25rem}
+.cv-role .org{color:var(--muted)}
+.cv-role .when{color:var(--faint);text-align:right;font-variant-numeric:tabular-nums}
+.cv-role ul{grid-column:1/-1;margin:10px 0 0;padding-left:1.1em;display:grid;gap:5px;max-width:78ch;color:var(--muted);font-size:.97rem}
+@media (max-width:600px){.cv-role{grid-template-columns:1fr}.cv-role .when{text-align:left}}
+.cv-skills{display:grid;grid-template-columns:180px minmax(0,1fr);gap:10px 24px;margin:0}
+.cv-skills dt{color:var(--faint);font-family:var(--mono);font-size:.75rem;padding-top:3px}
+.cv-skills dd{margin:0;color:var(--muted)}
+@media (max-width:600px){.cv-skills{grid-template-columns:1fr}.cv-skills dd{margin-bottom:8px}}
+
+footer{border-top:1px solid var(--line);padding-block:28px 40px;color:var(--faint)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.brand i{animation:none}.build .tog,.track b,.track i,.layer{transition:none}}
+</style>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">Sidanta Parajuli <i aria-hidden="true"></i></a>
+    <nav class="links" aria-label="Sections">
+      <a href="#about">About</a><a href="#work">Work</a><a href="#builds">Builds</a><a href="#stack">Stack</a><a href="#ai">AI</a><a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-r">
+      <button class="theme" id="theme" type="button" aria-label="Switch color theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a class="cv-btn" href="#resume">Resume</a>
+    </div>
+  </div>
+</header>
+
+<main id="portfolio">
+  <div class="wrap hero" id="top">
+    <div class="meta mono"><span>-- data analyst, data engineer</span><span>Greater Cincinnati, open to relocation</span></div>
+    <figure class="epi">
+      <blockquote>No man ever steps in the same river twice.</blockquote>
+      <figcaption class="mono">Heraclitus</figcaption>
+    </figure>
+    <h1>Data never arrives the same way twice. I build what keeps it honest.</h1>
+    <p class="lede">I started out making dashboards and kept hitting the same wall: the numbers were already wrong before they reached the chart. So I followed them upstream. Now I write the SQL, run the Azure Data Factory and Databricks jobs, shape the warehouse, and still build the dashboard at the end.</p>
+    <div class="ctas">
+      <a class="btn primary" href="#pipeline">Walk through a pipeline</a>
+      <a class="btn" href="#resume">Read the one-page resume</a>
+    </div>
+
+    <figure class="fig" id="pipeline" aria-labelledby="fig-cap">
+      <div class="fig-head">
+        <span class="cap mono" id="fig-cap">fig. 00, follow one record through a pipeline I've worked on</span>
+        <div class="tabs" role="tablist" aria-label="Choose a story" id="tabs"></div>
+      </div>
+      <p class="story-title" id="storyTitle"></p>
+      <div class="rail" id="rail"><span class="fill" id="railFill"></span></div>
+      <div class="stage">
+        <div class="viz" id="viz"></div>
+        <div class="explain" id="explain" aria-live="polite"></div>
+      </div>
+    </figure>
+
+    <div class="strip">
+      <div><span class="k mono">status</span><p><strong>Looking for harder pipeline problems.</strong> Larger-scale data infrastructure, especially in research and health.</p></div>
+      <div><span class="k mono">day to day</span><p>SQL Server, Azure Data Factory and Databricks jobs, dimensional models, Power BI for seven departments.</p></div>
+      <div><span class="k mono">latest research</span><p><strong>First-year nurse sentiment.</strong> A Python NLP pipeline over forum posts, presented in R Shiny, with Dr. Zhou at NKU.</p></div>
+      <div><span class="k mono">elsewhere</span><ul><li><a href="https://www.linkedin.com/in/sid2003" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="#contact">Email</a></li><li><a href="#resume">Resume</a></li></ul></div>
+    </div>
+  </div>
+
+  <section class="s" id="about">
+    <div class="wrap">
+      <div class="s-head">
+        <span class="mark mono">-- 01 about</span>
+        <div>
+          <figure class="epi">
+            <blockquote>The first principle is that you must not fool yourself.</blockquote>
+            <figcaption class="mono">Richard Feynman, Cargo Cult Science</figcaption>
+          </figure>
+          <h2>Before a number reaches a meeting, I want to know where it's been.</h2>
+        </div>
+      </div>
+      <div class="indent">
+        <div class="prose">
+          <p>My path has gone freight, then clinical research, then aviation, then a public water utility. On paper those have little in common. In practice every one of them had the same quiet problem: the data lived in four or five systems, the systems disagreed, and someone was reconciling it by hand every Monday.</p>
+          <p>At Motus Freight I learned what a KPI is worth when nobody trusts the inputs. At Medpace I worked with clinical datasets that ran to millions of records, where a bad join is a scientific problem, not a cosmetic one. At Atlas Air I built an FAA testing app where every rule had to survive an audit. At the Northern Kentucky Water District I own the path from SAP and Lucity to the reports that HR, Legal, Engineering, IT, Customer Service, Finance and Operations open each morning.</p>
+          <p>I'm happiest in the middle of that path: tracing a failed Data Factory run to the row that broke it, deciding what grain a fact table should have, and writing the documentation so the next person doesn't need me. I studied Computer Information Technology at NKU and graduated summa cum laude in December 2025.</p>
+        </div>
+        <div class="trio">
+          <div><h3>Upstream</h3><p>Ingesting from SAP, Lucity, Medidata and SharePoint with SSIS, Azure Data Factory, Graph API and scheduled SQL Server Agent jobs.</p></div>
+          <div><h3>Midstream</h3><p>Staging, cleaning and conforming in T-SQL, dbt and Databricks, then modeling it into facts and dimensions people can query without a guide.</p></div>
+          <div><h3>Downstream</h3><p>Power BI, Tableau, R Shiny and Power Apps on top, with gateways, refresh schedules and training so the thing keeps working after launch.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="work">
+    <div class="wrap">
+      <div class="s-head">
+        <span class="mark mono">-- 02 work</span>
+        <div>
+          <figure class="epi">
+            <blockquote>The impediment to action advances action. What stands in the way becomes the way.</blockquote>
+            <figcaption class="mono">Marcus Aurelius, Meditations</figcaption>
+          </figure>
+          <h2>Every job started with something broken, slow or done by hand.</h2>
+          <p>Seven roles since 2024, in order from most recent.</p>
+        </div>
+      </div>
+
+      <div class="figures">
+        <div><b>40&ndash;50</b><span>legacy Crystal Reports rebuilt in Power BI at NKWD</span></div>
+        <div><b>20&ndash;40</b><span>hours a week of manual reporting removed across departments</span></div>
+        <div><b>Millions</b><span>of clinical trial records cleaned and validated at Medpace</span></div>
+      </div>
+
+      <ol class="roles">
+        <li class="role">
+          <span class="when mono">Feb 2026 – now</span>
+          <div>
+            <h3>Data Analytics Specialist</h3>
+            <div class="org">Northern Kentucky Water District, Erlanger, KY</div>
+            <div class="ctx">Public water utility. My first full-time role, spanning analytics, data engineering, BI and database work.</div>
+            <ul>
+              <li>Rebuilt 40 to 50 legacy Crystal Reports in Power BI, with on-premises gateways, scheduled refresh, workspace access and distribution. Along the way I fixed reports that ran in the designer but failed inside Lucity Web.</li>
+              <li>Built 10 to 20 dashboards and data models (Power Query, DAX) on my own for HR, Legal, Engineering, IT, Customer Service, Finance and Operations. With the migration, that removes 20 to 40 hours of manual reporting a week.</li>
+              <li>Write the SQL underneath: views, stored procedures and CTE-heavy queries in SSMS, SSIS and SSDT transformations, SQL Server Agent schedules. Also work in BigQuery and Azure DevOps.</li>
+              <li>Monitor, schedule and troubleshoot Azure Data Factory and Databricks pipelines, and trace failed runs back to the transformation that broke.</li>
+              <li>Defined KPI frameworks, dimensional models and source-to-target mappings across SAP, HR, Finance and Engineering data.</li>
+              <li>Investigate duplicates, missing records, source-system mismatches, unstandardized addresses and blank-or-zero artifacts before they reach a report. Support database maintenance, including SQL-based document path changes for Lucity shared storage.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="role">
+          <span class="when mono">Fall 2025</span>
+          <div>
+            <h3>Teaching Assistant and Undergraduate Research Assistant</h3>
+            <div class="org">NKU College of Informatics, Highland Heights, KY</div>
+            <ul>
+              <li>TA for INF 286, Intro to Web Development: graded HTML and CSS work, discussions and midterms, built the final exam review quiz, and held office hours on Canvas, email and Teams.</li>
+              <li>Kept a weekly log and worked with the instructor to keep grading consistent and flag academic integrity concerns.</li>
+              <li>Applied web scraping, machine learning and AI methods in faculty research, including the nurse sentiment project below.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="role">
+          <span class="when mono">Fall 2025</span>
+          <div>
+            <h3>Innovation Fellow</h3>
+            <div class="org">Kentucky Commercialization Ventures</div>
+            <ul>
+              <li>Worked on concept development for VIDVO: customer discovery, SWOT analysis, failure mode assessment, opportunity evaluation and a commercialization plan with business recommendations.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="role">
+          <span class="when mono">May – Dec 2025</span>
+          <div>
+            <h3>Data Analysis and Development Intern</h3>
+            <div class="org">Atlas Air Worldwide, Erlanger, KY</div>
+            <div class="ctx">Global cargo airline, FAA-regulated.</div>
+            <ul>
+              <li>Planned and led an R Shiny app that randomly selects employees for FAA-mandated drug and alcohol testing, covering everyone regulated, from pilots to ground crew. I owned requirements, architecture, build, validation, deployment, documentation and training.</li>
+              <li>Encoded the rules: master and quarterly eligible pools, drug-and-alcohol versus drug-only categories, annual and quarterly targets, completed-test counts, rollover, deduplication and prior-quarter history. It meets every FAA guideline and reduced reliance on a paid third-party system.</li>
+              <li>Connected it to SharePoint through Microsoft Graph with Azure AD and OAuth 2.0 for master data, results, history, audit logs and settings, including token-expiration troubleshooting.</li>
+              <li>Automated the pilot Master Training Schedule in Power Automate, moving each pilot from New Entry to Training Complete and triggering approvals, with curriculum rules such as 150- and 30-day simulator windows.</li>
+              <li>Helped automate passport, visa and immigration reporting and crew scheduling flows, part of roughly 25 to 30 staff hours a week saved across stations.</li>
+              <li>Added usage logging to the CS Admin Report, Dispatch Shift Assignment and DAT Portal, with Power BI views of activity. Embedded a Power App inside Power BI so dispatchers could update assignments live.</li>
+              <li>Contributed Python, data integration logic and front-end decisions to a Palantir Foundry behavioral analytics platform built with BCG. Used Azure DevOps across projects.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="role">
+          <span class="when mono">Aug – Dec 2024</span>
+          <div>
+            <h3>Data Science Intern</h3>
+            <div class="org">Medpace, Cincinnati, OH</div>
+            <div class="ctx">Global clinical contract research organization.</div>
+            <ul>
+              <li>Prepared, cleaned, validated and transformed clinical research datasets with millions of records across multiple studies, using SQL, Python, R, Snowflake and dbt.</li>
+              <li>Pulled clinical trial data from Medidata and other clinical data systems.</li>
+              <li>Built an R Shiny map of global clinical study distribution for research and proposal work, replacing repeated manual assembly.</li>
+              <li>Built Power BI dashboards on Snowflake for analysts, engineers and leadership. Used SAS for hypothesis tests, ANOVA and regression models.</li>
+              <li>Led monthly sessions for 10+ analysts in the US and UK on dashboard usability, visual hierarchy and explaining complex data.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="role">
+          <span class="when mono">Jan – Aug 2024</span>
+          <div>
+            <h3>Data Analytics Intern</h3>
+            <div class="org">Motus Freight, Bellevue, KY</div>
+            <div class="ctx">Freight brokerage and logistics.</div>
+            <ul>
+              <li>Built a Tableau CO2 emissions dashboard from carrier and transportation data, with trend analysis and forecasting. It contributed to a 12.4% overall drop in emissions.</li>
+              <li>Defined KPIs and built customer profitability scorecards from P&amp;L data, plus revenue forecasting models for top and lower-ranked carriers.</li>
+              <li>Built a regional performance dashboard across 4 US regions and 49 states that contributed to a 15% rise in overall profitability.</li>
+            </ul>
+          </div>
+        </li>
+        <li class="role minor">
+          <span class="when mono">Mar 2022 – Jul 2024</span>
+          <div>
+            <h3>Lifeguard and Facilities Specialist</h3>
+            <div class="org">NKU Campus Recreation, Highland Heights, KY</div>
+            <div class="ctx">Part-time through college, two roles over 2 years and 5 months.</div>
+            <ul>
+              <li><strong>Lifeguard</strong>, Dec 2022 to Jul 2024. Kept the pool safe by staying alert and enforcing the rules, and communicated clearly with swimmers, staff and emergency personnel. Trained in CPR and AED.</li>
+              <li><strong>Facilities Specialist</strong>, Mar 2022 to Dec 2023. Answered phone inquiries and resolved them quickly, and routed harder questions to the right department.</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="s" id="builds">
+    <div class="wrap">
+      <div class="s-head">
+        <span class="mark mono">-- 03 builds</span>
+        <div>
+          <figure class="epi">
+            <blockquote>What you see is all there is.</blockquote>
+            <figcaption class="mono">Daniel Kahneman, Thinking, Fast and Slow</figcaption>
+          </figure>
+          <h2>People decide from what's on the screen, so the screen had better be right.</h2>
+          <p>Selected builds and research. Open a row for what it does and what it runs on.</p>
+        </div>
+      </div>
+      <ul class="builds">
+        <li class="build">
+          <button type="button" aria-expanded="true"><span class="n mono">a</span><h3>FAA drug and alcohol testing randomizer</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
+          <div class="body"><div>
+            <p>Replaced a third-party process with an in-house R Shiny app. It builds eligible pools from the master employee list, calculates quarterly targets with rollover, deduplicates against prior selections, and writes results, history and audit logs back to SharePoint. Users get Excel exports and compliance KPIs.</p>
+            <div class="impact"><span class="k mono">impact</span><span>Covers every FAA-regulated employee and meets all FAA guidelines</span></div>
+            <div class="tags"><span class="tag">R Shiny</span><span class="tag">Microsoft Graph</span><span class="tag">Azure AD</span><span class="tag">OAuth 2.0</span><span class="tag">SharePoint</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">b</span><h3>Crystal Reports to Power BI modernization</h3><span class="where mono">NKWD<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
+            <p>Moved 40 to 50 legacy reports onto validated SQL Server views and Power BI semantic models, set up on-premises gateways and refresh schedules, and handled workspace access and distribution for each department.</p>
+            <div class="impact"><span class="k mono">impact</span><span>With new dashboards, 20 to 40 staff hours saved each week</span></div>
+            <div class="tags"><span class="tag">Power BI</span><span class="tag">DAX</span><span class="tag">Power Query</span><span class="tag">SQL Server</span><span class="tag">Crystal Reports</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">c</span><h3>Pilot Master Training Schedule automation</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
+            <p>Conditional Power Automate flows that move each pilot through six training statuses and trigger the next approval, with curriculum rules like simulator timing windows at 150 and 30 days. Coordinated with Training Records, Scheduling and training staff.</p>
+            <div class="impact"><span class="k mono">impact</span><span>Status changes happen on rules instead of reminders</span></div>
+            <div class="tags"><span class="tag">Power Automate</span><span class="tag">SharePoint</span><span class="tag">Microsoft 365</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">d</span><h3>Usage tracking and live dispatch assignments</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
+            <p>Instrumented three internal tools to log timestamp, user, action, record ID and context, then built Power BI views of activity trends. Separately, embedded a Power App inside a Power BI report so dispatchers could change shift assignments and see the result immediately.</p>
+            <div class="impact"><span class="k mono">impact</span><span>Real usage data for internal tools that had none</span></div>
+            <div class="tags"><span class="tag">Power Apps</span><span class="tag">Power Automate</span><span class="tag">Power BI</span><span class="tag">Excel</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">e</span><h3>Clinical study experience map</h3><span class="where mono">Medpace<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
+            <p>An interactive R Shiny map of where clinical studies run worldwide, combining several sources into one view for research and RFP proposal work.</p>
+            <div class="impact"><span class="k mono">impact</span><span>Replaced repeated manual assembly of study experience</span></div>
+            <div class="tags"><span class="tag">R Shiny</span><span class="tag">Medidata</span><span class="tag">Snowflake</span><span class="tag">SQL</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">f</span><h3>First-year nurse sentiment research</h3><span class="where mono">NKU research<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
+            <p>A Python pipeline that scrapes and cleans forum posts from first-year nurses, then classifies stress, depression, workplace and wellbeing themes with NLP. An R Shiny dashboard shows sentiment over time, common terms and stress themes. With Dr. Zhou, July to December 2025.</p>
+            <div class="impact"><span class="k mono">impact</span><span>Supports a planned conference paper on nurse mental health</span></div>
+            <div class="tags"><span class="tag">Python</span><span class="tag">NLTK</span><span class="tag">scikit-learn</span><span class="tag">Pandas</span><span class="tag">R Shiny</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">g</span><h3>NKU university information chatbot</h3><span class="where mono">NKU research<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
+            <p>Collected and prepared 1,600+ examples from NKU web content, then fine-tuned GPT-2 and a custom 1.5B-parameter model, trained and served on AWS EC2 and S3.</p>
+            <div class="impact"><span class="k mono">impact</span><span>NKU-specific answer accuracy up 10 to 15%</span></div>
+            <div class="tags"><span class="tag">Python</span><span class="tag">TensorFlow</span><span class="tag">GPT-2</span><span class="tag">AWS EC2</span><span class="tag">AWS S3</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">h</span><h3>Emissions and regional profitability dashboards</h3><span class="where mono">Motus Freight<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
+            <p>A Tableau CO2 dashboard with trend analysis and forecasting, customer profitability scorecards from P&amp;L data, and a regional view comparing gross profit across 4 regions and 49 states.</p>
+            <div class="impact"><span class="k mono">impact</span><span>Contributed to 12.4% lower emissions and 15% higher profitability</span></div>
+            <div class="tags"><span class="tag">Tableau</span><span class="tag">Forecasting</span><span class="tag">KPI design</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">i</span><h3>Cargo After COVID</h3><span class="where mono">Live app<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
+            <p>An interactive R Shiny app built on Bureau of Transportation Statistics data that tracks U.S. air cargo performance from 2003 to 2025. I wrote the transformations, KPIs, filters and trend views that turn two decades of federal transportation tables into something you can explore in a few clicks. July to December 2025.</p>
+            <div class="impact"><span class="k mono">try it</span><a class="extlink" href="https://sidantap.shinyapps.io/CargoAfterCOVID/" target="_blank" rel="noopener">sidantap.shinyapps.io/CargoAfterCOVID</a></div>
+            <div class="tags"><span class="tag">R Shiny</span><span class="tag">BTS data</span><span class="tag">KPIs</span><span class="tag">Trend analysis</span><span class="tag">shinyapps.io</span></div>
+          </div></div>
+        </li>
+      </ul>
+
+      <div class="edu">
+        <span class="k mono">education</span>
+        <div>
+          <h3>Northern Kentucky University</h3>
+          <p>B.S. Computer Information Technology, minor in 3D Digital Design and Visual Effects. January 2022 to December 2025. GPA 3.9, summa cum laude.</p>
+          <p>International Merit Scholarship, EDGE Award, President's and Dean's Honors Lists.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="stack">
+    <div class="wrap">
+      <div class="s-head">
+        <span class="mark mono">-- 04 stack</span>
+        <div>
+          <figure class="epi">
+            <blockquote>Our life is frittered away by detail. Simplify, simplify.</blockquote>
+            <figcaption class="mono">Henry David Thoreau, Walden</figcaption>
+          </figure>
+          <h2>Tools, grouped the way I'd model them: one table per job.</h2>
+          <p>Everything here I've used in production, except the last table, which I'm upfront about.</p>
+        </div>
+      </div>
+      <div class="schema">
+        <div class="tbl"><span class="name mono">dbo.sql_server</span><h3>The database underneath</h3><p>Where most of my working hours go</p>
+          <div class="tags"><span class="tag">T-SQL</span><span class="tag">SSMS</span><span class="tag">Stored procedures</span><span class="tag">Views</span><span class="tag">CTEs</span><span class="tag">SSIS</span><span class="tag">SSDT</span><span class="tag">SQL Server Agent</span><span class="tag">ETL troubleshooting</span></div></div>
+        <div class="tbl"><span class="name mono">dbo.cloud_pipelines</span><h3>Pipelines and platforms</h3><p>Orchestration, lakehouse and warehouse</p>
+          <div class="tags"><span class="tag">Azure Data Factory</span><span class="tag">Databricks</span><span class="tag">Snowflake</span><span class="tag">dbt</span><span class="tag">BigQuery</span><span class="tag">Azure DevOps</span><span class="tag">Git</span></div></div>
+        <div class="tbl"><span class="name mono">dbo.modeling</span><h3>Shaping the data</h3><p>Deciding grain, keys and what a metric means</p>
+          <div class="tags"><span class="tag">Dimensional modeling</span><span class="tag">Star schema</span><span class="tag">Source-to-target mapping</span><span class="tag">KPI frameworks</span><span class="tag">Data validation</span><span class="tag">Root cause analysis</span></div></div>
+        <div class="tbl"><span class="name mono">dbo.languages</span><h3>Code</h3><p>When SQL isn't enough</p>
+          <div class="tags"><span class="tag">SQL</span><span class="tag">Python</span><span class="tag">R</span><span class="tag">DAX</span><span class="tag">Power Query M</span><span class="tag">PowerShell</span><span class="tag">JavaScript</span><span class="tag">TypeScript</span><span class="tag">HTML/CSS</span></div></div>
+        <div class="tbl"><span class="name mono">dbo.reporting</span><h3>What people open</h3><p>Dashboards and the plumbing behind them</p>
+          <div class="tags"><span class="tag">Power BI</span><span class="tag">Gateways</span><span class="tag">Scheduled refresh</span><span class="tag">Tableau</span><span class="tag">Crystal Reports</span></div></div>
+        <div class="tbl"><span class="name mono">dbo.apps</span><h3>Apps and automation</h3><p>For when a report isn't the answer</p>
+          <div class="tags"><span class="tag">R Shiny</span><span class="tag">Power Apps</span><span class="tag">Power Automate</span><span class="tag">SharePoint</span><span class="tag">Microsoft Graph</span><span class="tag">Azure AD / OAuth 2.0</span></div></div>
+        <div class="tbl"><span class="name mono">dbo.data_science</span><h3>Analysis and models</h3><p>Statistics, text and language models</p>
+          <div class="tags"><span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">scikit-learn</span><span class="tag">NLTK</span><span class="tag">TensorFlow</span><span class="tag">Web scraping</span><span class="tag">Forecasting</span><span class="tag">AWS EC2/S3</span><span class="tag">SAS</span></div></div>
+        <div class="tbl dim"><span class="name mono">dbo.exposure</span><h3>Used, not owned</h3><p>Hands-on time, but I wouldn't call it production depth yet</p>
+          <div class="tags"><span class="tag">Microsoft Fabric</span><span class="tag">Palantir Foundry</span><span class="tag">Cognos</span><span class="tag">Java</span><span class="tag">MATLAB</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="ai">
+    <div class="wrap">
+      <div class="s-head">
+        <span class="mark mono">-- 05 ai</span>
+        <div>
+          <figure class="epi">
+            <blockquote>We can only see a short distance ahead, but we can see plenty there that needs to be done.</blockquote>
+            <figcaption class="mono">Alan Turing, Computing Machinery and Intelligence</figcaption>
+          </figure>
+          <h2>I was fine-tuning language models before I was building with them.</h2>
+          <p>My AI work started in a university research lab, teaching a model to answer questions about NKU. Now I build software alongside agents every day.</p>
+        </div>
+      </div>
+      <div class="indent">
+        <div class="trio" style="margin-top:0;border-top:0;padding-top:0">
+          <div><h3>Teaching a model about one campus</h3><p>For NKU's information chatbot I gathered and shaped 1,600+ question and answer examples from university web content, then fine-tuned GPT-2 and a custom 1.5B-parameter model in TensorFlow on AWS EC2 and S3. NKU-specific answers got 10 to 15% more accurate.</p></div>
+          <div><h3>Reading how people feel</h3><p>For a nursing study I built an NLP pipeline that reads forum posts from first-year nurses and sorts them into stress, depression, workplace and wellbeing themes. Finding meaning in unstructured language is the part of AI I find most interesting.</p></div>
+          <div><h3>Working with agents</h3><p>I build with Claude Code, splitting work across subagents for research, implementation and review, and writing my own skills so an agent follows the same process every time. GitHub Copilot covers the small stuff in the editor. This site was built that way.</p></div>
+        </div>
+      </div>
+      <div class="schema" style="margin-top:56px">
+        <div class="tbl"><span class="name mono">dbo.ai_tooling</span><h3>Day-to-day tools</h3><p>What's open while I work</p>
+          <div class="tags"><span class="tag">Claude Code</span><span class="tag">Claude agents and subagents</span><span class="tag">Claude skills</span><span class="tag">GitHub Copilot</span><span class="tag">Prompt and context design</span><span class="tag">Multi-agent workflows</span></div></div>
+        <div class="tbl"><span class="name mono">dbo.ai_engineering</span><h3>Models I've built with</h3><p>From research work at NKU</p>
+          <div class="tags"><span class="tag">GPT-2 fine-tuning</span><span class="tag">Custom 1.5B-parameter LLM</span><span class="tag">TensorFlow</span><span class="tag">Training data preparation</span><span class="tag">NLP with NLTK and scikit-learn</span><span class="tag">AWS EC2/S3 training</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="contact">
+    <div class="wrap">
+      <div class="s-head">
+        <span class="mark mono">-- 06 contact</span>
+        <div></div>
+      </div>
+      <div class="contact">
+        <h2>If your data takes the long way around before anyone trusts it, I'd like to hear about it.</h2>
+        <div class="side">
+          <div>
+            <span class="k mono">email</span>
+            <div class="email"><span id="addr">sidanth445@gmail.com</span><button class="btn copy" data-target="addr" type="button">Copy</button></div>
+          </div>
+          <div><span class="k mono">based in</span><p>Greater Cincinnati area<br>Open to relocation</p></div>
+          <div><span class="k mono">elsewhere</span><ul><li><a href="https://www.linkedin.com/in/sid2003" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="#resume">One-page resume</a></li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="resume" hidden>
+  <article class="wrap cv" aria-label="Resume">
+    <div class="cv-top mono"><a href="#top">Back to portfolio</a><span>Sidanta Parajuli, resume, 2026</span></div>
+
+    <header class="cv-id">
+      <div>
+        <h1>Sidanta Parajuli</h1>
+        <div class="title">Data Analyst and Data Engineer</div>
+      </div>
+      <ul class="mono">
+        <li><span>sidanth445@gmail.com</span></li>
+        <li>Greater Cincinnati, open to relocation</li>
+        <li><a href="https://www.linkedin.com/in/sid2003" target="_blank" rel="noopener">linkedin.com/in/sid2003</a></li>
+      </ul>
+    </header>
+
+    <section class="cv-sec">
+      <span class="mark mono">-- summary</span>
+      <p>Data analyst and engineer who builds the full path from source systems to decisions: SQL Server and Azure pipelines, validated dimensional models, and the Power BI dashboards and apps people use. Experience in a public water utility, an FAA-regulated airline, a clinical research organization and a freight brokerage. Looking for larger-scale data infrastructure and harder pipeline problems.</p>
+    </section>
+
+    <section class="cv-sec">
+      <span class="mark mono">-- key numbers</span>
+      <div class="kpis">
+        <div><b>40&ndash;50</b><span class="mono">reports moved to Power BI</span></div>
+        <div><b>20&ndash;40</b><span class="mono">hours saved per week</span></div>
+        <div><b>10+</b><span class="mono">analysts trained, US and UK</span></div>
+        <div><b>10&ndash;15%</b><span class="mono">chatbot accuracy gain</span></div>
+      </div>
+    </section>
+
+    <section class="cv-sec">
+      <span class="mark mono">-- experience</span>
+      <div>
+        <div class="cv-role"><div><h3>Data Analytics Specialist</h3><div class="org">Northern Kentucky Water District, Erlanger, KY</div></div><span class="when mono">02/2026 – present</span>
+          <ul>
+            <li>Migrated 40–50 Crystal Reports to Power BI with on-premises gateways, scheduled refresh and workspace distribution.</li>
+            <li>Built 10–20 Power BI dashboards and models solo for seven departments; saves 20–40 hours per week.</li>
+            <li>SQL Server views, stored procedures, SSIS/SSDT and SQL Agent jobs; BigQuery and Azure DevOps.</li>
+            <li>Monitor and troubleshoot Azure Data Factory and Databricks pipelines; investigate failed runs.</li>
+            <li>Dimensional models, KPI frameworks and source-to-target mappings across SAP, Lucity, HR and Finance data.</li>
+          </ul></div>
+        <div class="cv-role"><div><h3>Teaching Assistant and Research Assistant</h3><div class="org">NKU College of Informatics, Highland Heights, KY</div></div><span class="when mono">Fall 2025</span>
+          <ul>
+            <li>TA for INF 286 Web Development: grading, exam review quiz, office hours.</li>
+            <li>Web scraping, ML and AI methods in faculty research.</li>
+          </ul></div>
+        <div class="cv-role"><div><h3>Innovation Fellow</h3><div class="org">Kentucky Commercialization Ventures</div></div><span class="when mono">Fall 2025</span>
+          <ul><li>Customer discovery, SWOT, failure mode assessment and commercialization planning for VIDVO.</li></ul></div>
+        <div class="cv-role"><div><h3>Data Analysis and Development Intern</h3><div class="org">Atlas Air Worldwide, Erlanger, KY</div></div><span class="when mono">05/2025 – 12/2025</span>
+          <ul>
+            <li>Led an FAA-compliant R Shiny testing randomizer for all regulated employees; full lifecycle owner.</li>
+            <li>SharePoint integration through Microsoft Graph with Azure AD and OAuth 2.0; audit logs and history.</li>
+            <li>Power Automate flows for pilot training schedules and crew reporting; helped save ~25–30 staff hours a week.</li>
+            <li>Usage tracking in Power BI; Power App embedded in Power BI for dispatch; Python for a Palantir Foundry platform with BCG.</li>
+          </ul></div>
+        <div class="cv-role"><div><h3>Data Science Intern</h3><div class="org">Medpace, Cincinnati, OH</div></div><span class="when mono">08/2024 – 12/2024</span>
+          <ul>
+            <li>Cleaned and transformed clinical datasets with millions of records using SQL, Python, R, Snowflake and dbt.</li>
+            <li>Queried Medidata; built an R Shiny global study map and Power BI dashboards on Snowflake.</li>
+            <li>Led monthly dashboard design sessions for 10+ analysts in the US and UK.</li>
+          </ul></div>
+        <div class="cv-role"><div><h3>Data Analytics Intern</h3><div class="org">Motus Freight, Bellevue, KY</div></div><span class="when mono">01/2024 – 08/2024</span>
+          <ul>
+            <li>Tableau CO2 dashboard with forecasting; contributed to a 12.4% emissions reduction.</li>
+            <li>Regional dashboard across 4 regions and 49 states; contributed to a 15% profitability increase.</li>
+          </ul></div>
+        <div class="cv-role"><div><h3>Lifeguard and Facilities Specialist</h3><div class="org">NKU Campus Recreation, Highland Heights, KY</div></div><span class="when mono">03/2022 – 07/2024</span>
+          <ul>
+            <li>Lifeguard (12/2022 – 07/2024): pool safety, rule enforcement, CPR/AED, communication with swimmers, staff and emergency personnel.</li>
+            <li>Facilities Specialist (03/2022 – 12/2023): resolved phone inquiries and routed complex questions to the right department.</li>
+          </ul></div>
+      </div>
+    </section>
+
+    <section class="cv-sec">
+      <span class="mark mono">-- research</span>
+      <div>
+        <div class="cv-role"><div><h3>First-Year Nurse Sentiment Research</h3><div class="org">with Dr. Zhou, NKU</div></div><span class="when mono">07/2025 – 12/2025</span>
+          <ul><li>Python scraping and NLP pipeline (NLTK, scikit-learn, Pandas) with an R Shiny dashboard; supports a planned conference paper.</li></ul></div>
+        <div class="cv-role"><div><h3>NKU University Chatbot</h3><div class="org">with Dr. Zhou, NKU</div></div><span class="when mono">02/2024 – 08/2024</span>
+          <ul><li>1,600+ training examples; fine-tuned GPT-2 and a custom 1.5B-parameter model on AWS; accuracy up 10–15%.</li></ul></div>
+        <div class="cv-role"><div><h3>Cargo After COVID</h3><div class="org">R Shiny analytics app, <a class="extlink" href="https://sidantap.shinyapps.io/CargoAfterCOVID/" target="_blank" rel="noopener">live on shinyapps.io</a></div></div><span class="when mono">07/2025 – 12/2025</span>
+          <ul><li>Interactive app on Bureau of Transportation Statistics data covering U.S. air cargo performance, 2003–2025.</li><li>Built the transformations, KPIs, filters and trend analysis that make the historical data explorable.</li></ul></div>
+      </div>
+    </section>
+
+    <section class="cv-sec">
+      <span class="mark mono">-- skills</span>
+      <dl class="cv-skills">
+        <dt>data engineering</dt><dd>SQL Server, SSIS, SSDT, SQL Server Agent, Azure Data Factory, Databricks, Snowflake, dbt, BigQuery, Azure DevOps</dd>
+        <dt>modeling</dt><dd>T-SQL, stored procedures, views, CTEs, dimensional modeling, source-to-target mapping, data validation</dd>
+        <dt>languages</dt><dd>SQL, Python, R, DAX, Power Query M, PowerShell, JavaScript, TypeScript, SAS</dd>
+        <dt>reporting and apps</dt><dd>Power BI, Tableau, R Shiny, Power Apps, Power Automate, SharePoint, Microsoft Graph</dd>
+        <dt>data science</dt><dd>Pandas, scikit-learn, NLTK, TensorFlow, forecasting, NLP, AWS EC2/S3</dd>
+        <dt>ai engineering</dt><dd>Claude Code, Claude agents and skills, GitHub Copilot, prompt and context design, LLM fine-tuning (GPT-2, custom 1.5B model)</dd>
+      </dl>
+    </section>
+
+    <section class="cv-sec">
+      <span class="mark mono">-- education</span>
+      <div class="cv-role"><div><h3>B.S. Computer Information Technology</h3><div class="org">Northern Kentucky University. GPA 3.9, summa cum laude. Minor in 3D Digital Design and VFX.</div></div><span class="when mono">01/2022 – 12/2025</span></div>
+    </section>
+  </article>
+</div>
+
+<footer><div class="wrap mono"><span>Sidanta Parajuli, 2026</span><span>Designed and built with Claude Code</span></div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement, KEY='sp-theme';
+  try{var t=localStorage.getItem(KEY); if(t) root.setAttribute('data-theme',t);}catch(e){}
+  document.getElementById('theme').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+    var next=cur==='dark'?'light':'dark'; root.setAttribute('data-theme',next);
+    try{localStorage.setItem(KEY,next);}catch(e){}
+  });
+
+  // portfolio / resume views
+  var portfolio=document.getElementById('portfolio'), resume=document.getElementById('resume');
+  function route(){
+    var h=location.hash.slice(1), isCv=h==='resume';
+    resume.hidden=!isCv; portfolio.hidden=isCv;
+    if(isCv){window.scrollTo(0,0);}
+    else if(h){var el=document.getElementById(h); if(el) el.scrollIntoView();}
+  }
+  addEventListener('hashchange',route); route();
+
+  // builds accordion
+  document.querySelectorAll('.build>button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var open=b.getAttribute('aria-expanded')!=='true';
+      b.setAttribute('aria-expanded',open); b.nextElementSibling.hidden=!open;
+    });
+  });
+
+  // copy email
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.getElementById(btn.dataset.target);
+      function sel(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Selected';}
+      try{navigator.clipboard.writeText(el.textContent).then(function(){btn.textContent='Copied';},sel);}catch(e){sel();}
+      setTimeout(function(){btn.textContent='Copy';},2000);
+    });
+  });
+
+  // pipeline stories: one record, five steps
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function hl(code){
+    return code.split('\n').map(function(line){
+      var m=line.match(/^(.*?)((?:--|#|\/\/) .*)$/);
+      return m?esc(m[1])+'<span class="cm">'+esc(m[2])+'</span>':esc(line);
+    }).join('\n');
+  }
+  // table: rows are arrays, or {c:[...], del:true, chg:[i], warn:[i]}
+  function T(cap,head,rows){
+    var h='<div class="tw"><table class="vt"><caption>'+esc(cap)+'</caption><thead><tr>'+head.map(function(x){return '<th>'+esc(x)+'</th>';}).join('')+'</tr></thead><tbody>';
+    rows.forEach(function(r){
+      if(Array.isArray(r)) r={c:r};
+      h+='<tr'+(r.del?' class="del"':'')+'>'+r.c.map(function(v,i){
+        var cls=(r.chg&&r.chg.indexOf(i)>-1)?'chg':(r.warn&&r.warn.indexOf(i)>-1)?'warn':'';
+        return '<td'+(cls?' class="'+cls+'"':'')+'>'+esc(v)+'</td>';
+      }).join('')+'</tr>';
+    });
+    return h+'</tbody></table></div>';
+  }
+  function chips(list){return '<div class="chips">'+list.map(function(c,i){return '<span class="chip '+c[0]+'" style="animation-delay:'+(.5+i*.15)+'s">'+esc(c[1])+'</span>';}).join('')+'</div>';}
+  function label(a,b){return '<div class="vlabel mono"><span>'+esc(a)+'</span><span>'+esc(b)+'</span></div>';}
+  function star(fact,dims){
+    return '<div class="star"><div class="fact"><b>'+esc(fact[0])+'</b>'+esc(fact[1])+'</div>'+dims.map(function(d,i){
+      return '<div class="dim d'+(i+1)+'" style="animation-delay:'+(.2+i*.12)+'s"><small>'+esc(d[0])+'</small>'+esc(d[1])+'</div>';}).join('')+'</div>';
+  }
+  function panel(title,body){return '<div class="panel"><div class="panel-bar"><i></i><i></i><i></i><span>'+esc(title)+'</span></div><div class="panel-body">'+body+'</div></div>';}
+  function bars(list,max){return '<div class="bars">'+list.map(function(b,i){return '<div class="bar"><span>'+esc(b[0])+'</span><i style="width:'+(b[1]/max*100)+'%;animation-delay:'+(.2+i*.12)+'s"></i><span>'+b[1]+'</span></div>';}).join('')+'</div>';}
+
+  var STEPS=[['Collect','source'],['Land','bronze'],['Clean','silver'],['Model','gold'],['Show','serve']];
+  var lucity=[['WO-10482','H-221',' 12 dixie hwy','Oct 3, 9:14'],['WO-10482','H-221','12 Dixie Hwy.','Oct 3, 16:40']];
+  var sites=[['A','1043','USA'],['B','2210','United States'],['C','3307',' us'],['C','3307',' us']];
+  var staff=[['40117','SMITH, JOHN','Pilot','yes'],['40117','John  Smith','Pilot','yes'],['52290','Maria Lopez','Ramp agent','yes'],['61002','Dana Wu','Accountant','no']];
+
+  var S={
+    nkwd:{tab:'Water utility',title:'Follow one hydrant repair from a field crew to a department dashboard.',lang:'SQL',
+      stages:[
+        {h:'Two systems, one repair',
+         p:'A crew fixes hydrant H-221. The job goes into Lucity, our work order system. The cost goes into SAP. Lucity also saved the job twice, once at 9 a.m. and again after an edit.',
+         why:'Nobody can see what this repair really cost until the two systems agree.',
+         view:function(){return label('sample data','where it starts')+'<div class="pair">'+T('Lucity, work orders',['order','asset','address','edited'],lucity)+T('SAP, costs',['order','amount'],[['WO-10482','$0.00']])+'</div>';}},
+        {h:'Copied overnight, mistakes included',
+         p:'A scheduled job copies both systems into SQL Server at 2 a.m., exactly as they are. Nothing gets fixed at this step.',
+         why:'If a number looks wrong next month, this untouched copy is how I prove where it came from.',
+         view:function(){return label('bronze layer','nothing changed yet')+chips([['ok','copied at 2:00 a.m.'],['','3 rows landed'],['','0 edits']])+T('staging copy, as received',['order','address','amount','edited'],[['WO-10482',' 12 dixie hwy','$0.00','9:14'],['WO-10482','12 Dixie Hwy.','$0.00','16:40']]);},
+         code:'-- Did last night\'s copy arrive, and how much?\nSELECT  source_system,\n        COUNT(*)      AS rows_landed,\n        MAX(load_ts)  AS last_load\nFROM    stg.load_log\nWHERE   load_ts >= CAST(GETDATE() AS date)\nGROUP BY source_system;'},
+        {h:'One job, one address, an honest cost',
+         p:'The two Lucity rows are the same job edited twice, so I keep the latest. The address gets one spelling. And $0 doesn\'t mean the repair was free. The parts haven\'t been billed yet, so it becomes "pending".',
+         why:'Without this, the repair counts twice and the zero drags down the average cost of every hydrant job.',
+         view:function(){return label('silver layer','cleaned')+T('cleaned work orders',['order','address','amount','edited'],[{c:['WO-10482',' 12 dixie hwy','$0.00','9:14'],del:true},{c:['WO-10482','12 DIXIE HWY','pending','16:40'],chg:[1,2]}])+chips([['bad','duplicate removed'],['ok','address standardized'],['ok','$0 marked pending']]);},
+         code:'-- Keep only the latest edit of each work order\nWITH ranked AS (\n  SELECT *, ROW_NUMBER() OVER (\n           PARTITION BY work_order_id\n           ORDER BY modified_at DESC) AS rn\n  FROM stg.lucity_work_orders\n)\nSELECT work_order_id,\n       UPPER(TRIM(street))  AS street,\n       NULLIF(cost, 0)      AS cost   -- 0 meant "not billed yet"\nFROM   ranked\nWHERE  rn = 1;'},
+        {h:'Connected to what people ask about',
+         p:'The clean job is linked to the things managers actually ask about: which department, which asset, where, and when. People call this a star schema. In plain terms, it\'s one fact surrounded by the ways you might slice it.',
+         why:'Now "How many open jobs does Engineering have?" has one answer instead of three.',
+         view:function(){return label('gold layer','modeled')+star(['WO-10482','open 9 days\ncost pending'],[['department','Engineering'],['asset','Hydrant H-221'],['location','12 DIXIE HWY'],['date opened','Oct 3, 2026']]);},
+         code:'-- One row per work order, keyed to its dimensions\nCREATE VIEW gold.fact_work_order AS\nSELECT w.work_order_id, d.date_key,\n       a.asset_key, dp.dept_key, w.cost\nFROM   silver.work_orders w\nJOIN   gold.dim_date  d  ON d.date      = w.opened_on\nJOIN   gold.dim_asset a  ON a.asset_id  = w.asset_id\nJOIN   gold.dim_dept  dp ON dp.dept_code = w.dept_code;'},
+        {h:'On the dashboard by 6 a.m.',
+         p:'Power BI refreshes before the workday starts. Engineering sees the job, how long it has been open, and that its cost is still pending.',
+         why:'This is what replaced 40 to 50 old Crystal Reports, and someone\'s Monday morning spent stitching them together.',
+         view:function(){return label('sample numbers','Power BI')+panel('Engineering, open work orders','<div class="kpi"><b>38</b><span>open right now</span></div>'+bars([['0–7 days',21],['8–30 days',12],['30+ days',5]],21)+'<div class="callout">WO-10482, hydrant H-221, open 9 days, cost pending</div>');},
+         code:'// Counts each work order once, however it is sliced\nOpen Work Orders =\nCALCULATE (\n    DISTINCTCOUNT ( fact_work_order[work_order_id] ),\n    fact_work_order[status] = "Open"\n)'}
+      ]},
+    medpace:{tab:'Clinical research',title:'Follow one country through three clinical studies to a single map.',lang:'dbt',
+      stages:[
+        {h:'Same country, three spellings',
+         p:'Three studies record where their trial sites are. Each one wrote the country its own way, and one site was entered twice.',
+         why:'A map built straight from this shows three different countries, and all of them are the United States.',
+         view:function(){return label('sample data','where it starts')+T('site lists from three studies',['study','site','country'],sites);}},
+        {h:'Landed in Snowflake, and watched',
+         p:'The raw tables land in Snowflake untouched. Each one is registered with a freshness check, so I know when a study stops sending data.',
+         why:'A table that quietly stopped loading looks exactly like a healthy one. Study C hasn\'t updated in 31 hours.',
+         view:function(){return label('bronze layer','raw, untouched')+chips([['ok','study A, 2 h ago'],['ok','study B, 3 h ago'],['bad','study C, 31 h ago']])+T('raw sites table',['study','site','country'],sites);},
+         code:'# sources.yml: warn if a study stops loading\nsources:\n  - name: clinical_raw\n    tables:\n      - name: sites\n        loaded_at_field: _loaded_at\n        freshness:\n          warn_after: {count: 24, period: hour}'},
+        {h:'One spelling, one row per site',
+         p:'Every country gets one code. An automatic test checks that each site appears once, catches site 3307 listed twice, and the duplicate goes.',
+         why:'The test runs every time, so the next study with a typo gets caught too, not just this one.',
+         view:function(){return label('silver layer','cleaned and tested')+T('cleaned sites',['study','site','country'],[{c:['A','1043','US'],chg:[2]},{c:['B','2210','US'],chg:[2]},{c:['C','3307','US'],chg:[2]},{c:['C','3307',' us'],del:true}])+chips([['bad','test failed: site 3307 twice'],['ok','fixed: one row per site']]);},
+         code:'-- stg_sites.sql: one clean row per site\nselect distinct\n    study_id,\n    site_id,\n    case upper(trim(country))\n      when \'USA\'           then \'US\'\n      when \'UNITED STATES\' then \'US\'\n      else upper(trim(country))\n    end as country_code\nfrom {{ source(\'clinical_raw\', \'sites\') }}'},
+        {h:'Rolled up to answer one question',
+         p:'Clean sites become a study footprint: for each country, how many studies and how many sites.',
+         why:'"Where have we run trials?" is the question the proposal team asks. This table answers exactly that and nothing else.',
+         view:function(){return label('gold layer','sample numbers')+T('study footprint',['country','studies','sites'],[['US','3','3'],['DE','2','4'],['JP','1','2'],['GB','2','2']]);},
+         code:'-- study_footprint.sql\nselect\n    country_code,\n    count(distinct study_id)  as studies,\n    count(distinct site_id)   as sites\nfrom {{ ref(\'stg_sites\') }}\ngroup by country_code'},
+        {h:'A map the proposal team uses',
+         p:'The footprint feeds an R Shiny map. When a sponsor asks where the company has run trials, the answer is already on screen.',
+         why:'That used to mean rebuilding the same list by hand for every proposal.',
+         view:function(){
+           var c=[['US',3,3],['DE',2,4],['JP',1,2],['GB',2,2]];
+           return label('sample numbers','R Shiny, simplified')+panel('Clinical study experience','<div class="bubbles">'+c.map(function(x,i){var s=34+x[2]*16;return '<div class="bub"><i style="width:'+s+'px;height:'+s+'px;animation-delay:'+(.15+i*.12)+'s"></i>'+x[0]+'<br>'+x[1]+' studies, '+x[2]+' sites</div>';}).join('')+'</div>');}}
+      ]},
+    atlas:{tab:'Airline compliance',title:'Follow one pilot from an HR list to a fair random drug test.',lang:'R',
+      stages:[
+        {h:'A list typed by many hands',
+         p:'The FAA requires random drug and alcohol testing. The employee list lives in SharePoint and was typed by different people over the years, so the same pilot appears twice under two spellings.',
+         why:'The law says every employee gets an equal chance of being picked. A typo quietly breaks that.',
+         view:function(){return label('sample data, invented names','where it starts')+T('employee list in SharePoint',['id','name','role','FAA regulated'],staff);}},
+        {h:'A snapshot at the moment of selection',
+         p:'When a selection runs, the app signs in with the company\'s Microsoft account and reads the list through Microsoft\'s Graph API. It saves a copy of exactly what it saw.',
+         why:'If an auditor asks how a draw was made, I can show the exact list it was made from.',
+         view:function(){return label('bronze layer','saved as read')+chips([['ok','signed in with Azure AD'],['','4 rows read'],['ok','snapshot saved']])+T('snapshot, Q3',['id','name','role','FAA regulated'],staff);}},
+        {h:'One person, one chance',
+         p:'Names get one format, the duplicate is removed, and only FAA-regulated staff stay. Dana works in accounting, so she isn\'t part of the pool.',
+         why:'Before this step, John Smith had twice the chance of being picked. That isn\'t random. It\'s a typo with consequences.',
+         view:function(){return label('silver layer','eligible pool')+T('eligible pool',['id','name','role','FAA regulated'],[{c:['40117','John Smith','Pilot','yes'],chg:[1]},{c:staff[1],del:true},staff[2],{c:staff[3],del:true}])+chips([['bad','duplicate removed'],['bad','not regulated, removed'],['ok','2 people in the pool']]);},
+         code:'# One row per regulated, active employee\npool <- employees |>\n  mutate(name = str_squish(str_to_title(name))) |>\n  distinct(employee_id, .keep_all = TRUE) |>\n  filter(faa_regulated, active)'},
+        {h:'How many to test this quarter',
+         p:'The quarterly target comes from the annual testing rate, then adjusts for people carried over from last quarter and tests already done.',
+         why:'Get this wrong in either direction and the company is either out of compliance or testing people it doesn\'t need to.',
+         view:function(){
+           var r=[['people in the pool','412'],['annual testing rate','× 25%'],['split across 4 quarters','= 26'],['carried over from last quarter','+ 2'],['already tested this quarter','− 3']];
+           return label('gold layer','sample numbers')+panel('Q3 target','<div class="calc">'+r.map(function(x,i){return '<div style="animation-delay:'+(.15+i*.12)+'s"><span>'+x[0]+'</span>'+x[1]+'</div>';}).join('')+'<div class="total" style="animation-delay:.85s"><span>to select now</span><b>25</b></div></div>');},
+         code:'target <- ceiling(annual_rate * nrow(pool) / 4)\nto_pick <- max(target + rollover - completed, 0)\npicked  <- slice_sample(pool, n = to_pick)\n\n# every run is logged for audit\nlog_run(picked, pool_size = nrow(pool), seed = run_seed)'},
+        {h:'One button for the compliance team',
+         p:'The compliance team presses one button. The app draws the names, writes the results and an audit record back to SharePoint, and exports the list to Excel.',
+         why:'It meets every FAA guideline, and the company relies less on a paid outside service to do it.',
+         view:function(){
+           var p=[['40117 John Smith','drug and alcohol'],['52290 Maria Lopez','drug only'],['and 23 more','']];
+           return label('sample data','R Shiny app')+panel('FAA random selection','<span class="runbtn">Run Q3 selection</span><ul class="picked">'+p.map(function(x,i){return '<li style="animation-delay:'+(.3+i*.15)+'s">'+esc(x[0])+'<span>'+esc(x[1])+'</span></li>';}).join('')+'</ul><div class="callout">Logged: Q3, pool 412, 25 selected, saved to SharePoint</div>');}}
+      ]}
+  };
+
+  var tabsEl=document.getElementById('tabs'), rail=document.getElementById('rail'), fill=document.getElementById('railFill');
+  var viz=document.getElementById('viz'), explain=document.getElementById('explain'), titleEl=document.getElementById('storyTitle');
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cur='nkwd', step=0, timer=null;
+
+  Object.keys(S).forEach(function(k){
+    var b=document.createElement('button'); b.type='button'; b.className='tab'; b.setAttribute('role','tab');
+    b.textContent=S[k].tab; b.dataset.k=k;
+    b.addEventListener('click',function(){stop();cur=k;step=0;paint();});
+    tabsEl.appendChild(b);
+  });
+  STEPS.forEach(function(s,i){
+    var b=document.createElement('button'); b.type='button'; b.className='node';
+    b.innerHTML='<span class="dot" data-l="'+s[1]+'">'+(i+1)+'</span><span class="nm">'+s[0]+'</span><span class="ly mono">'+s[1]+'</span>';
+    b.addEventListener('click',function(){stop();step=i;paint();});
+    rail.appendChild(b);
+  });
+
+  function paint(){
+    var story=S[cur], st=story.stages[step];
+    tabsEl.querySelectorAll('.tab').forEach(function(b){b.setAttribute('aria-selected',b.dataset.k===cur);});
+    titleEl.textContent=story.title;
+    rail.querySelectorAll('.node').forEach(function(n,i){
+      n.classList.toggle('done',i<step);
+      if(i===step) n.setAttribute('aria-current','step'); else n.removeAttribute('aria-current');
+    });
+    fill.style.width='calc((100% - 40px) * '+(.8*step/4)+')';
+    viz.innerHTML='<div class="viz-in">'+st.view()+'</div>';
+    explain.innerHTML='<span class="step mono">step '+(step+1)+' of 5, '+STEPS[step][0].toLowerCase()+' ('+STEPS[step][1]+')</span>'+
+      '<h3>'+esc(st.h)+'</h3><p>'+esc(st.p)+'</p><p class="why">'+esc(st.why)+'</p>'+
+      (st.code?'<details><summary>Show the '+story.lang+'</summary><pre class="code"><code>'+hl(st.code)+'</code></pre></details>':'')+
+      '<div class="ctrl"><button class="btn" type="button" data-a="prev"'+(step===0?' disabled':'')+'>Back</button>'+
+      '<button class="btn primary" type="button" data-a="next"'+(step===4?' disabled':'')+'>Next step</button>'+
+      '<button class="btn" type="button" data-a="play">'+(timer?'Pause':'Play all')+'</button></div>';
+  }
+  explain.addEventListener('click',function(e){
+    var a=e.target.closest('button[data-a]'); if(!a) return;
+    if(a.dataset.a==='play'){ if(timer) stop(); else { if(step===4) step=0; play(); } paint(); return; }
+    stop(); step=Math.max(0,Math.min(4,step+(a.dataset.a==='next'?1:-1))); paint();
+  });
+  document.getElementById('pipeline').addEventListener('keydown',function(e){
+    if(e.target.closest('pre,summary')) return;
+    if(e.key==='ArrowRight'&&step<4){stop();step++;paint();}
+    if(e.key==='ArrowLeft'&&step>0){stop();step--;paint();}
+  });
+  function play(){ timer=setInterval(function(){ if(step<4){step++;paint();} else {stop();paint();} },4200); }
+  function stop(){ touched=true; if(timer){clearInterval(timer);timer=null;} }
+  var touched=false;
+  paint();
+  if(!reduce){ setTimeout(function(){ if(!touched){play();paint();} },2500); }
+})();
+</script>
+
+</body></html>
