@@ -75,10 +75,6 @@ h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
 .fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .fig-head .cap{color:var(--muted)}
 .fig-ctl{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.modes{display:flex;gap:4px;flex-wrap:wrap}
-.mode{font:.74rem var(--mono);padding:7px 11px;border:1px solid transparent;border-radius:4px;background:none;color:var(--muted);cursor:pointer}
-.mode[aria-selected="true"]{border-color:var(--line);background:var(--bg);color:var(--fg)}
-.mode[data-mode="live"]::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:7px;vertical-align:1px}
 .fig-cap{margin:0;padding:8px 16px;border-bottom:1px solid var(--line);color:var(--muted);background:var(--surface)}
 .fig-cap a{color:var(--accent)}
 .toggle{display:inline-flex;align-items:center;gap:8px;font:.74rem var(--mono);color:var(--muted);cursor:pointer;user-select:none}
@@ -321,16 +317,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
     <figure class="fig" id="pipeline" aria-labelledby="fig-cap">
       <div class="fig-head">
-        <div class="modes" role="tablist" aria-label="Which pipeline">
-          <button class="mode" type="button" role="tab" data-mode="live" id="modeLive" hidden>Live: latest real run</button>
-          <button class="mode" type="button" role="tab" data-mode="sim">Simulated: my work stack</button>
-        </div>
+        <span class="cap mono">fig. 01 · live pipeline</span>
         <div class="fig-ctl">
-          <label class="toggle" id="badWrap"><input type="checkbox" id="badNight"> simulate a bad night</label>
+          <a class="btn" href="https://github.com/sidantap/nightly-311-pipeline" target="_blank" rel="noopener">GitHub repo</a>
+          <a class="btn" href="https://sidantap.github.io/nightly-311-pipeline/" target="_blank" rel="noopener">Dashboard</a>
           <button class="btn primary" type="button" id="runBtn">Run pipeline</button>
         </div>
       </div>
-      <p class="cap mono fig-cap" id="fig-cap">fig. 01 · a nightly ELT run, modeled on the stack I work in (sample data, simplified code)</p>
+      <p class="cap mono fig-cap" id="fig-cap">My open-source pipeline runs nightly on GitHub Actions. It ingests Cincinnati 311 requests, NOAA weather and NHTSA vehicle complaints into DuckDB, then cleans and tests them with dbt and classifies the complaints with an open-source model. This figure replays its latest run with real numbers.</p>
       <div class="runbar" id="runbar"></div>
       <div class="dag-wrap"><svg class="dag" id="dag" viewBox="0 0 1148 312" role="group" aria-label="Pipeline graph. Select a step to inspect it."></svg></div>
       <div class="console">
@@ -826,52 +820,29 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
   var W=132, H=62, PITCH=164, X0=16;
   var COLS=['sources','ingest','bronze','silver','validate','gold','serve'];
-  var N={
-    sap:{c:0,y:34, t:'SAP S/4HANA', s:'OData · costs',   l:'src'},
-    luc:{c:0,y:128,t:'Lucity',      s:'SQL Server · WOs', l:'src'},
-    sp: {c:0,y:222,t:'SharePoint',  s:'Graph API · assets',l:'src'},
-    adf:{c:1,y:128,t:'Ingest',      s:'Data Factory',     l:'orc'},
-    brz:{c:2,y:128,t:'Bronze',      s:'Delta · raw',      l:'bronze'},
-    slv:{c:3,y:128,t:'Silver',      s:'PySpark · merge',  l:'silver'},
-    dq: {c:4,y:128,t:'Quality gate',s:'14 checks',        l:'gate'},
-    qr: {c:4,y:236,t:'Quarantine',  s:'held for review',  l:'bad'},
-    gld:{c:5,y:128,t:'Gold',        s:'fact + 4 dims',    l:'gold'},
-    pbi:{c:6,y:70, t:'Power BI',    s:'semantic model',   l:'srv'},
-    sql:{c:6,y:186,t:'SQL endpoint',s:'reporting views',  l:'srv'}
+  var N={ // layout only: column, y position, layer colour
+    sap:{c:0,y:34, l:'src'},
+    luc:{c:0,y:128,l:'src'},
+    sp: {c:0,y:222,l:'src'},
+    adf:{c:1,y:128,l:'orc'},
+    brz:{c:2,y:128,l:'bronze'},
+    slv:{c:3,y:128,l:'silver'},
+    dq: {c:4,y:128,l:'gate'},
+    qr: {c:4,y:236,l:'bad'},
+    gld:{c:5,y:128,l:'gold'},
+    pbi:{c:6,y:70, l:'srv'},
+    sql:{c:6,y:186,l:'srv'}
   };
   var E=[['sap','adf'],['luc','adf'],['sp','adf'],['adf','brz'],['brz','slv'],['slv','dq'],['dq','gld'],['dq','qr'],['gld','pbi'],['gld','sql']];
-
-  var INFO={
-    sap:{k:'source · OData query',p:'Cost postings from SAP S/4HANA, pulled incrementally. A watermark records the last successful run, so each night reads only the rows that changed instead of the whole ledger.',
-      code:'-- Only rows changed since the last successful run\n$select = CompanyCode, CostCenter, WorkOrder,\n          Amount, Currency, PostingDate, ChangedOn\n$filter = ChangedOn gt @{pipeline().parameters.sap_watermark}\n          and ChangedOn le @{pipeline().TriggerTime}\n$orderby = ChangedOn'},
-    luc:{k:'source · SQL Server',p:'Work orders from Lucity, the asset system field crews use. A job is saved again every time someone edits it, so duplicates are expected. They are handled downstream, never by editing the source.',
-      code:'-- Lucity work orders, incremental by watermark\nSELECT  wo.work_order_id, wo.asset_id, wo.dept_code,\n        wo.street, wo.status, wo.cost,\n        wo.opened_on, wo.modified_at\nFROM    dbo.work_orders AS wo\nWHERE   wo.modified_at >  @last_watermark\n  AND   wo.modified_at <= @run_started_at;'},
-    sp:{k:'source · Microsoft Graph (Python)',p:'Asset lists kept in SharePoint, read through the Graph API with an Azure AD app registration. Graph throttles busy tenants, so the reader follows paging links and backs off when it gets a 429.',
-      code:'# Read a SharePoint list, honoring Graph throttling\ndef read_list(session, url):\n    rows = []\n    while url:\n        r = session.get(url, timeout=30)\n        if r.status_code == 429:    # throttled\n            time.sleep(int(r.headers.get("Retry-After", 5)))\n            continue\n        r.raise_for_status()\n        body = r.json()\n        rows += [item["fields"] for item in body["value"]]\n        url = body.get("@odata.nextLink")    # next page\n    return rows'},
-    adf:{k:'orchestration · Azure Data Factory',p:'One parameterized pipeline runs the three copies in parallel, retries failed activities, and moves each watermark forward only after its copy succeeds. If something fails, the next run picks up exactly where this one stopped.',
-      code:'// pl_nightly_ingest.json (excerpt)\n{\n  "name": "copy_lucity_wo",\n  "type": "Copy",\n  "policy": {\n    "retry": 3,\n    "retryIntervalInSeconds": 60,\n    "timeout": "0.01:00:00"\n  },\n  "typeProperties": {\n    "source": { "type": "SqlServerSource",\n                "sqlReaderQuery": "@{pipeline().parameters.lucity_query}" },\n    "sink":   { "type": "ParquetSink" }\n  }\n}\n// on success: sp_set_watermark(\'lucity\', @run_started_at)'},
-    brz:{k:'bronze · Delta Lake (PySpark)',p:'Everything lands exactly as it arrived, with a record of when it came in and which file it came from. Nothing is fixed at this stage, on purpose. If a number looks wrong next month, this copy shows where it came from.',
-      code:'# Land exactly what arrived, plus where and when\nfrom pyspark.sql import functions as F\n\n(spark.read.parquet(f"{landing}/lucity/work_orders/{run_date}")\n   .withColumn("_ingested_at", F.current_timestamp())\n   .withColumn("_source_file", F.input_file_name())\n   .withColumn("load_date", F.lit(run_date))\n   .write.format("delta")\n   .mode("append")\n   .partitionBy("load_date")\n   .saveAsTable("bronze.lucity_work_orders"))'},
-    slv:{k:'silver · PySpark on Databricks',p:'The latest edit of each work order wins, addresses get one spelling and types are enforced. A MERGE upserts the result into the silver table, so running the same night twice never double-counts anything.',
-      code:'# Latest version of each work order wins, then upsert\nfrom delta.tables import DeltaTable\nfrom pyspark.sql import Window, functions as F\n\nw = Window.partitionBy("work_order_id").orderBy(F.desc("modified_at"))\nlatest = (bronze_wo\n    .withColumn("rn", F.row_number().over(w))\n    .filter("rn = 1").drop("rn")\n    .withColumn("street", F.upper(F.trim("street")))\n    .withColumn("cost", F.col("cost").cast("decimal(12,2)")))\n\n(DeltaTable.forName(spark, "silver.work_orders").alias("t")\n   .merge(latest.alias("s"), "t.work_order_id = s.work_order_id")\n   .whenMatchedUpdateAll("s.modified_at > t.modified_at")\n   .whenNotMatchedInsertAll()\n   .execute())'},
-    dq:{k:'validation · dbt tests',p:'Fourteen checks run after every load. Keys must be unique and present, every work order must point at a real department, and costs must be numbers. Rows that fail are kept for review, so nothing is silently dropped or silently passed.',
-      code:'# models/silver/work_orders.yml\nmodels:\n  - name: work_orders\n    config:\n      store_failures: true    # keep failing rows for review\n    columns:\n      - name: work_order_id\n        tests: [unique, not_null]\n      - name: dept_code\n        tests:\n          - relationships:\n              to: ref(\'dim_dept\')\n              field: dept_code\n      - name: cost\n        tests:\n          - dbt_expectations.expect_column_values_to_be_of_type:\n              column_type: decimal'},
-    qr:{k:'quarantine · SQL',p:'Rows that fail a check wait here, tagged with the rule they broke, and an alert goes to the team channel. The rest of the run keeps going, so one bad feed doesn\'t take down every dashboard. Turn on "simulate a bad night" to see this fill up.',
-      code:'-- What was held back last night, and why\nSELECT  rule,\n        COUNT(*)          AS rows_held,\n        MIN(_ingested_at) AS first_seen\nFROM    quarantine.work_orders\nWHERE   load_date = \'2026-10-13\'\nGROUP BY rule;\n\n-- rule        rows_held  first_seen\n-- cost_type   37         2026-10-13 02:00:07'},
-    gld:{k:'gold · star schema (SQL)',p:'One fact table of work orders, keyed to date, asset, department and location dimensions. "How many open jobs does Engineering have?" now gets one answer, not three.',
-      code:'-- Upsert the fact table with surrogate keys\nMERGE INTO gold.fact_work_order AS f\nUSING (\n  SELECT w.work_order_id, d.date_key, a.asset_key,\n         dp.dept_key, l.location_key, w.status, w.cost\n  FROM   silver.work_orders w\n  JOIN   gold.dim_date     d  ON d.date       = w.opened_on\n  JOIN   gold.dim_asset    a  ON a.asset_id   = w.asset_id\n  JOIN   gold.dim_dept     dp ON dp.dept_code = w.dept_code\n  JOIN   gold.dim_location l  ON l.street     = w.street\n) AS s\nON f.work_order_id = s.work_order_id\nWHEN MATCHED THEN UPDATE SET *\nWHEN NOT MATCHED THEN INSERT *;'},
-    pbi:{k:'serve · Power BI (DAX)',p:'When gold finishes, the pipeline triggers a semantic model refresh through the Power BI REST API. Reports are ready before the workday starts, and they don\'t depend on a fixed schedule that just hopes the data has arrived.',
-      code:'// Counted once, however it is sliced\nOpen Work Orders =\nCALCULATE (\n    DISTINCTCOUNT ( fact_work_order[work_order_id] ),\n    fact_work_order[status] = "Open"\n)\n\n// triggered by the pipeline when gold succeeds:\n// POST /groups/{workspace}/datasets/{model}/refreshes'},
-    sql:{k:'serve · SQL views',p:'Analysts and apps read stable reporting views, never raw tables. That way the tables underneath can change shape without breaking anyone\'s query.',
-      code:'-- Analysts and apps read views, never raw tables\nCREATE OR ALTER VIEW rpt.open_work_orders AS\nSELECT  dp.department, a.asset_type, f.work_order_id,\n        DATEDIFF(day, d.date, GETDATE()) AS days_open,\n        f.cost\nFROM    gold.fact_work_order f\nJOIN    gold.dim_dept  dp ON dp.dept_key = f.dept_key\nJOIN    gold.dim_asset a  ON a.asset_key = f.asset_key\nJOIN    gold.dim_date  d  ON d.date_key  = f.date_key\nWHERE   f.status = \'Open\';'}
-  };
 
   var SVGNS='http://www.w3.org/2000/svg';
   function mk(tag,attrs,parent){var e=document.createElementNS(SVGNS,tag);for(var a in attrs)e.setAttribute(a,attrs[a]);if(parent)parent.appendChild(e);return e;}
   var dag=document.getElementById('dag'), logEl=document.getElementById('log'), inspEl=document.getElementById('inspect');
-  var runbar=document.getElementById('runbar'), runBtn=document.getElementById('runBtn'), badEl=document.getElementById('badNight');
+  var runbar=document.getElementById('runbar'), runBtn=document.getElementById('runBtn');
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var nodeEl={}, metricEl={}, edgeEl={}, tEl={}, sEl={}, sel='slv', mode='sim', LIVE=null;
+  var nodeEl={}, metricEl={}, edgeEl={}, tEl={}, sEl={}, sel='slv';
+  // Last known numbers, used only if the live data.json can't be fetched.
+  var LIVE={"generated_at":"2026-10-13 22:41 UTC","kpis":{"requests_30d":12380,"open_now":16795,"median_days_to_close_90d":6.0},"quarantine":[{"dq_reason":"closed_before_created","rows":122},{"dq_reason":"missing_location","rows":6},{"dq_reason":"location_outside_city","rows":5}],"quarantine_total":133,"watermarks":[{"source":"cincy_311","watermark":"2026-10-11"},{"source":"nhtsa_complaints","watermark":"2026-10-08"},{"source":"weather_daily","watermark":"2026-10-09"}],"runs":[{"run_id":"nightly_2026-10-13_1202e6","started":"2026-10-13 22:40","status":"succeeded","seconds":18.0}],"live_metrics":[{"day":"2026-10-13","rows":3404,"accuracy":0.8064,"macro_precision":0.7815,"macro_recall":0.8347,"macro_f1":0.8013}],"snapshot":true};
   var REPO='https://github.com/sidantap/nightly-311-pipeline/blob/main/';
   // The real pipeline, drawn on the same graph. Numbers come from its published data.json.
   var LN={
@@ -916,11 +887,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     edgeEl[e[0]+'>'+e[1]]=mk('path',{d:d,'class':'edge'},dag);
   });
   Object.keys(N).forEach(function(id){
-    var n=N[id], g=mk('g',{'class':'node',transform:'translate('+(X0+n.c*PITCH)+','+n.y+')',tabindex:'0',role:'button','aria-label':'Inspect '+n.t},dag);
+    var n=N[id], g=mk('g',{'class':'node',transform:'translate('+(X0+n.c*PITCH)+','+n.y+')',tabindex:'0',role:'button','aria-label':'Inspect '+LN[id].t},dag);
     mk('rect',{'class':'box',width:W,height:H,rx:8},g);
     mk('rect',{'class':'lyr '+n.l,x:0,y:12,width:3,height:H-24,rx:1.5},g);
-    tEl[id]=mk('text',{'class':'t',x:14,y:22},g); tEl[id].textContent=n.t;
-    sEl[id]=mk('text',{'class':'s',x:14,y:37},g); sEl[id].textContent=n.s;
+    tEl[id]=mk('text',{'class':'t',x:14,y:22},g); tEl[id].textContent=LN[id].t;
+    sEl[id]=mk('text',{'class':'s',x:14,y:37},g); sEl[id].textContent=LN[id].s;
     metricEl[id]=mk('text',{'class':'m',x:14,y:52},g);
     mk('circle',{'class':'sd',cx:W-14,cy:16,r:4},g);
     g.addEventListener('click',function(){inspect(id);});
@@ -937,25 +908,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   function inspect(id){
     sel=id;
     Object.keys(nodeEl).forEach(function(k){nodeEl[k].classList.toggle('sel',k===id);});
-    var d=mode==='live'?LINFO[id]:INFO[id], t=mode==='live'?LN[id].t:N[id].t;
+    var d=LINFO[id], t=LN[id].t;
     inspEl.innerHTML='<span class="k mono">'+esc(d.k)+'</span><h3>'+esc(t)+'</h3><p>'+esc(d.p)+'</p><pre class="code"><code>'+hl(d.code)+'</code></pre>'+
       (d.f?'<a class="extlink" href="'+REPO+d.f+'" target="_blank" rel="noopener">'+esc(d.f)+' on GitHub</a>':'');
   }
 
   var RS={status:'idle',in:'—',out:'—',held:'—'};
   function bar(){
-    if(mode==='live'&&LIVE){
-      var r=LIVE.runs[0]||{}, lc=RS.status==='running'?'s-run':RS.status==='idle'?'':(r.status==='succeeded'?'s-ok':'s-warn');
-      runbar.innerHTML='<span>status <b class="'+lc+'">'+esc(RS.status)+'</b></span><span>run <b>'+esc(r.run_id||'—')+'</b></span>'+
-        '<span>took <b>'+(r.seconds!=null?r.seconds+'s':'—')+'</b></span><span>held <b>'+RS.held+'</b></span>'+
-        '<span>data <b>'+esc(LIVE.generated_at)+'</b></span>'+
-        '<span class="hint"><a class="extlink" href="https://sidantap.github.io/nightly-311-pipeline/" target="_blank" rel="noopener">full dashboard</a></span>';
-      return;
-    }
-    var cls=RS.status==='running'?'s-run':RS.status==='succeeded'?'s-ok':RS.status==='idle'?'':'s-warn';
-    runbar.innerHTML='<span>status <b class="'+cls+'">'+esc(RS.status)+'</b></span><span>run <b>nightly_2026-10-13</b></span>'+
-      '<span>rows in <b>'+RS.in+'</b></span><span>rows out <b>'+RS.out+'</b></span><span>held <b>'+RS.held+'</b></span><span>SLA <b>ready by 06:00</b></span>'+
-      '<span class="hint"><span class="wide">click any step to inspect it</span><span class="narrow">swipe the graph · tap a step to inspect it</span></span>';
+    var r=LIVE.runs[0]||{}, lc=RS.status==='running'?'s-run':RS.status==='idle'?'':(r.status==='succeeded'?'s-ok':'s-warn');
+    runbar.innerHTML='<span>status <b class="'+lc+'">'+esc(RS.status)+'</b></span><span>run <b>'+esc(r.run_id||'—')+'</b></span>'+
+      '<span>took <b>'+(r.seconds!=null?r.seconds+'s':'—')+'</b></span><span>held <b>'+RS.held+'</b></span>'+
+      '<span>data <b>'+esc(LIVE.generated_at)+(LIVE.snapshot?' (snapshot)':'')+'</b></span>'+
+      '<span class="hint"><span class="wide">click any step to see its code</span><span class="narrow">swipe · tap a step for its code</span></span>';
   }
   var BASE=120; // minutes after midnight; the simulated run starts at 02:00
   function clk(s){function p(n){return (n<10?'0':'')+n;} var t=BASE*60+s; return p(Math.floor(t/3600)%24)+':'+p(Math.floor(t/60)%60)+':'+p(t%60);}
@@ -969,76 +933,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     Object.keys(N).forEach(function(id){node(id,id==='qr'?'ghost':'',id==='qr'?'0 rows':'idle');});
     E.forEach(function(e){edge(e[0]+'>'+e[1],'');});
     RS={status:'idle',in:'—',out:'—',held:'—'}; bar();
-  }
-
-  function plan(bad){
-    var p=[], o=bad?4:0, out=bad?'46,971':'47,008';
-    function add(ms,fn){p.push([ms,fn]);}
-    add(0,function(){logEl.textContent='';RS.status='running';bar();log(0,'run','nightly_2026-10-13 started · trigger: schedule','hi');});
-    add(500,function(){
-      ['sap','luc','sp'].forEach(function(n){node(n,'running','reading…');edge(n+'>adf','flow');});
-      node('adf','running','3 copies running');
-      log(1,'ingest','copy_sap_costs  · OData, ChangedOn > watermark');
-      log(1,'ingest','copy_lucity_wo  · SQL, modified_at > watermark');
-      log(1,'ingest','copy_sp_assets  · Graph API, 200 items/page');
-    });
-    add(1000,function(){node('sap','ok','12,418 rows');edge('sap>adf','done');log(7,'ingest','✓ copy_sap_costs  12,418 rows in 6.1s','ok');});
-    add(600,function(){node('luc','ok','35,190 rows');edge('luc>adf','done');log(11,'ingest','✓ copy_lucity_wo  35,190 rows in 9.8s','ok');});
-    if(bad){
-      add(500,function(){node('sp','warn','429 · retrying');log(12,'ingest','! copy_sp_assets  429 Too Many Requests, retry 1/3 after 4s','warn');});
-      add(1300,function(){node('sp','ok','604 rows · 1 retry');edge('sp>adf','done');log(17,'ingest','✓ copy_sp_assets  604 rows, 1 retry','ok');});
-    } else {
-      add(600,function(){node('sp','ok','604 rows');edge('sp>adf','done');log(13,'ingest','✓ copy_sp_assets  604 rows in 2.4s','ok');});
-    }
-    add(500,function(){
-      node('adf','ok','48,212 rows');RS.in='48,212';bar();
-      log(14+o,'ingest','watermarks advanced for 3 sources');
-      edge('adf>brz','flow');node('brz','running','appending…');
-      log(15+o,'bronze','append raw tables to Delta, load_date=2026-10-13');
-    });
-    add(1000,function(){
-      node('brz','ok','48,212 rows');edge('adf>brz','done');
-      log(31+o,'bronze','✓ 3 tables appended, schema kept as received','ok');
-      edge('brz>slv','flow');node('slv','running','merging…');
-      log(32+o,'silver','dedupe on work_order_id, latest modified_at wins');
-    });
-    if(bad) add(1000,function(){node('slv','warn','schema drift');log(58+o,'silver','! schema drift: sap.cost arrived as STRING in 37 rows','warn');});
-    add(1000,function(){
-      node('slv','ok','47,008 rows');edge('brz>slv','done');
-      log(84+o,'silver','✓ 1,204 duplicates collapsed, 47,008 rows merged','ok');
-      edge('slv>dq','flow');node('dq','running','running checks…');
-      log(85+o,'quality','14 checks: unique, not_null, relationships, types');
-    });
-    add(1100,function(){
-      edge('slv>dq','done');
-      if(bad){
-        node('dq','warn','13/14 · 37 held');node('qr','fail','37 rows held');edge('dq>qr','bad');RS.held='37';
-        log(97+o,'quality','✗ cost type check failed on 37 rows → quarantine','bad');
-        log(97+o,'alert','posted to #data-alerts, run continues without them','warn');
-      } else {
-        node('dq','ok','14/14 passed');RS.held='0';
-        log(97,'quality','✓ 14/14 checks passed','ok');
-      }
-      bar();
-    });
-    add(600,function(){
-      edge('dq>gld','flow');node('gld','running','merging…');
-      log(98+o,'gold','merge fact_work_order, refresh 4 dimensions');
-    });
-    add(1100,function(){
-      node('gld','ok',out+' rows');edge('dq>gld','done');
-      log(131+o,'gold','✓ surrogate keys resolved, 0 orphan facts','ok');
-      edge('gld>pbi','flow');edge('gld>sql','flow');node('pbi','running','refreshing…');node('sql','running','publishing…');
-      log(132+o,'serve','refresh semantic model "Operations" via REST API');
-    });
-    add(700,function(){node('sql','ok','6 views current');edge('gld>sql','done');log(140+o,'serve','✓ 6 reporting views current','ok');});
-    add(900,function(){
-      node('pbi','ok','refreshed 02:06');edge('gld>pbi','done');
-      log(355+o,'serve','✓ Power BI refreshed, 3h 54m ahead of the 06:00 SLA','ok');
-      RS.out=out;RS.status=bad?'succeeded, 1 alert':'succeeded';bar();
-      log(356+o,'run',bad?'finished with warnings: 37 rows held for review':'finished: all green',bad?'warn':'ok');
-    });
-    return p;
   }
 
   function fmtN(n){return n==null?'—':Number(n).toLocaleString('en-US');}
@@ -1100,7 +994,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     if(running) return;
     running=true; clearTimeout(timer); reset();
     runBtn.disabled=true; runBtn.textContent='Running…';
-    var steps=mode==='live'?livePlan(LIVE):plan(badEl.checked), i=0;
+    var steps=livePlan(LIVE), i=0;
     (function next(){
       if(i>=steps.length){running=false;runBtn.disabled=false;runBtn.textContent='Run again';return;}
       var s=steps[i++];
@@ -1108,28 +1002,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     })();
   }
   runBtn.addEventListener('click',run);
-  var capEl=document.getElementById('fig-cap'), badWrap=document.getElementById('badWrap');
-  function setMode(m){
-    clearTimeout(timer); running=false; runBtn.disabled=false; runBtn.textContent=m==='live'?'Replay run':'Run pipeline';
-    mode=m; BASE=120;
-    document.querySelectorAll('.mode').forEach(function(b){b.setAttribute('aria-selected',b.dataset.mode===m);});
-    var labels=m==='live'?LN:N;
-    Object.keys(N).forEach(function(id){tEl[id].textContent=labels[id].t;sEl[id].textContent=labels[id].s;nodeEl[id].setAttribute('aria-label','Inspect '+labels[id].t);});
-    badWrap.hidden=m==='live';
-    capEl.innerHTML=m==='live'
-      ?'fig. 01 · <b>live</b> · the real open-source pipeline that runs nightly on GitHub Actions: Cincinnati 311, NOAA weather and NHTSA complaints. Numbers are from its latest run. <a href="https://github.com/sidantap/nightly-311-pipeline" target="_blank" rel="noopener">code</a>'
-      :'fig. 01 · a nightly ELT run, modeled on the stack I work in at the water district (sample data, simplified code)';
+  function idle(){
     reset(); inspect(sel);
-    logEl.innerHTML='<span class="idle">-- '+(m==='live'?'press "Replay run" to step through the latest real run.':'waiting for 02:00. Press "Run pipeline" to start it now.')+'</span>\n';
+    logEl.innerHTML='<span class="idle">-- latest run: '+esc((LIVE.runs[0]||{}).started||'—')+' UTC. Press "Replay run" to step through it.</span>\n';
   }
-  document.querySelectorAll('.mode').forEach(function(b){b.addEventListener('click',function(){setMode(b.dataset.mode);run();});});
+  runBtn.textContent='Replay run';
+  idle();
   var ready=fetch('https://sidantap.github.io/nightly-311-pipeline/data.json',{cache:'no-store'})
     .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
-    .then(function(d){if(!d.runs||!d.runs.length)return;LIVE=d;document.getElementById('modeLive').hidden=false;if(!running){setMode('live');}})
-    .catch(function(){}); // offline or blocked: the simulated view still works
-  badEl.addEventListener('change',function(){if(!running) run();});
-
-  setMode('sim');
+    .then(function(d){if(d.runs&&d.runs.length){LIVE=d;if(!running)idle();}})
+    .catch(function(){}); // offline: keep the snapshot above
   if('IntersectionObserver' in window && !reduce){
     var io=new IntersectionObserver(function(en){
       if(en[0].isIntersecting){io.disconnect();ready.then(function(){setTimeout(run,600);});}
