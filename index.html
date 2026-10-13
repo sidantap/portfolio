@@ -315,7 +315,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
     <figure class="fig" id="pipeline" aria-labelledby="fig-cap">
       <div class="fig-head">
-        <span class="cap mono" id="fig-cap">fig. 01 · a nightly ELT run, modeled on the stack I work in (sample data, simplified code)</span>
+        <span class="cap mono" id="fig-cap">fig. 01 · a nightly ELT run, modeled on the stack I work in (sample data, simplified code) · <a class="extlink" href="https://sidantap.github.io/nightly-311-pipeline/" target="_blank" rel="noopener">see the real one run nightly</a></span>
         <div class="fig-ctl">
           <label class="toggle"><input type="checkbox" id="badNight"> simulate a bad night</label>
           <button class="btn primary" type="button" id="runBtn">Run pipeline</button>
@@ -535,15 +535,24 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </div>
       <ul class="builds">
         <li class="build">
-          <button type="button" aria-expanded="true"><span class="n mono">a</span><h3>FAA drug and alcohol testing randomizer</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
+          <button type="button" aria-expanded="true"><span class="n mono">a</span><h3>Nightly 311 pipeline, running in public</h3><span class="where mono">Live, open source<span class="tog">+</span></span></button>
           <div class="body"><div>
+            <p>A real version of the pipeline at the top of this page. Every night GitHub Actions pulls Cincinnati 311 service requests and NOAA weather incrementally from watermarks, lands them unchanged in bronze, then cleans, tests and models them with dbt into a star schema. Rows that break a data quality rule go to a quarantine table with the reason. The same run classifies new NHTSA vehicle complaints with an open-source embedding model and scores it against NHTSA's own labels. It costs $0 to run.</p>
+            <div class="impact"><span class="k mono">results</span><span>84.7% accuracy on a held-out test set, about 80% live on complaints it has never seen, and runs finish in under a minute</span></div>
+            <div class="impact"><span class="k mono">see it</span><a class="extlink" href="https://sidantap.github.io/nightly-311-pipeline/" target="_blank" rel="noopener">live dashboard</a><a class="extlink" href="https://github.com/sidantap/nightly-311-pipeline" target="_blank" rel="noopener">code and README</a></div>
+            <div class="tags"><span class="tag">Python</span><span class="tag">DuckDB</span><span class="tag">dbt</span><span class="tag">GitHub Actions</span><span class="tag">bge-small embeddings</span><span class="tag">scikit-learn</span><span class="tag">Socrata API</span><span class="tag">NOAA API</span></div>
+          </div></div>
+        </li>
+        <li class="build">
+          <button type="button" aria-expanded="false"><span class="n mono">b</span><h3>FAA drug and alcohol testing randomizer</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
+          <div class="body" hidden><div>
             <p>Replaced a third-party process with an in-house R Shiny app. It builds eligible pools from the master employee list, calculates quarterly targets with rollover, deduplicates against prior selections, and writes results, history and audit logs back to SharePoint. Users get Excel exports and compliance KPIs.</p>
             <div class="impact"><span class="k mono">impact</span><span>Covers every FAA-regulated employee and meets all FAA guidelines</span></div>
             <div class="tags"><span class="tag">R Shiny</span><span class="tag">Microsoft Graph</span><span class="tag">Azure AD</span><span class="tag">OAuth 2.0</span><span class="tag">SharePoint</span></div>
           </div></div>
         </li>
         <li class="build">
-          <button type="button" aria-expanded="false"><span class="n mono">b</span><h3>Crystal Reports to Power BI modernization</h3><span class="where mono">NKWD<span class="tog">+</span></span></button>
+          <button type="button" aria-expanded="false"><span class="n mono">c</span><h3>Crystal Reports to Power BI modernization</h3><span class="where mono">NKWD<span class="tog">+</span></span></button>
           <div class="body" hidden><div>
             <p>Moved 40 to 50 legacy reports onto validated SQL Server views and Power BI semantic models, set up on-premises gateways and refresh schedules, and handled workspace access and distribution for each department.</p>
             <div class="impact"><span class="k mono">impact</span><span>With new dashboards, 20 to 40 staff hours saved each week</span></div>
@@ -551,7 +560,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </div></div>
         </li>
         <li class="build">
-          <button type="button" aria-expanded="false"><span class="n mono">c</span><h3>Cargo After COVID</h3><span class="where mono">Live app<span class="tog">+</span></span></button>
+          <button type="button" aria-expanded="false"><span class="n mono">d</span><h3>Cargo After COVID</h3><span class="where mono">Live app<span class="tog">+</span></span></button>
           <div class="body" hidden><div>
             <p>An interactive R Shiny app built on Bureau of Transportation Statistics data that tracks U.S. air cargo performance from 2003 to 2025. I wrote the transformations, KPIs, filters and trend views that turn two decades of federal transportation tables into something you can explore in a few clicks. July to December 2025.</p>
             <div class="impact"><span class="k mono">try it</span><a class="extlink" href="https://sidantap.shinyapps.io/CargoAfterCOVID/" target="_blank" rel="noopener">sidantap.shinyapps.io/CargoAfterCOVID</a></div>
@@ -559,7 +568,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </div></div>
         </li>
         <li class="build">
-          <button type="button" aria-expanded="false"><span class="n mono">d</span><h3>Pilot Master Training Schedule automation</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
+          <button type="button" aria-expanded="false"><span class="n mono">e</span><h3>Pilot Master Training Schedule automation</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
           <div class="body" hidden><div>
             <p>Conditional Power Automate flows that move each pilot through six training statuses and trigger the next approval, with curriculum rules like simulator timing windows at 150 and 30 days. Coordinated with Training Records, Scheduling and training staff.</p>
             <div class="impact"><span class="k mono">impact</span><span>Status changes happen on rules instead of reminders</span></div>
@@ -567,7 +576,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </div></div>
         </li>
         <li class="build">
-          <button type="button" aria-expanded="false"><span class="n mono">e</span><h3>Usage tracking and live dispatch assignments</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
+          <button type="button" aria-expanded="false"><span class="n mono">f</span><h3>Usage tracking and live dispatch assignments</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
           <div class="body" hidden><div>
             <p>Instrumented three internal tools to log timestamp, user, action, record ID and context, then built Power BI views of activity trends. Separately, embedded a Power App inside a Power BI report so dispatchers could change shift assignments and see the result immediately.</p>
             <div class="impact"><span class="k mono">impact</span><span>Real usage data for internal tools that had none</span></div>
@@ -575,7 +584,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </div></div>
         </li>
         <li class="build">
-          <button type="button" aria-expanded="false"><span class="n mono">f</span><h3>Clinical study experience map</h3><span class="where mono">Medpace<span class="tog">+</span></span></button>
+          <button type="button" aria-expanded="false"><span class="n mono">g</span><h3>Clinical study experience map</h3><span class="where mono">Medpace<span class="tog">+</span></span></button>
           <div class="body" hidden><div>
             <p>An interactive R Shiny map of where clinical studies run worldwide, combining several sources into one view for research and RFP proposal work.</p>
             <div class="impact"><span class="k mono">impact</span><span>Replaced repeated manual assembly of study experience</span></div>
@@ -583,7 +592,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </div></div>
         </li>
         <li class="build">
-          <button type="button" aria-expanded="false"><span class="n mono">g</span><h3>Emissions and regional profitability dashboards</h3><span class="where mono">Motus Freight<span class="tog">+</span></span></button>
+          <button type="button" aria-expanded="false"><span class="n mono">h</span><h3>Emissions and regional profitability dashboards</h3><span class="where mono">Motus Freight<span class="tog">+</span></span></button>
           <div class="body" hidden><div>
             <p>A Tableau CO2 dashboard with trend analysis and forecasting, customer profitability scorecards from P&amp;L data, and a regional view comparing gross profit across 4 regions and 49 states.</p>
             <div class="impact"><span class="k mono">impact</span><span>Contributed to 12.4% lower emissions and 15% higher profitability</span></div>
