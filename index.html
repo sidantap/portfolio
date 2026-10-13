@@ -218,6 +218,18 @@ section.s{padding-block:clamp(56px,7vw,88px);border-top:1px solid var(--line)}
 .impact{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
 .extlink{font-family:var(--mono);font-size:.82rem;color:var(--accent);text-underline-offset:3px;overflow-wrap:anywhere}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
+.faa{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:14px 16px;display:grid;gap:12px}
+.faa-head{color:var(--accent)}
+.faa-ctl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end}
+.faa-ctl label{display:grid;gap:4px;color:var(--faint)}
+.faa-ctl select,.faa-ctl input{font:.85rem var(--mono);width:7.5em;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg)}
+.faa-calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 16px;color:var(--muted)}
+.faa-calc b{color:var(--fg);font-weight:500}
+.faa-t{width:100%;border-collapse:collapse;font:.78rem var(--mono)}
+.faa-t th{text-align:left;color:var(--faint);font-weight:500;padding:6px 8px;border-bottom:1px solid var(--line)}
+.faa-t td{padding:6px 8px;border-bottom:1px solid var(--line)}
+.faa-t td.c{color:var(--accent)}
+.faa-note{margin:0;color:var(--faint)}
 .tag{font-family:var(--mono);font-size:.72rem;padding:4px 9px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
 @media (max-width:640px){.build>button{grid-template-columns:24px minmax(0,1fr)}.build .where{display:none}.build .body{grid-template-columns:24px minmax(0,1fr)}}
 .edu{display:grid;grid-template-columns:170px minmax(0,1fr);gap:6px 36px;margin-top:48px;padding-top:28px;border-top:1px solid var(--line)}
@@ -552,6 +564,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           <div class="body" hidden><div>
             <p>Replaced a third-party process with an in-house R Shiny app. It builds eligible pools from the master employee list, calculates quarterly targets with rollover, deduplicates against prior selections, and writes results, history and audit logs back to SharePoint. Users get Excel exports and compliance KPIs.</p>
             <div class="impact"><span class="k mono">impact</span><span>Covers every FAA-regulated employee and meets all FAA guidelines</span></div>
+            <div class="faa" id="faa">
+              <div class="faa-head mono"><span>try it · a from-scratch rebuild with 40 made-up employees</span></div>
+              <div class="faa-ctl">
+                <label class="mono">quarter <select id="faaQ"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
+                <label class="mono">drug % / yr <input id="faaD" type="number" min="0" max="100" value="25"></label>
+                <label class="mono">drug + alcohol % / yr <input id="faaC" type="number" min="0" max="100" value="10"></label>
+                <button class="btn primary" type="button" id="faaRun">Run selection</button>
+              </div>
+              <div class="faa-calc mono" id="faaCalc"></div>
+              <div class="tw"><table class="faa-t"><thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Test</th></tr></thead><tbody id="faaOut"></tbody></table></div>
+              <p class="faa-note mono" id="faaLog"></p>
+            </div>
             <div class="tags"><span class="tag">R Shiny</span><span class="tag">Microsoft Graph</span><span class="tag">Azure AD</span><span class="tag">OAuth 2.0</span><span class="tag">SharePoint</span></div>
           </div></div>
         </li>
@@ -1019,6 +1043,48 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     io.observe(document.getElementById('pipeline'));
   }
 })();
+
+  // FAA random testing selection: a from-scratch rebuild with made-up employees.
+  (function(){
+    var POS={ACD:'Aircraft Dispatcher',ACM:'Aircraft Maintenance',FCR:'Flight Crewmember',FIN:'Flight Instructor',GSC:'Ground Security Coordinator'};
+    var FIRST=['Ava','Ben','Cara','Dev','Eli','Fay','Gus','Hana','Ivan','Jo','Kai','Lena','Mo','Nia','Omar','Pia','Raj','Sky','Tara','Uma'];
+    var LAST=['Reyes','Okafor','Lind','Patel','Moreau','Kim','Novak','Silva','Brandt','Haas'];
+    var codes=Object.keys(POS), pool=[];
+    for(var i=0;i<40;i++) pool.push({id:'E'+(1001+i),name:FIRST[i%20]+' '+LAST[(i*7)%10],pos:codes[i%5===4&&i>20?2:i%5],active:i%9!==8});
+    var HEADCOUNT=[33,35,34,36];          // eligible headcount at each quarter's draw this year
+    var MISSED={2:[1,2],3:[0,1],4:[1,0]}; // last quarter: [drug+alcohol, drug-only] selected but not tested
+    function rng(seed){return function(){seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296;};}
+    function sample(arr,n,r){var a=arr.slice(),out=[];while(out.length<n&&a.length)out.push(a.splice(Math.floor(r()*a.length),1)[0]);return out;}
+    var $=function(id){return document.getElementById(id);};
+    var esc=function(t){return String(t).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+    function run(){
+      var q=+$('faaQ').value, dPct=+$('faaD').value||0, cPct=+$('faaC').value||0;
+      var elig=pool.filter(function(e){return e.active;}), cap=Math.floor(elig.length*.5);
+      var hc=HEADCOUNT.slice(0,q-1).concat([elig.length]), avg=hc.reduce(function(a,b){return a+b;},0)/hc.length;
+      var cGoal=Math.ceil(avg*cPct/100), dGoal=Math.ceil(avg*dPct/100);
+      var cBase=Math.ceil(cGoal/4), dBase=Math.ceil(dGoal/4), roll=MISSED[q]||[0,0];
+      var needC=Math.min(cBase+roll[0],cap);
+      var needD=Math.min(Math.max(dBase-cBase,0)+roll[1],cap);  // drug+alcohol tests already count toward the drug rate
+      var seed=Date.now()%100000, r=rng(seed);
+      // every position gets at least one person, then the rest is drawn from everyone left
+      var byPos={};elig.forEach(function(e){(byPos[e.pos]=byPos[e.pos]||[]).push(e);});
+      var onePer=Object.keys(byPos).map(function(p){return sample(byPos[p],1,r)[0];});
+      var combo=sample(onePer,Math.min(onePer.length,needC),r), drug=onePer.filter(function(e){return combo.indexOf(e)<0;});
+      var rest=elig.filter(function(e){return onePer.indexOf(e)<0;});
+      combo=combo.concat(sample(rest,Math.max(needC-combo.length,0),r));
+      rest=rest.filter(function(e){return combo.indexOf(e)<0;});
+      drug=drug.concat(sample(rest,Math.max(needD-drug.length,0),r));
+      var rows=combo.map(function(e){return [e,'drug + alcohol'];}).concat(drug.map(function(e){return [e,'drug only'];}));
+      rows.sort(function(a,b){return a[0].pos<b[0].pos?-1:a[0].pos>b[0].pos?1:0;});
+      $('faaCalc').innerHTML=[['eligible now',elig.length+' of 40 active'],['avg headcount YTD',avg.toFixed(1)],
+        ['annual goal',dGoal+' drug · '+cGoal+' d+a'],['per quarter',dBase+' drug · '+cBase+' d+a'],
+        ['carried over from Q'+(q-1||'–'),roll[1]+' drug · '+roll[0]+' d+a'],['drawn now',rows.length+' (cap '+cap+')']]
+        .map(function(k){return '<span>'+k[0]+'<br><b>'+k[1]+'</b></span>';}).join('');
+      $('faaOut').innerHTML=rows.map(function(x){var e=x[0];return '<tr><td>'+e.id+'</td><td>'+esc(e.name)+'</td><td>'+POS[e.pos]+'</td><td'+(x[1]==='drug only'?'':' class="c"')+'>'+x[1]+'</td></tr>';}).join('');
+      $('faaLog').textContent='audit log · Q'+q+' · seed '+seed+' · pool '+elig.length+' · '+combo.length+' drug + alcohol, '+drug.length+' drug only · every position covered, no one picked twice';
+    }
+    $('faaRun').addEventListener('click',run); run();
+  })();
 </script>
 </body>
 </html>
