@@ -75,6 +75,12 @@ h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
 .fig-head{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .fig-head .cap{color:var(--muted)}
 .fig-ctl{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.modes{display:flex;gap:4px;flex-wrap:wrap}
+.mode{font:.74rem var(--mono);padding:7px 11px;border:1px solid transparent;border-radius:4px;background:none;color:var(--muted);cursor:pointer}
+.mode[aria-selected="true"]{border-color:var(--line);background:var(--bg);color:var(--fg)}
+.mode[data-mode="live"]::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:7px;vertical-align:1px}
+.fig-cap{margin:0;padding:8px 16px;border-bottom:1px solid var(--line);color:var(--muted);background:var(--surface)}
+.fig-cap a{color:var(--accent)}
 .toggle{display:inline-flex;align-items:center;gap:8px;font:.74rem var(--mono);color:var(--muted);cursor:pointer;user-select:none}
 .toggle input{accent-color:var(--bad);width:15px;height:15px;margin:0;cursor:pointer}
 .runbar{display:flex;gap:6px 22px;flex-wrap:wrap;padding:9px 16px;border-bottom:1px solid var(--line);font:.72rem/1.5 var(--mono);color:var(--faint);background:var(--bg)}
@@ -315,12 +321,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
     <figure class="fig" id="pipeline" aria-labelledby="fig-cap">
       <div class="fig-head">
-        <span class="cap mono" id="fig-cap">fig. 01 · a nightly ELT run, modeled on the stack I work in (sample data, simplified code) · <a class="extlink" href="https://sidantap.github.io/nightly-311-pipeline/" target="_blank" rel="noopener">see the real one run nightly</a></span>
+        <div class="modes" role="tablist" aria-label="Which pipeline">
+          <button class="mode" type="button" role="tab" data-mode="live" id="modeLive" hidden>Live: latest real run</button>
+          <button class="mode" type="button" role="tab" data-mode="sim">Simulated: my work stack</button>
+        </div>
         <div class="fig-ctl">
-          <label class="toggle"><input type="checkbox" id="badNight"> simulate a bad night</label>
+          <label class="toggle" id="badWrap"><input type="checkbox" id="badNight"> simulate a bad night</label>
           <button class="btn primary" type="button" id="runBtn">Run pipeline</button>
         </div>
       </div>
+      <p class="cap mono fig-cap" id="fig-cap">fig. 01 · a nightly ELT run, modeled on the stack I work in (sample data, simplified code)</p>
       <div class="runbar" id="runbar"></div>
       <div class="dag-wrap"><svg class="dag" id="dag" viewBox="0 0 1148 312" role="group" aria-label="Pipeline graph. Select a step to inspect it."></svg></div>
       <div class="console">
@@ -861,7 +871,39 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   var dag=document.getElementById('dag'), logEl=document.getElementById('log'), inspEl=document.getElementById('inspect');
   var runbar=document.getElementById('runbar'), runBtn=document.getElementById('runBtn'), badEl=document.getElementById('badNight');
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var nodeEl={}, metricEl={}, edgeEl={}, sel='slv';
+  var nodeEl={}, metricEl={}, edgeEl={}, tEl={}, sEl={}, sel='slv', mode='sim', LIVE=null;
+  var REPO='https://github.com/sidantap/nightly-311-pipeline/blob/main/';
+  // The real pipeline, drawn on the same graph. Numbers come from its published data.json.
+  var LN={
+    sap:{t:'Cincinnati 311',s:'Socrata API'}, luc:{t:'NOAA weather',s:'CDO API · CVG'}, sp:{t:'NHTSA',s:'complaints file'},
+    adf:{t:'Ingest',s:'GitHub Actions'}, brz:{t:'Bronze',s:'DuckDB · raw.*'}, slv:{t:'Silver',s:'dbt · dedupe'},
+    dq:{t:'Quality gate',s:'dbt tests'}, qr:{t:'Quarantine',s:'held + reason'}, gld:{t:'Gold',s:'star schema'},
+    pbi:{t:'Dashboard',s:'GitHub Pages'}, sql:{t:'Classifier',s:'bge-small + logreg'}
+  };
+  var LINFO={
+    sap:{k:"source · Python",f:"pipeline/ingest_311.py",p:"Cincinnati 311 service requests, read incrementally on date_last_update with a two-day overlap, in 20,000-row pages with retries. Every version of a request lands in bronze as received.",
+      code:"# One indexed filter covers new and changed requests\nwhere = f\"date_last_update >= '{since.isoformat()}'\"\nparams = {\"$select\": \",\".join(COLUMNS), \"$where\": where,\n          \"$order\": \"sr_number\", \"$limit\": PAGE, \"$offset\": offset}\n# a slow or failing page is retried 4 times with backoff"},
+    luc:{k:"source · Python",f:"pipeline/ingest_weather.py",p:"Daily weather at the CVG airport station from NOAA. NOAA revises recent days, so every run re-reads a seven-day overlap and silver keeps the newest value.",
+      code:"STATION = \"GHCND:USW00093814\"  # CVG airport\nDATATYPES = [\"TMAX\", \"TMIN\", \"PRCP\", \"SNOW\", \"AWND\"]\nOVERLAP_DAYS = 7\n# CDO caps a request at 1,000 rows: walk 90-day windows and pages"},
+    sp:{k:"source · Python",f:"pipeline/ingest_nhtsa.py",p:"NHTSA republishes its vehicle complaints file daily. New rows since the watermark land in bronze. One complaint can have several rows, one per component.",
+      code:"df = download(today().year)\nadded = pd.to_datetime(df[\"date_added\"], format=\"%Y%m%d\")\ndf = df[added >= pd.Timestamp(since)]\nappend(con, \"raw.nhtsa_complaints\", df)"},
+    adf:{k:"orchestration · GitHub Actions",f:".github/workflows/nightly.yml",p:"A scheduled workflow restores the DuckDB warehouse from the last run, runs every step, saves the warehouse back as a release asset and redeploys the dashboard. A watermark only moves after its load commits, so a failed night is retried the next night.",
+      code:"on:\n  schedule:\n    - cron: \"17 7 * * *\"   # about 3 a.m. in Cincinnati\nsteps:\n  - run: gh release download warehouse ...\n  - run: python -m pipeline.run\n  - run: gh release upload warehouse ... --clobber"},
+    brz:{k:"bronze · DuckDB",f:"pipeline/warehouse.py",p:"Raw tables keep every row exactly as each source sent it, with a batch id and ingest time. Nothing is fixed here, so a strange number can always be traced back to what arrived.",
+      code:"def append(con, table, df):\n    tbl = pa.Table.from_pandas(df, preserve_index=False)\n    con.register(\"_incoming\", tbl)\n    con.execute(f\"insert into {table} by name select * from _incoming\")"},
+    slv:{k:"silver · dbt",f:"dbt/models/silver/svc_requests_checked.sql",p:"The latest version of each request wins, and each row gets a data quality verdict. Clean rows continue; rows that break a rule are routed to quarantine with the reason.",
+      code:"select *\nfrom {{ ref('stg_311') }}\nqualify row_number() over (\n    partition by sr_number\n    order by last_updated_at desc, _ingested_at desc\n) = 1"},
+    dq:{k:"validation · dbt tests",f:"dbt/models/gold/schema.yml",p:"Uniqueness, not-null, relationship, accepted-value and freshness tests run on every build. On its first run a relationship test caught a request created in 2017 that was still being updated this month.",
+      code:"- name: fct_service_requests\n  columns:\n    - name: sr_number\n      data_tests: [unique, not_null]\n    - name: created_date_key\n      data_tests:\n        - relationships: {to: ref('dim_date'), field: date_key}"},
+    qr:{k:"quarantine · dbt",f:"dbt/models/quarantine/svc_requests_quarantine.sql",p:"Requests held back with the rule they broke: closed before created, missing location, location outside the city. A warning test fires if more than 5% of rows end up here.",
+      code:"case\n  when closed_date < created_date then 'closed_before_created'\n  when latitude is null           then 'missing_location'\n  when latitude not between 38.9 and 39.4 then 'location_outside_city'\nend as dq_reason"},
+    gld:{k:"gold · star schema",f:"dbt/models/gold/fct_service_requests.sql",p:"One fact row per request keyed to date and request-type dimensions, plus a daily table that puts request volume next to that day's weather.",
+      code:"select r.sr_number, r.created_date as created_date_key,\n       t.request_type_key, r.status_group,\n       date_diff('day', r.created_date, r.closed_date) as days_to_close\nfrom {{ ref('svc_requests') }} r\njoin {{ ref('dim_request_type') }} t\n  on t.sr_type_desc = r.sr_type_desc"},
+    pbi:{k:"serve · GitHub Pages",f:"pipeline/export_site.py",p:"Each run writes its numbers to data.json and redeploys a static dashboard. This figure reads that same file.",
+      code:"\"kpis\": rows(con, \"\"\"select\n    count(*) filter (where created_date_key >= current_date - 30)\n      as requests_30d, ...\n  from gold.fct_service_requests\"\"\"),"},
+    sql:{k:"ai · open-source model",f:"ml/predict.py",p:"New NHTSA complaints are embedded with bge-small and classified into 13 vehicle components by a logistic regression. NHTSA's own tag is the answer key, so accuracy is re-measured every night on complaints the model has never seen.",
+      code:"proba = clf.predict_proba(embed(todo[\"description\"].tolist()))\nout = pd.DataFrame({\n    \"complaint_id\": todo[\"complaint_id\"],\n    \"predicted_group\": clf.classes_[proba.argmax(axis=1)],\n    \"confidence\": proba.max(axis=1).round(4)})"}
+  };
 
   COLS.forEach(function(c,i){var t=mk('text',{x:X0+i*PITCH+W/2,y:18,'text-anchor':'middle','class':'col'},dag);t.textContent=c;});
   E.forEach(function(e){
@@ -877,8 +919,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     var n=N[id], g=mk('g',{'class':'node',transform:'translate('+(X0+n.c*PITCH)+','+n.y+')',tabindex:'0',role:'button','aria-label':'Inspect '+n.t},dag);
     mk('rect',{'class':'box',width:W,height:H,rx:8},g);
     mk('rect',{'class':'lyr '+n.l,x:0,y:12,width:3,height:H-24,rx:1.5},g);
-    mk('text',{'class':'t',x:14,y:22},g).textContent=n.t;
-    mk('text',{'class':'s',x:14,y:37},g).textContent=n.s;
+    tEl[id]=mk('text',{'class':'t',x:14,y:22},g); tEl[id].textContent=n.t;
+    sEl[id]=mk('text',{'class':'s',x:14,y:37},g); sEl[id].textContent=n.s;
     metricEl[id]=mk('text',{'class':'m',x:14,y:52},g);
     mk('circle',{'class':'sd',cx:W-14,cy:16,r:4},g);
     g.addEventListener('click',function(){inspect(id);});
@@ -895,18 +937,28 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   function inspect(id){
     sel=id;
     Object.keys(nodeEl).forEach(function(k){nodeEl[k].classList.toggle('sel',k===id);});
-    var d=INFO[id];
-    inspEl.innerHTML='<span class="k mono">'+esc(d.k)+'</span><h3>'+esc(N[id].t)+'</h3><p>'+esc(d.p)+'</p><pre class="code"><code>'+hl(d.code)+'</code></pre>';
+    var d=mode==='live'?LINFO[id]:INFO[id], t=mode==='live'?LN[id].t:N[id].t;
+    inspEl.innerHTML='<span class="k mono">'+esc(d.k)+'</span><h3>'+esc(t)+'</h3><p>'+esc(d.p)+'</p><pre class="code"><code>'+hl(d.code)+'</code></pre>'+
+      (d.f?'<a class="extlink" href="'+REPO+d.f+'" target="_blank" rel="noopener">'+esc(d.f)+' on GitHub</a>':'');
   }
 
   var RS={status:'idle',in:'—',out:'—',held:'—'};
   function bar(){
+    if(mode==='live'&&LIVE){
+      var r=LIVE.runs[0]||{}, lc=RS.status==='running'?'s-run':RS.status==='idle'?'':(r.status==='succeeded'?'s-ok':'s-warn');
+      runbar.innerHTML='<span>status <b class="'+lc+'">'+esc(RS.status)+'</b></span><span>run <b>'+esc(r.run_id||'—')+'</b></span>'+
+        '<span>took <b>'+(r.seconds!=null?r.seconds+'s':'—')+'</b></span><span>held <b>'+RS.held+'</b></span>'+
+        '<span>data <b>'+esc(LIVE.generated_at)+'</b></span>'+
+        '<span class="hint"><a class="extlink" href="https://sidantap.github.io/nightly-311-pipeline/" target="_blank" rel="noopener">full dashboard</a></span>';
+      return;
+    }
     var cls=RS.status==='running'?'s-run':RS.status==='succeeded'?'s-ok':RS.status==='idle'?'':'s-warn';
     runbar.innerHTML='<span>status <b class="'+cls+'">'+esc(RS.status)+'</b></span><span>run <b>nightly_2026-10-13</b></span>'+
       '<span>rows in <b>'+RS.in+'</b></span><span>rows out <b>'+RS.out+'</b></span><span>held <b>'+RS.held+'</b></span><span>SLA <b>ready by 06:00</b></span>'+
       '<span class="hint"><span class="wide">click any step to inspect it</span><span class="narrow">swipe the graph · tap a step to inspect it</span></span>';
   }
-  function clk(s){function p(n){return (n<10?'0':'')+n;} return '02:'+p(Math.floor(s/60))+':'+p(s%60);}
+  var BASE=120; // minutes after midnight; the simulated run starts at 02:00
+  function clk(s){function p(n){return (n<10?'0':'')+n;} var t=BASE*60+s; return p(Math.floor(t/3600)%24)+':'+p(Math.floor(t/60)%60)+':'+p(t%60);}
   function log(sec,stage,msg,cls){
     var stg=(stage+'        ').slice(0,8);
     logEl.insertAdjacentHTML('beforeend','<span class="ts">'+clk(sec)+'</span>  <span class="stg">'+esc(stg)+'</span><span class="'+(cls||'')+'">'+esc(msg)+'</span>\n');
@@ -989,12 +1041,66 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     return p;
   }
 
+  function fmtN(n){return n==null?'—':Number(n).toLocaleString('en-US');}
+  function livePlan(d){
+    var p=[], r=d.runs[0]||{}, k=d.kpis||{}, live=(d.live_metrics||[]).slice(-1)[0], wm={}, held=d.quarantine_total||0;
+    (d.watermarks||[]).forEach(function(w){wm[w.source]=w.watermark;});
+    var ok=r.status==='succeeded', secs=r.seconds||20, at=function(f){return Math.round(secs*f);};
+    var hm=(r.started||'').slice(11,16).split(':'); if(hm.length===2) BASE=(+hm[0])*60+(+hm[1]);
+    function add(ms,fn){p.push([ms,fn]);}
+    add(0,function(){logEl.textContent='';RS.status='running';bar();log(0,'run',(r.run_id||'nightly run')+' · replaying the real run','hi');});
+    add(500,function(){
+      ['sap','luc','sp'].forEach(function(n){node(n,'running','reading…');edge(n+'>adf','flow');});
+      node('adf','running','3 sources');
+      log(1,'ingest','311 · Socrata, date_last_update > watermark');
+      log(1,'ingest','weather · NOAA CDO, 7-day overlap');
+      log(1,'ingest','complaints · NHTSA daily file');
+    });
+    add(1000,function(){
+      node('sap','ok','through '+(wm.cincy_311||'—').slice(5));node('luc','ok','through '+(wm.weather_daily||'—').slice(5));node('sp','ok','through '+(wm.nhtsa_complaints||'—').slice(5));
+      ['sap','luc','sp'].forEach(function(n){edge(n+'>adf','done');});
+      log(at(.3),'ingest','✓ watermarks: 311 '+(wm.cincy_311||'—')+' · weather '+(wm.weather_daily||'—')+' · complaints '+(wm.nhtsa_complaints||'—'),'ok');
+      node('adf','ok','landed');edge('adf>brz','flow');node('brz','running','appending…');
+    });
+    add(900,function(){
+      node('brz','ok','raw.* appended');edge('adf>brz','done');edge('brz>slv','flow');node('slv','running','dbt build…');
+      log(at(.35),'bronze','✓ every row kept as received, with batch id','ok');
+    });
+    add(1000,function(){
+      node('slv','ok',fmtN(k.requests_30d)+' req / 30d');edge('brz>slv','done');edge('slv>dq','flow');node('dq','running','testing…');
+      log(at(.5),'silver','✓ latest version per request, weather pivoted by day','ok');
+    });
+    add(1100,function(){
+      edge('slv>dq','done');RS.held=fmtN(held);bar();
+      if(held){node('dq','warn',fmtN(held)+' held');node('qr','fail',fmtN(held)+' rows');edge('dq>qr','bad');
+        (d.quarantine||[]).forEach(function(q){log(at(.55),'quality','held '+fmtN(q.rows)+' · '+q.dq_reason.replace(/_/g,' '),'warn');});}
+      else{node('dq','ok','all passed');log(at(.55),'quality','✓ all tests passed','ok');}
+    });
+    add(700,function(){edge('dq>gld','flow');node('gld','running','building…');log(at(.6),'gold','fct_service_requests, dim_request_type, dim_date');});
+    add(1000,function(){
+      node('gld','ok',fmtN(k.open_now)+' open now');edge('dq>gld','done');
+      edge('gld>pbi','flow');edge('gld>sql','flow');node('pbi','running','exporting…');node('sql','running','classifying…');
+      log(at(.7),'gold','✓ star schema rebuilt, tests passed','ok');
+    });
+    add(1000,function(){
+      node('sql','ok',live?Math.round(live.accuracy*1000)/10+'% live':'scored');edge('gld>sql','done');
+      if(live) log(at(.85),'ai','✓ '+fmtN(live.rows)+' recent complaints, '+(live.accuracy*100).toFixed(1)+'% accurate','ok');
+    });
+    add(800,function(){
+      node('pbi','ok','updated '+(r.started||'').slice(11,16));edge('gld>pbi','done');
+      log(secs,'serve','✓ data.json written, dashboard deployed','ok');
+      RS.status=ok?'succeeded':(r.status||'unknown');bar();
+      log(secs,'run',ok?'finished: all green in '+secs+'s':'run '+r.status+', see the dashboard',ok?'ok':'bad');
+    });
+    return p;
+  }
+
   var timer=null, running=false;
   function run(){
     if(running) return;
     running=true; clearTimeout(timer); reset();
     runBtn.disabled=true; runBtn.textContent='Running…';
-    var steps=plan(badEl.checked), i=0;
+    var steps=mode==='live'?livePlan(LIVE):plan(badEl.checked), i=0;
     (function next(){
       if(i>=steps.length){running=false;runBtn.disabled=false;runBtn.textContent='Run again';return;}
       var s=steps[i++];
@@ -1002,13 +1108,31 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     })();
   }
   runBtn.addEventListener('click',run);
+  var capEl=document.getElementById('fig-cap'), badWrap=document.getElementById('badWrap');
+  function setMode(m){
+    clearTimeout(timer); running=false; runBtn.disabled=false; runBtn.textContent=m==='live'?'Replay run':'Run pipeline';
+    mode=m; BASE=120;
+    document.querySelectorAll('.mode').forEach(function(b){b.setAttribute('aria-selected',b.dataset.mode===m);});
+    var labels=m==='live'?LN:N;
+    Object.keys(N).forEach(function(id){tEl[id].textContent=labels[id].t;sEl[id].textContent=labels[id].s;nodeEl[id].setAttribute('aria-label','Inspect '+labels[id].t);});
+    badWrap.hidden=m==='live';
+    capEl.innerHTML=m==='live'
+      ?'fig. 01 · <b>live</b> · the real open-source pipeline that runs nightly on GitHub Actions: Cincinnati 311, NOAA weather and NHTSA complaints. Numbers are from its latest run. <a href="https://github.com/sidantap/nightly-311-pipeline" target="_blank" rel="noopener">code</a>'
+      :'fig. 01 · a nightly ELT run, modeled on the stack I work in at the water district (sample data, simplified code)';
+    reset(); inspect(sel);
+    logEl.innerHTML='<span class="idle">-- '+(m==='live'?'press "Replay run" to step through the latest real run.':'waiting for 02:00. Press "Run pipeline" to start it now.')+'</span>\n';
+  }
+  document.querySelectorAll('.mode').forEach(function(b){b.addEventListener('click',function(){setMode(b.dataset.mode);run();});});
+  var ready=fetch('https://sidantap.github.io/nightly-311-pipeline/data.json',{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+    .then(function(d){if(!d.runs||!d.runs.length)return;LIVE=d;document.getElementById('modeLive').hidden=false;if(!running){setMode('live');}})
+    .catch(function(){}); // offline or blocked: the simulated view still works
   badEl.addEventListener('change',function(){if(!running) run();});
 
-  reset(); inspect(sel);
-  logEl.innerHTML='<span class="idle">-- waiting for 02:00. Press "Run pipeline" to start it now.</span>\n';
+  setMode('sim');
   if('IntersectionObserver' in window && !reduce){
     var io=new IntersectionObserver(function(en){
-      if(en[0].isIntersecting){io.disconnect();setTimeout(run,600);}
+      if(en[0].isIntersecting){io.disconnect();ready.then(function(){setTimeout(run,600);});}
     },{threshold:.35});
     io.observe(document.getElementById('pipeline'));
   }
