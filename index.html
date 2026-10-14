@@ -49,7 +49,7 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 .thread{position:fixed;left:0;top:0;width:2px;height:100%;z-index:30;background:var(--lily);transform-origin:top;transform:scaleY(var(--read,0))}
 
 /* the Pac-Man rail: a small maze on the right that plays out as you scroll */
-.game{position:fixed;z-index:15;right:18px;top:84px;bottom:22px;width:136px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.game{position:fixed;z-index:15;right:18px;top:84px;bottom:22px;width:156px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
 .game .hud{display:flex;justify-content:space-between;align-items:baseline;font:8px/1.4 "Press Start 2P",var(--mono);color:var(--muted);letter-spacing:.04em}
 .game .hud b{font-weight:400;color:var(--fg);font-size:9px}
 .game canvas{flex:1;min-height:0;width:100%;display:block}
@@ -59,12 +59,12 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 .game .msg.win{color:var(--accent)}
 :root[data-theme="light"] .game .msg{color:#b07c00}
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .game .msg{color:#b07c00}}
-@media (min-width:861px) and (max-width:1379px){main,footer,.bar{padding-right:170px}}
+@media (min-width:861px) and (max-width:1419px){main,footer,.bar{padding-right:190px}}
 @media (max-width:860px){
-  .game{left:0;right:0;top:auto;bottom:0;width:auto;height:76px;padding:8px 16px 10px;gap:6px;background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(6px)}
-  .game .msg{top:auto;bottom:22px}
-  body{padding-bottom:76px}
-  .scroll-hint{bottom:100px}
+  .game{left:0;right:0;top:auto;bottom:0;width:auto;height:112px;padding:8px 16px 10px;gap:6px;background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(6px)}
+  .game .msg{top:auto;bottom:40px}
+  body{padding-bottom:112px}
+  .scroll-hint{bottom:132px}
 }
 @media print{.game{display:none}}
 
@@ -320,119 +320,204 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   addEventListener('resize',update);
   update();
 
-  // ---- Pac-Man rail: scrolling moves Pac-Man through the maze, ahead of the ghosts ----
+  // ---- Pac-Man rail: a real maze and a real game, played once at load, replayed by scrolling ----
   (function(){
     var cv=document.getElementById('maze'), ctx=cv.getContext('2d'), scoreEl=document.getElementById('score'), msg=document.getElementById('msg');
-    var GHOSTS=[{c:'#e5534b',gap:28},{c:'#f19ac0',gap:46},{c:'#5fc9dc',gap:64},{c:'#f0a04b',gap:82}];
-    var W,H,dpr,segs,len,pellets,powers,START,wide;
-    var pacS=0,target=0,lastMove=0,creep=1,won=false,wonAt=0,best=0;
+    var GC=['#e5534b','#f19ac0','#5fc9dc','#f0a04b'];
+    var W,H,dpr,G,rec,N,jobId=0,worker=null,shown=0,target=0,won=false,wonAt=0;
 
-    // the maze is one corridor: a serpentine down the rail, or a straight run on phones
-    function build(){
-      dpr=Math.min(devicePixelRatio||1,2); W=cv.clientWidth; H=cv.clientHeight;
-      cv.width=W*dpr; cv.height=H*dpr; wide=W>H;
-      var m=13, pts=[];
-      if(wide){ pts=[[m,H/2],[W-m,H/2]]; }
-      else {
-        var rows=Math.max(2,Math.floor((H-2*m)/62)+1), step=(H-2*m)/(rows-1);
-        for(var r=0;r<rows;r++){var y=m+r*step; if(r%2){pts.push([W-m,y],[m,y]);}else{pts.push([m,y],[W-m,y]);}}
-      }
-      segs=[]; len=0;
-      for(var i=1;i<pts.length;i++){var a=pts[i-1],b=pts[i],l=Math.hypot(b[0]-a[0],b[1]-a[1]);segs.push({a:a,b:b,s:len,l:l});len+=l;}
-      START=wide?Math.min(110,len*.25):96;
-      pellets=[]; powers=[];
-      for(var s=START+14;s<len-4;s+=12) pellets.push(s);
-      [.3,.62,.86].forEach(function(f){var k=Math.round(f*(pellets.length-1));powers.push(pellets[k]);});
+    function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+    // a braided maze on a grid: a random spanning tree, extra loops, and no dead ends
+    function maze(cols,rows,sx,sy,m,seed){
+      var r=rng(seed), n=cols*rows, nodes=[], adj=[], has={};
+      for(var i=0;i<n;i++){nodes.push({x:m+(i%cols)*sx,y:m+Math.floor(i/cols)*sy});adj.push([]);}
+      function nb(i){var c=i%cols,o=[];if(c>0)o.push(i-1);if(c<cols-1)o.push(i+1);if(i>=cols)o.push(i-cols);if(i<n-cols)o.push(i+cols);return o;}
+      function link(a,b){var k=a<b?a+'-'+b:b+'-'+a;if(has[k])return;has[k]=1;adj[a].push(b);adj[b].push(a);}
+      var seen=[0],st=[0],vis={0:1};
+      while(st.length){var cur=st[st.length-1],opts=nb(cur).filter(function(j){return!vis[j];});
+        if(!opts.length){st.pop();continue;} var nx=opts[Math.floor(r()*opts.length)];vis[nx]=1;link(cur,nx);st.push(nx);}
+      for(i=0;i<n;i++) nb(i).forEach(function(j){if(j>i&&r()<.22)link(i,j);});
+      for(i=0;i<n;i++) if(adj[i].length<2){var o=nb(i).filter(function(j){return adj[i].indexOf(j)<0;});link(i,o[Math.floor(r()*o.length)]);}
+      var edges=Object.keys(has).map(function(k){var p=k.split('-');return[+p[0],+p[1]];});
+      return {nodes:nodes,adj:adj,edges:edges,cols:cols,rows:rows};
     }
-    function at(s){
-      s=Math.max(0,Math.min(len,s));
-      for(var i=0;i<segs.length;i++){var g=segs[i]; if(s<=g.s+g.l||i===segs.length-1){var t=(s-g.s)/g.l;
-        return {x:g.a[0]+(g.b[0]-g.a[0])*t,y:g.a[1]+(g.b[1]-g.a[1])*t,dx:(g.b[0]-g.a[0])/g.l,dy:(g.b[1]-g.a[1])/g.l};}}
+
+    function bfs(g,src,blocked){var d=new Array(g.nodes.length).fill(1e9),q=[];src.forEach(function(s){if(d[s]>0){d[s]=0;q.push(s);}});
+      for(var h=0;h<q.length;h++){var u=q[h];g.adj[u].forEach(function(v){if(d[v]>d[u]+1&&!(blocked&&blocked[v])){d[v]=d[u]+1;q.push(v);}});}return d;}
+
+    // play one game: Pac-Man hunts the nearest pellets and steers away from ghosts; ghosts chase in classic style
+    function play(g,seed,ghostSpeed,scat){
+      var r=rng(seed), nd=g.nodes, sp=1.6;
+      var key=function(a,b){return a<b?a+'-'+b:b+'-'+a;};
+      var pel=[], onEdge={}, onNode={};
+      g.edges.forEach(function(e){var a=nd[e[0]],b=nd[e[1]],L=Math.hypot(b.x-a.x,b.y-a.y),k=Math.max(1,Math.round(L/11)),list=[];
+        for(var j=1;j<k;j++){pel.push({x:a.x+(b.x-a.x)*j/k,y:a.y+(b.y-a.y)*j/k,e:key(e[0],e[1]),at:Infinity,big:false});list.push(pel.length-1);} onEdge[key(e[0],e[1])]=list;});
+      nd.forEach(function(p,i){pel.push({x:p.x,y:p.y,node:i,at:Infinity,big:false});onNode[i]=pel.length-1;});
+      var C=g.cols,R=g.rows,corner=[0,C-1,C*(R-1),C*R-1].concat(R>5?[C*Math.floor(R/2)]:[]);
+      corner.forEach(function(i){pel[onNode[i]].big=true;});
+      var left=pel.length, eatCount=new Array(nd.length).fill(0);
+      function food(i){if(pel[onNode[i]].at===Infinity)return true;for(var j=0;j<g.adj[i].length;j++){var l=onEdge[key(i,g.adj[i][j])];for(var q=0;q<l.length;q++)if(pel[l[q]].at===Infinity)return true;}return false;}
+      function elen(a,b){return Math.hypot(nd[b].x-nd[a].x,nd[b].y-nd[a].y);}
+      // shortest distances in pixels from several starting points; ok(v,d) can refuse a junction
+      function dij(src,ok,skip){var D=new Array(nd.length).fill(1e9),done=new Array(nd.length).fill(false);
+        src.forEach(function(x){if(x[1]<D[x[0]]&&(!ok||ok(x[0],x[1])))D[x[0]]=x[1];});
+        if(skip!=null)done[skip]=true;
+        for(;;){var u=-1,bd=1e9;for(var i=0;i<D.length;i++)if(!done[i]&&D[i]<bd){bd=D[i];u=i;} if(u<0)break; done[u]=true;
+          g.adj[u].forEach(function(v){var d=D[u]+elen(u,v);if(!done[v]&&d<D[v]&&(!ok||ok(v,d)))D[v]=d;});}
+        return D;}
+      function ent(a,b){return{a:a,b:b,d:0};}
+      function pos(t){var A=nd[t.a],B=nd[t.b],L=Math.hypot(B.x-A.x,B.y-A.y)||1,f=t.d/L;return{x:A.x+(B.x-A.x)*f,y:A.y+(B.y-A.y)*f,dx:(B.x-A.x)/L,dy:(B.y-A.y)/L,L:L};}
+      var mid=Math.floor(R/2)*C+Math.floor(C/2), home=[mid,mid-1>=0?mid-1:mid,mid+1<nd.length?mid+1:mid,mid];
+      var pstart=C*(R-1)+Math.floor(C/2);
+      var pac=ent(pstart,g.adj[pstart][0]);
+      var gh=home.map(function(h,i){return{t:ent(h,g.adj[h][0]),mode:'home',release:60+i*140,eyesTo:h,c:i,scaredT:0};});
+      var steps=[],fear=0,score=0,revCool=0,combo=200;
+      for(var s=0;s<30000&&left>0;s++){
+        // Pac-Man
+        var P=pos(pac);
+        if(revCool>0)revCool--;
+        // a ghost coming at him down the corridor makes him turn round, if behind is safer
+        function ahead(e){var L=pos(e).L,best=1e9;gh.forEach(function(q){if(q.mode!=='chase'&&q.mode!=='scatter')return;var Lq=pos(q.t).L,d=1e9;
+          if(q.t.a===e.b&&q.t.b===e.a)d=L-e.d-q.t.d; else if(q.t.b===e.b&&q.t.a!==e.a)d=L-e.d+Lq-q.t.d;
+          if(d<best)best=d;});return best;}
+        if(!revCool){var fwd=ahead(pac);if(fwd<34){var back={a:pac.b,b:pac.a,d:P.L-pac.d};if(ahead(back)>fwd+6){pac=back;revCool=10;P=pos(pac);}}}
+        pac.d+=sp;
+        if(pac.d>=P.L){
+          var at_=pac.b, over=pac.d-P.L, best=null, bs=Infinity;
+          // how soon any chasing ghost can reach each junction (ghosts are slower, so scale their distance up)
+          var src=[];gh.forEach(function(q){if(q.mode==='chase'||q.mode==='scatter'){var Lq=pos(q.t).L;src.push([q.t.b,(Lq-q.t.d)/ghostSpeed]);}else if(q.mode==='home')src.push([q.t.a,Math.max(0,q.release-s)*sp]);});
+          var gT=dij(src,null);
+          g.adj[at_].forEach(function(m){
+            var Lm=elen(at_,m), blocked=false;
+            gh.forEach(function(q){if((q.mode==='chase'||q.mode==='scatter')&&q.t.a===m&&q.t.b===at_)blocked=true;});
+            // only plan through junctions he reaches comfortably before any ghost
+            var pT=dij([[m,Lm]],function(v,d){return d+22<gT[v];},at_);
+            var lst=onEdge[key(at_,m)],ef=lst.some(function(i){return pel[i].at===Infinity;}), fd=1e9;
+            if(pT[m]<1e9){ if(ef) fd=0; else for(var v=0;v<nd.length;v++) if(pT[v]<fd&&food(v)) fd=pT[v]; }
+            var sc=blocked?1e7:pT[m]>=1e9?1e6-(gT[m]-Lm):fd>=1e9?5e5-Math.min(gT[m],1e4):fd+(m===pac.a?8:0)+r()*3;
+            if(fear>60) gh.forEach(function(q){if(q.mode==='scared'){var Q=pos(q.t);sc-=Math.max(0,120-Math.hypot(nd[m].x-Q.x,nd[m].y-Q.y))*.4;}});
+            if(sc<bs){bs=sc;best=m;}});
+          pac={a:at_,b:best,d:over};P=pos(pac);
+        }
+        // eat whatever is under him
+        var cand=onEdge[key(pac.a,pac.b)].concat([onNode[pac.a],onNode[pac.b]]);
+        cand.forEach(function(i){var p=pel[i];if(p.at===Infinity&&Math.abs(p.x-P.x)+Math.abs(p.y-P.y)<4){p.at=s;left--;score+=p.big?50:10;
+          if(p.big){fear=520;combo=200;gh.forEach(function(q){if(q.mode==='chase'||q.mode==='scatter'){q.mode='scared';var L=pos(q.t).L;q.t={a:q.t.b,b:q.t.a,d:L-q.t.d};}});}}});
+        if(fear>0){fear--; if(!fear) gh.forEach(function(q){if(q.mode==='scared')q.mode='chase';});}
+        // ghosts
+        var scatter=(s%900)<scat, died=false, blinky=pos(gh[0].t);
+        gh.forEach(function(q,i){
+          if(q.mode==='home'){if(s>=q.release)q.mode='chase';else return;}
+          var T=pos(q.t), v=q.mode==='eyes'?3:q.mode==='scared'?sp*.5:sp*ghostSpeed;
+          q.t.d+=v;
+          if(q.t.d>=T.L){
+            var at=q.t.b, over=q.t.d-T.L, prev=q.t.a, opts=g.adj[at].filter(function(m){return m!==prev;}); if(!opts.length)opts=[prev];
+            var tx,ty,pp=pos(pac);
+            if(q.mode==='eyes'){var dh=bfs(g,[q.eyesTo]);opts.sort(function(a,b){return dh[a]-dh[b];});if(at===q.eyesTo){q.mode='chase';}q.t={a:at,b:opts[0],d:over};return;}
+            if(q.mode==='scared'){q.t={a:at,b:opts[Math.floor(r()*opts.length)],d:over};return;}
+            if(scatter){var cn=nd[corner[i]];tx=cn.x;ty=cn.y;}
+            else if(i===0){tx=pp.x;ty=pp.y;}
+            else if(i===1){tx=pp.x+pp.dx*90;ty=pp.y+pp.dy*90;}
+            else if(i===2){tx=2*pp.x-blinky.x;ty=2*pp.y-blinky.y;}
+            else{var far=Math.hypot(pp.x-T.x,pp.y-T.y)>110;tx=far?pp.x:nd[corner[3]].x;ty=far?pp.y:nd[corner[3]].y;}
+            var bb=null,bd=1e9;opts.forEach(function(m){var d=Math.hypot(nd[m].x-tx,nd[m].y-ty)+r()*14;if(d<bd){bd=d;bb=m;}});
+            q.t={a:at,b:bb,d:over};
+          }
+        });
+        // contact
+        P=pos(pac);
+        gh.forEach(function(q){if(q.mode==='home'||q.mode==='eyes')return;var Q=pos(q.t);if(Math.hypot(Q.x-P.x,Q.y-P.y)<9){
+          if(q.mode==='scared'){q.mode='eyes';score+=combo;combo*=2;} else died=true;}});
+        if(died) return null;
+        var row=[P.x,P.y,Math.atan2(P.dy,P.dx),score];
+        gh.forEach(function(q,i){var Q=q.mode==='home'?{x:nd[home[i]].x+(i-1.5)*3,y:nd[home[i]].y,dx:0,dy:-1}:pos(q.t);
+          row.push(Q.x,Q.y,Q.dx,Q.dy,{home:0,chase:0,scatter:0,scared:fear<130&&Math.floor(fear/16)%2?3:1,eyes:2}[q.mode]);});
+        steps.push(row);
+      }
+      if(left>0) return null;
+      return {steps:steps,pel:pel};
+    }
+
+    // games get a little easier on each failed try until Pac-Man clears the board
+    function search(G){for(var t=0;t<40;t++){var lvl=t<10?[.8,450]:t<20?[.7,560]:[.6,700],res=play(G,100+t,lvl[0],lvl[1]);if(res)return res;}return null;}
+
+    function setup(){
+      dpr=Math.min(devicePixelRatio||1,2); W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr;
+      var wide=W>H, m=wide?10:12, cw=wide?15:19, gap=wide?24:30;
+      var cols=Math.max(3,Math.floor((W-2*m)/gap)+1), rows=Math.max(2,Math.floor((H-2*m)/gap)+1);
+      var sx=(W-2*m)/(cols-1), sy=(H-2*m)/(rows-1);
+      // one maze per screen size; the game is worked out in a background worker so scrolling never stalls
+      G=maze(cols,rows,sx,sy,m,11); G.cw=cw; G.r=wide?5:6.5;
+      rec=null; N=1; var job=++jobId;
+      function done(res){if(job!==jobId||!res)return;rec=res;N=res.steps.length;sync();shown=target;}
+      try{
+        if(worker) worker.terminate();
+        var code=[rng,bfs,play,search].map(String).join('\n')+'\nonmessage=function(e){postMessage(search(e.data));};';
+        worker=new Worker(URL.createObjectURL(new Blob([code],{type:'text/javascript'})));
+        worker.onmessage=function(e){done(e.data);};
+        worker.postMessage({nodes:G.nodes,adj:G.adj,edges:G.edges,cols:G.cols,rows:G.rows});
+      }catch(err){ setTimeout(function(){done(search(G));},0); }
     }
     function colors(){var cs=getComputedStyle(root);return{bg:cs.getPropertyValue('--bg').trim(),wall:cs.getPropertyValue('--accent').trim(),fg:cs.getPropertyValue('--fg').trim(),light:cs.colorScheme==='light'};}
-    function corridor(){ctx.beginPath();segs.forEach(function(g,i){if(!i)ctx.moveTo(g.a[0],g.a[1]);ctx.lineTo(g.b[0],g.b[1]);});}
 
-    function ghost(x,y,dx,dy,color,mode,t,flash){
-      var r=7.2;
-      if(mode!=='eyes'){
-        ctx.fillStyle=mode==='scared'?(flash?'#f2f2f2':'#2b44d6'):color;
+    function ghost(x,y,dx,dy,color,mode,t,r){
+      if(mode!==2){
+        ctx.fillStyle=mode===1?'#2b44d6':mode===3?'#f2f2f2':color;
         ctx.beginPath(); ctx.arc(x,y-1,r,Math.PI,0); ctx.lineTo(x+r,y+r-1);
-        var w=reduce?0:Math.floor(t/140)%2, n=4;
-        for(var k=0;k<n;k++){var x1=x+r-(k+.5)*(2*r/n), x2=x+r-(k+1)*(2*r/n); ctx.lineTo(x1,y+r-(w?3:1.5)-1); ctx.lineTo(x2,y+r-1);}
+        var w=reduce?0:Math.floor(t/140)%2;
+        for(var k=0;k<4;k++){ctx.lineTo(x+r-(k+.5)*(r/2),y+r-(w?3:1.5)-1);ctx.lineTo(x+r-(k+1)*(r/2),y+r-1);}
         ctx.closePath(); ctx.fill();
       }
-      if(mode==='scared'){
-        ctx.fillStyle=flash?'#e5534b':'#ffd7b5';
-        ctx.fillRect(x-3.4,y-3,2,2); ctx.fillRect(x+1.4,y-3,2,2);
-        ctx.fillRect(x-4,y+2.2,8,1.2); return;
-      }
-      [-2.8,2.8].forEach(function(o){
-        ctx.fillStyle='#fff'; ctx.beginPath(); ctx.ellipse(x+o,y-2.2,2.3,2.9,0,0,7); ctx.fill();
-        ctx.fillStyle='#2b44d6'; ctx.beginPath(); ctx.arc(x+o+dx*1.2,y-2.2+dy*1.4,1.25,0,7); ctx.fill();
+      if(mode===1||mode===3){ctx.fillStyle=mode===3?'#e5534b':'#ffd7b5';ctx.fillRect(x-r*.47,y-r*.42,2,2);ctx.fillRect(x+r*.2,y-r*.42,2,2);ctx.fillRect(x-r*.55,y+r*.3,r*1.1,1.2);return;}
+      [-r*.38,r*.38].forEach(function(o){
+        ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(x+o,y-r*.3,r*.32,r*.4,0,0,7);ctx.fill();
+        ctx.fillStyle='#2b44d6';ctx.beginPath();ctx.arc(x+o+dx*1.1,y-r*.3+dy*1.3,r*.17,0,7);ctx.fill();
       });
     }
 
+    function walls(C,flash){
+      ctx.lineCap='round'; ctx.lineJoin='round';
+      function corr(){ctx.beginPath();G.edges.forEach(function(e){var a=G.nodes[e[0]],b=G.nodes[e[1]];ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);});}
+      corr(); ctx.strokeStyle=flash?C.fg:C.wall; ctx.lineWidth=G.cw+4; ctx.stroke();
+      corr(); ctx.strokeStyle=C.bg; ctx.lineWidth=G.cw; ctx.stroke();
+    }
     function frame(t){
       var C=colors();
       ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
-      // ease Pac-Man towards where the scroll says he should be
-      var prev=pacS; pacS=reduce?target:pacS+(target-pacS)*.16; if(Math.abs(target-pacS)<.05) pacS=target;
-      var moving=Math.abs(pacS-prev)>.08; if(moving) lastMove=t;
-      // stand still too long and the ghosts start closing in
-      creep=reduce?1:(t-lastMove>2200&&!won?Math.max(.3,creep-.004):Math.min(1,creep+.03));
+      if(!rec){walls(C,false);msg.classList.add('show');msg.firstChild.textContent='READY!';requestAnimationFrame(frame);return;}
+      shown=reduce?target:shown+(target-shown)*.14; if(Math.abs(target-shown)<.3) shown=target;
+      var f=Math.max(0,Math.min(N-1,shown)), i=Math.floor(f), u=f-i, A=rec.steps[i], B=rec.steps[Math.min(N-1,i+1)];
+      function lerp(k){return Math.abs(B[k]-A[k])>20?A[k]:A[k]+(B[k]-A[k])*u;}
 
-      // walls: a thick line in the wall colour with a thinner background line inside it
+      var end=target>=N-1&&N>1; if(end&&!won){won=true;wonAt=t;} if(!end) won=false;
       var flashWalls=won&&!reduce&&t-wonAt<2400&&Math.floor((t-wonAt)/300)%2===0;
-      ctx.lineJoin='round'; ctx.lineCap='round';
-      corridor(); ctx.strokeStyle=flashWalls?C.fg:C.wall; ctx.lineWidth=25; ctx.stroke();
-      corridor(); ctx.strokeStyle=C.bg; ctx.lineWidth=21; ctx.stroke();
+      walls(C,flashWalls);
 
-      // pellets ahead of Pac-Man; the big ones blink
-      var eaten=0, powerEaten=0, fear=null;
-      pellets.forEach(function(s){
-        var big=powers.indexOf(s)>-1;
-        if(s<=pacS+3){eaten++; if(big){powerEaten++; fear=s;} return;}
-        if(big&&!reduce&&Math.floor(t/260)%2) return;
-        var p=at(s); ctx.fillStyle=C.light?'#a0602e':'#f3c9a4';
-        ctx.beginPath(); ctx.arc(p.x,p.y,big?4.4:1.7,0,7); ctx.fill();
-      });
+      var blink=!reduce&&Math.floor(t/260)%2;
+      ctx.fillStyle=C.light?'#a0602e':'#f3c9a4';
+      rec.pel.forEach(function(p){if(p.at<=f)return;if(p.big&&blink)return;ctx.beginPath();ctx.arc(p.x,p.y,p.big?G.r*.62:1.5,0,7);ctx.fill();});
 
-      // ghosts trail behind; after a power pellet they turn blue and fall back
-      var span=len*.16, scared=fear!==null&&pacS-fear<span, flash=scared&&pacS-fear>span*.7&&Math.floor(t/180)%2;
-      if(!won||t-wonAt<2400) GHOSTS.forEach(function(g,i){
-        var wob=reduce?0:Math.sin(t/600+i*1.7)*4;
-        var gs=Math.max(i*3,pacS-(g.gap+wob)*creep-(scared?26:0));
-        if(pacS<=START+.5) gs=START-g.gap+4;
-        var p=at(gs);
-        if(won){ctx.globalAlpha=Math.max(0,1-(t-wonAt)/2400);}
-        ghost(p.x,p.y,p.dx,p.dy,g.c,won?'eyes':scared?'scared':'chase',t+i*70,flash);
+      if(!won||t-wonAt<2000) for(var g=0;g<4&&A.length>4;g++){
+        var o=4+g*5; if(won) ctx.globalAlpha=Math.max(0,1-(t-wonAt)/2000);
+        ghost(lerp(o),lerp(o+1),A[o+2],A[o+3],GC[g],won?2:A[o+4],t+g*70,G.r);
         ctx.globalAlpha=1;
-      });
-
-      // Pac-Man: chomps while moving, faces the way the corridor runs
-      var pp=at(pacS), ang=Math.atan2(pp.dy,pp.dx), mouth=reduce?.3:moving||won?.05+.32*Math.abs(Math.sin(t/70)):.22;
+      }
+      var ang=A[2], chomp=reduce?.3:.05+.33*Math.abs(Math.sin(f*.35));
       ctx.fillStyle=C.light?'#e0a100':'#f4c430';
-      ctx.beginPath(); ctx.moveTo(pp.x,pp.y); ctx.arc(pp.x,pp.y,7.6,ang+mouth,ang+Math.PI*2-mouth); ctx.closePath(); ctx.fill();
+      var px=lerp(0),py=lerp(1);
+      ctx.beginPath();ctx.moveTo(px,py);ctx.arc(px,py,G.r+1,ang+chomp,ang+Math.PI*2-chomp);ctx.closePath();ctx.fill();
 
-      // score, READY! and the win
-      var all=eaten===pellets.length;
-      if(all&&!won){won=true;wonAt=t;} if(!all&&won){won=false;}
-      var score=eaten*10+powerEaten*40+(won?3000:0); best=Math.max(best,score);
-      scoreEl.textContent=('0000'+score).slice(-5);
-      var ready=target<=START+.5;
+      scoreEl.textContent=('0000'+(f<.5?0:A[3]+(won?1000:0))).slice(-5);
+      var ready=target<1;
       msg.classList.toggle('show',ready||won); msg.classList.toggle('win',won);
       msg.firstChild.textContent=won?'YOU WIN!':'READY!';
-      if(!reduce||moving) requestAnimationFrame(frame);
+      requestAnimationFrame(frame);
     }
-    function sync(){
-      var max=document.body.scrollHeight-innerHeight, p=max>0?scrollY/max:0;
-      if(p>.985) p=1;
-      target=START+p*(len-START-2);
-      if(reduce) requestAnimationFrame(frame);
-    }
-    build(); sync(); pacS=target; lastMove=performance.now();
+    function sync(){var max=document.body.scrollHeight-innerHeight,p=max>0?scrollY/max:0;if(p>.985)p=1;target=p*(N-1);}
+    setup(); sync(); shown=target;
     addEventListener('scroll',sync,{passive:true});
-    addEventListener('resize',function(){var f=(pacS-START)/(len-START);build();sync();pacS=START+f*(len-START);});
+    var rt; addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){var w=cv.clientWidth,h=cv.clientHeight;if(w!==W||h!==H){setup();sync();shown=target;}},150);});
     requestAnimationFrame(frame);
   })();
 
