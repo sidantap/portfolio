@@ -4,95 +4,92 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sidanta Parajuli</title>
-<meta name="description" content="Sidanta Parajuli, data engineer and analyst in Cincinnati. Scroll for the story, the work, and a link to the full portfolio.">
+<meta name="description" content="Sidanta Parajuli, data engineer and analyst in Cincinnati. Scroll for the story and the work, then open the full portfolio.">
+<meta name="theme-color" content="#080506">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<script>try{var t=localStorage.getItem('sp-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Same palette and type as the full portfolio, plus one deep red for the spider lily. */
+/* Red spider lily at night: near-black, deep crimson, warm off-white text.
+   Type matches the full portfolio (Fraunces, Instrument Sans, JetBrains Mono). */
 :root{
-  --bg:#1c1915; --surface:#24201b; --line:#3a342c; --fg:#eee9df; --muted:#b2aa9c; --faint:#857d70;
-  --accent:#86bfdc; --lily:#b5443a;
+  --bg:#080506; --line:#2a1a1c; --fg:#f1e7e4; --muted:#ad9a95; --faint:#76615d;
+  --red:#d11f35; --red-hi:#ff4d5e; --red-deep:#5c0a14;
   --display:"Fraunces",Georgia,serif; --body:"Instrument Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
   color-scheme:dark;
 }
-@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
-  --bg:#eeebe4; --surface:#e5e1d8; --line:#cdc6b8; --fg:#1d1a16; --muted:#565046; --faint:#7d7568;
-  --accent:#1f6a8e; --lily:#9e2f27; color-scheme:light}}
-:root[data-theme="light"]{
-  --bg:#eeebe4; --surface:#e5e1d8; --line:#cdc6b8; --fg:#1d1a16; --muted:#565046; --faint:#7d7568;
-  --accent:#1f6a8e; --lily:#9e2f27; color-scheme:light}
-
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 1.0625rem/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+:focus-visible{outline:2px solid var(--red-hi);outline-offset:3px}
 .wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
 .mono{font-family:var(--mono);font-size:.75rem;letter-spacing:.02em}
 h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02em;text-wrap:balance}
 
-/* top bar */
-.bar{position:fixed;inset:0 0 auto;z-index:20;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
-.bar.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);border-bottom-color:var(--line);backdrop-filter:blur(6px)}
-.bar .wrap{display:flex;justify-content:space-between;align-items:center;height:64px;gap:16px}
+/* atmosphere: red mist that drifts, plus embers on a canvas */
+.mist{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.mist i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;animation:drift 26s ease-in-out infinite alternate}
+.mist i:nth-child(1){width:60vw;height:60vw;left:20vw;top:10vh;background:radial-gradient(#7a0d1b,transparent 70%)}
+.mist i:nth-child(2){width:45vw;height:45vw;left:-10vw;top:55vh;background:radial-gradient(#4a0710,transparent 70%);animation-duration:34s}
+.mist i:nth-child(3){width:40vw;height:40vw;right:-12vw;top:-10vh;background:radial-gradient(#5c0a14,transparent 70%);animation-duration:30s}
+@keyframes drift{to{transform:translate(4vw,-3vh) scale(1.08)}}
+#embers{position:fixed;inset:0;z-index:1;pointer-events:none}
+main,footer,.bar{position:relative;z-index:2}
+
+/* top bar: name and one way into the portfolio */
+.bar{position:fixed;inset:0 0 auto;z-index:20;transition:background .4s}
+.bar.solid{background:linear-gradient(#080506f2,#080506cc 70%,transparent)}
+.bar .wrap{display:flex;justify-content:space-between;align-items:center;height:68px}
 .name{font-family:var(--display);font-size:1.15rem;text-decoration:none}
-.bar nav{display:flex;align-items:center;gap:clamp(12px,2.5vw,28px);font-size:.95rem}
-.bar nav a{text-decoration:none;color:var(--muted)}
-.bar nav a:hover{color:var(--fg)}
-.bar nav a.cta{color:var(--fg);border:1px solid var(--line);padding:7px 14px;border-radius:8px}
-.theme{background:none;border:1px solid var(--line);color:var(--fg);width:34px;height:34px;border-radius:8px;cursor:pointer;display:grid;place-items:center}
-@media (max-width:560px){.bar nav .hide-sm{display:none}}
+.go-portfolio{font-family:var(--mono);font-size:.8rem;text-decoration:none;padding:9px 16px;border:1px solid #5c1a22;border-radius:999px;transition:border-color .3s,background .3s}
+.go-portfolio:hover{border-color:var(--red-hi);background:#d11f3522}
 
-/* reading progress: a single thread of lily red down the left edge */
-.thread{position:fixed;left:0;top:0;width:2px;height:100%;z-index:30;background:var(--lily);transform-origin:top;transform:scaleY(var(--read,0))}
-
-/* pinned chapters: tall outer section, sticky inner stage */
+/* pinned chapters */
 .pin{position:relative}
 .stage{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
 .chap{color:var(--faint);display:block;margin-bottom:22px}
-[data-at]{opacity:.08;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+[data-at]{opacity:.06;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
 [data-at].on{opacity:1;transform:none}
 
-/* hero */
-.hero h1{font-size:clamp(2.6rem,7vw,5.6rem);line-height:1.02;max-width:12ch}
-.hero .lead{color:var(--muted);font-size:clamp(1.05rem,1.6vw,1.25rem);max-width:46ch;margin:28px 0 0}
-.hero .meta{display:flex;gap:10px 24px;flex-wrap:wrap;color:var(--faint);margin-top:36px}
-.scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:8px}
-.scroll-hint i{display:block;width:1px;height:38px;background:linear-gradient(var(--faint),transparent)}
-.lily{position:absolute;right:max(-60px,calc(50% - 640px));top:6vh;width:min(46vw,460px);height:auto;pointer-events:none}
-.lily path{fill:none;stroke:var(--lily);stroke-width:1.4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--draw,0))}
-.lily circle{fill:var(--lily);opacity:var(--draw,0)}
-.lily .stem{stroke:var(--faint);opacity:.6}
-@media (max-width:760px){.lily{width:62vw;right:-18vw;top:auto;bottom:12vh;opacity:.55}}
+/* hero: the lily, centred, with the introduction beneath it */
+.hero .stage{flex-direction:column;justify-content:center}
+.lily{width:min(78vw,620px);height:auto;display:block;margin-top:-4vh;overflow:visible}
+.lily .stamen{fill:none;stroke:url(#stamenGrad);stroke-width:1.1;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
+.lily .anther{fill:#ffb1b7}
+.lily .stem{fill:none;stroke:url(#stemGrad);stroke-width:5;stroke-linecap:round}
+.hero-text{text-align:center;margin-top:-6vh;padding:0 18px;transition:opacity .2s}
+.hero h1{font-size:clamp(2.2rem,5.6vw,4.4rem);line-height:1.04;text-shadow:0 2px 30px #000}
+.hero .lead{color:var(--muted);font-size:clamp(1rem,1.5vw,1.15rem);max-width:44ch;margin:18px auto 0}
+.scroll-hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-hint i{display:block;width:1px;height:36px;background:linear-gradient(var(--red),transparent)}
+@media (max-width:640px){.lily{width:96vw;margin-top:-2vh}.hero-text{margin-top:-2vh}}
 
 /* story */
 .story .lines{display:grid;gap:2px 48px;grid-template-columns:repeat(2,max-content)}
-@media (max-width:760px){.story .lines{grid-template-columns:1fr}}
 .story .place{font-family:var(--display);font-size:clamp(1.9rem,4.4vw,3.4rem);line-height:1.12;font-weight:300}
 .story .place em{font-style:italic;color:var(--muted)}
 .story .turn{font-family:var(--display);font-size:clamp(1.25rem,2.3vw,1.8rem);line-height:1.3;max-width:34ch;margin-top:28px}
-.story .turn b{font-weight:400;color:var(--accent)}
+.story .turn b{font-weight:400;color:var(--red-hi)}
+@media (max-width:760px){.story .lines{grid-template-columns:1fr}}
 
 /* pipeline */
 .build h2{font-size:clamp(1.9rem,4vw,3rem);line-height:1.1;max-width:20ch}
 .build .sub{color:var(--muted);max-width:56ch;margin:16px 0 40px}
 .steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:relative}
 .steps::before{content:"";position:absolute;left:0;right:0;top:9px;height:1px;background:var(--line)}
-.steps::after{content:"";position:absolute;left:0;top:9px;height:1px;background:var(--accent);width:calc(var(--p,0) * 100%)}
+.steps::after{content:"";position:absolute;left:0;top:9px;height:1px;background:var(--red);box-shadow:0 0 10px var(--red);width:calc(var(--p,0) * 100%)}
 .step{padding:30px 18px 0 0;position:relative}
-.step::before{content:"";position:absolute;top:4px;left:0;width:11px;height:11px;border-radius:50%;background:var(--bg);border:1.5px solid var(--line);transition:background .4s,border-color .4s}
-.step.on::before{background:var(--accent);border-color:var(--accent)}
+.step::before{content:"";position:absolute;top:4px;left:0;width:11px;height:11px;border-radius:50%;background:var(--bg);border:1.5px solid var(--line);transition:all .4s}
+.step.on::before{background:var(--red);border-color:var(--red-hi);box-shadow:0 0 12px var(--red)}
 .step b{display:block;font-family:var(--display);font-weight:400;font-size:1.3rem}
 .step p{margin:8px 0 0;color:var(--muted);font-size:.95rem}
-.step .live{display:block;margin-top:12px;color:var(--accent)}
+.step .live{display:block;margin-top:12px;color:var(--red-hi)}
 @media (max-width:760px){
   .steps{grid-template-columns:1fr;gap:14px;padding-left:22px}
   .steps::before{left:5px;right:auto;top:0;width:1px;height:100%}
   .steps::after{left:5px;top:0;width:1px;height:calc(var(--p,0) * 100%)}
-  .step{padding:0}.step::before{left:-22px;top:6px}
-  .step p{font-size:.9rem}
+  .step{padding:0}.step::before{left:-22px;top:6px}.step p{font-size:.9rem}
 }
 
 /* work */
@@ -106,7 +103,7 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 .row h3{font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.15;transition:color .25s}
 .row p{margin:8px 0 0;color:var(--muted);max-width:60ch}
 .row .go{color:var(--faint);white-space:nowrap;transition:color .25s}
-.row:hover h3,.row:hover .go{color:var(--accent)}
+a.row:hover h3,a.row:hover .go{color:var(--red-hi)}
 @media (max-width:700px){.row{grid-template-columns:1fr}.row .go{justify-self:start}}
 
 /* numbers */
@@ -119,71 +116,71 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 .figs .src{display:block;margin-top:6px;color:var(--faint)}
 @media (max-width:760px){.figs{grid-template-columns:1fr 1fr}.figs>div:nth-child(3){border-left:0;padding-left:0}.figs>div:nth-child(n+3){border-top:1px solid var(--line);margin-top:22px}}
 
-/* closing */
-.close{border-top:1px solid var(--line);padding:clamp(90px,14vw,170px) 0 70px;position:relative;overflow:hidden}
-.close h2{font-size:clamp(2.2rem,5.6vw,4.4rem);line-height:1.04;max-width:14ch}
-.close p{color:var(--muted);max-width:48ch;margin:22px 0 0}
-.close .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:40px}
-.btn{font-family:var(--mono);font-size:.82rem;text-decoration:none;padding:14px 20px;border:1px solid var(--line);border-radius:6px;background:none;color:var(--fg);cursor:pointer}
-.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg);font-size:.9rem;padding:16px 26px}
-.btn:hover{border-color:var(--accent)}
-.close .lily{top:auto;bottom:-40px;width:min(38vw,360px);right:max(-40px,calc(50% - 600px))}
-footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--faint)}
+/* closing: one door to the portfolio */
+.close{padding:clamp(90px,14vw,160px) 0 80px;text-align:center}
+.close h2{font-size:clamp(2.2rem,5.6vw,4.4rem);line-height:1.04;max-width:16ch;margin:0 auto}
+.close p{color:var(--muted);max-width:46ch;margin:20px auto 0}
+.enter{display:inline-flex;align-items:center;gap:12px;margin-top:40px;font-family:var(--mono);font-size:.95rem;text-decoration:none;padding:18px 30px;border-radius:999px;color:#fff;background:linear-gradient(#d11f35,#9e1426);box-shadow:0 0 0 1px #ff4d5e55,0 10px 40px -10px #d11f35;transition:box-shadow .3s,transform .3s}
+.enter:hover{transform:translateY(-2px);box-shadow:0 0 0 1px #ff4d5e,0 14px 50px -8px #ff4d5e}
+.contact{margin-top:28px;color:var(--faint);display:flex;justify-content:center;gap:10px 22px;flex-wrap:wrap}
+.contact a{text-decoration:none;color:var(--muted)}
+.contact a:hover{color:var(--fg)}
+footer{border-top:1px solid var(--line);padding:24px 0 36px;color:var(--faint)}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
+  .mist i{animation:none}#embers{display:none}
   .pin{height:auto!important}.stage{position:relative;height:auto;min-height:100vh;padding:100px 0}
   [data-at],.row{opacity:1;transform:none;transition:none}
-  .lily{--draw:1!important}
-  .steps{--p:1!important}.step::before{background:var(--accent);border-color:var(--accent)}
+  .steps{--p:1!important}
+  .step::before{background:var(--red);border-color:var(--red-hi)}
 }
 </style>
 </head>
 <body>
-<div class="thread" aria-hidden="true"></div>
+<div class="mist" aria-hidden="true"><i></i><i></i><i></i></div>
+<canvas id="embers" aria-hidden="true"></canvas>
 
 <header class="bar" id="bar">
   <div class="wrap">
     <a class="name" href="#top">Sidanta Parajuli</a>
-    <nav aria-label="Main">
-      <a class="hide-sm" href="#work">Work</a>
-      <a class="hide-sm" href="portfolio.html#resume">Résumé</a>
-      <a class="cta" href="portfolio.html">Full portfolio</a>
-      <button class="theme" id="theme" type="button" aria-label="Switch color theme">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      </button>
-    </nav>
+    <a class="go-portfolio" href="portfolio.html">Portfolio</a>
   </div>
 </header>
 
 <main id="top">
 
-  <!-- 1. who -->
-  <section class="pin hero" id="hero" style="height:170vh">
+  <!-- 1. the bloom -->
+  <section class="pin hero" id="hero" style="height:190vh">
     <div class="stage">
-      <svg class="lily" id="lily1" viewBox="0 0 300 430" aria-hidden="true">
-        <path class="stem" pathLength="1" d="M150 156 C153 236 145 322 158 430"/>
-        <path pathLength="1" d="M150 150 C121 140 96 120 91 96 C89 86 99 83 105 91"/>
-        <path pathLength="1" d="M150 150 C179 140 204 120 209 96 C211 86 201 83 195 91"/>
-        <path pathLength="1" d="M150 150 C115 155 86 160 71 145 C63 136 71 128 79 134"/>
-        <path pathLength="1" d="M150 150 C185 155 214 160 229 145 C237 136 229 128 221 134"/>
-        <path pathLength="1" d="M150 150 C131 170 116 190 113 210 C112 220 121 222 125 214"/>
-        <path pathLength="1" d="M150 150 C169 170 184 190 187 210 C188 220 179 222 175 214"/>
-        <path pathLength="1" d="M150 150 C140 110 120 70 95 40"/>
-        <path pathLength="1" d="M150 150 C150 105 145 60 140 22"/>
-        <path pathLength="1" d="M150 150 C158 105 170 62 189 28"/>
-        <path pathLength="1" d="M150 150 C170 115 200 85 236 64"/>
-        <path pathLength="1" d="M150 150 C128 118 95 95 58 82"/>
-        <path pathLength="1" d="M150 150 C176 128 215 120 257 118"/>
-        <circle cx="95" cy="40" r="2.6"/><circle cx="140" cy="22" r="2.6"/><circle cx="189" cy="28" r="2.6"/>
-        <circle cx="236" cy="64" r="2.6"/><circle cx="58" cy="82" r="2.6"/><circle cx="257" cy="118" r="2.6"/>
+      <svg class="lily" id="lily" viewBox="-300 -330 600 560" aria-hidden="true">
+        <defs>
+          <radialGradient id="petalGrad" cx="0" cy="0" r="150" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#4a0610"/><stop offset=".35" stop-color="#a8122a"/><stop offset=".7" stop-color="#e81f38"/><stop offset="1" stop-color="#ff5a69"/>
+          </radialGradient>
+          <linearGradient id="stamenGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#a3132a"/><stop offset="1" stop-color="#ff6874"/>
+          </linearGradient>
+          <linearGradient id="stemGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#8f1124"/><stop offset="1" stop-color="#2a040b" stop-opacity="0"/>
+          </linearGradient>
+          <radialGradient id="haloGrad"><stop offset="0" stop-color="#ff2a40" stop-opacity=".5"/><stop offset=".45" stop-color="#9e1426" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="bloomBlur" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="16"/></filter>
+        </defs>
+        <circle cx="0" cy="-40" r="260" fill="url(#haloGrad)" id="halo"/>
+        <path class="stem" d="M0 -30 C5 60 -4 140 2 230"/>
+        <use href="#head" filter="url(#bloomBlur)" opacity=".75"/>
+        <g id="head" transform="translate(0 -40)" filter="url(#glow)"><g id="stamens"></g><g id="petals"></g></g>
       </svg>
-      <div class="wrap" style="width:100%">
+      <div class="hero-text" id="heroText">
         <span class="chap mono">Data engineer and analyst · Cincinnati</span>
         <h1>Hi, I'm Sidanta. I build the data people decide with.</h1>
-        <p class="lead">Pipelines, warehouses and the dashboards on top of them, plus a fine-tuned language model or two. Scroll for the short version, or go straight to the full portfolio.</p>
-        <div class="meta mono"><span>Open to data engineering roles</span><span>Open to relocation</span></div>
+        <p class="lead">Pipelines, warehouses and the dashboards on top of them, plus a fine-tuned language model or two.</p>
       </div>
       <div class="scroll-hint mono" aria-hidden="true">scroll<i></i></div>
     </div>
@@ -193,7 +190,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <section class="pin story" style="height:260vh">
     <div class="stage">
       <div class="wrap" style="width:100%">
-        <span class="chap mono" data-at="0">-- 01 where I've worked</span>
+        <span class="chap mono" data-at="0">Where I've worked</span>
         <div class="lines">
           <div class="place" data-at="0.08">Freight.</div>
           <div class="place" data-at="0.2"><em>Clinical research.</em></div>
@@ -210,7 +207,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <section class="pin build" style="height:280vh">
     <div class="stage">
       <div class="wrap" style="width:100%">
-        <span class="chap mono" data-at="0">-- 02 what I build</span>
+        <span class="chap mono" data-at="0">What I build</span>
         <h2 data-at="0">The whole path, from a source system to a decision.</h2>
         <p class="sub" data-at="0.04">Here it is as a pipeline I run in public every night. Each step lights up as you scroll, and the numbers come from its latest run.</p>
         <div class="steps" id="steps">
@@ -224,10 +221,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     </div>
   </section>
 
-  <!-- 4. work -->
+  <!-- 4. work: rows open the live projects themselves -->
   <section class="work" id="work">
     <div class="wrap">
-      <span class="chap mono">-- 03 work you can open</span>
+      <span class="chap mono">Work you can open</span>
       <h2>Selected work</h2>
       <p class="intro">Each of these runs in public, so you can see it working instead of taking my word for it.</p>
       <div class="rows">
@@ -241,16 +238,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           <div><h3>FAA drug and alcohol testing portal</h3><p>A from-scratch R Shiny rebuild of the app I built at Atlas Air: quarterly goals, rollover, a reproducible random draw and an audit trail.</p></div>
           <span class="go mono">open the app</span>
         </a>
-        <a class="row" href="portfolio.html#ai">
-          <span class="n mono">03</span>
-          <div><h3>An NKU chatbot on a fine-tuned LLM</h3><p>GPT-2 with 1.5 billion parameters, trained on 1,611 samples I built from the NKU website. It beat ChatGPT by 10 to 15% on NKU questions.</p></div>
-          <span class="go mono">read more</span>
-        </a>
         <a class="row" href="https://sidantap.shinyapps.io/CargoAfterCOVID/" target="_blank" rel="noopener">
-          <span class="n mono">04</span>
+          <span class="n mono">03</span>
           <div><h3>Cargo After COVID</h3><p>Two decades of federal air cargo data, 2003 to 2025, made explorable in a few clicks.</p></div>
           <span class="go mono">open the app</span>
         </a>
+        <div class="row">
+          <span class="n mono">04</span>
+          <div><h3>An NKU chatbot on a fine-tuned LLM</h3><p>GPT-2 with 1.5 billion parameters, trained on 1,611 samples I built from the NKU website. It beat ChatGPT by 10 to 15% on NKU questions.</p></div>
+          <span class="go mono">research poster</span>
+        </div>
       </div>
     </div>
   </section>
@@ -258,7 +255,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <!-- 5. numbers -->
   <section class="numbers">
     <div class="wrap">
-      <span class="chap mono">-- 04 at work</span>
+      <span class="chap mono">At work</span>
       <h2>What it added up to</h2>
       <div class="figs">
         <div><b>40–50</b><span>legacy reports rebuilt in Power BI</span><span class="src mono">water utility</span></div>
@@ -269,18 +266,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     </div>
   </section>
 
-  <!-- 6. close -->
-  <section class="close" id="close">
-    <svg class="lily" id="lily2" viewBox="0 0 300 430" aria-hidden="true"></svg>
+  <!-- 6. the one way in -->
+  <section class="close">
     <div class="wrap">
-      <h2>There's more in the full portfolio.</h2>
+      <h2>The rest is in the full portfolio.</h2>
       <p>Experience, the AI and LLM work, an interactive version of the FAA app, the tools I use, and a one-page résumé.</p>
-      <div class="actions">
-        <a class="btn primary" href="portfolio.html">See the full portfolio</a>
-        <a class="btn" href="portfolio.html#resume">One-page résumé</a>
-        <a class="btn" href="mailto:sidanth445@gmail.com">sidanth445@gmail.com</a>
-        <a class="btn" href="https://www.linkedin.com/in/sid2003" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="btn" href="https://github.com/sidantap" target="_blank" rel="noopener">GitHub</a>
+      <a class="enter" href="portfolio.html">See the full portfolio</a>
+      <div class="contact mono">
+        <a href="mailto:sidanth445@gmail.com">sidanth445@gmail.com</a>
+        <a href="https://www.linkedin.com/in/sid2003" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/sidantap" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
   </section>
@@ -290,55 +285,88 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <script>
 (function(){
-  var root=document.documentElement, reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NS='http://www.w3.org/2000/svg';
+  function mk(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);parent.appendChild(e);return e;}
 
-  // theme toggle shares its setting with the full portfolio
-  document.getElementById('theme').addEventListener('click',function(){
-    var cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
-    var next=cur==='dark'?'light':'dark'; root.setAttribute('data-theme',next);
-    try{localStorage.setItem('sp-theme',next);}catch(e){}
-  });
+  // ---- build the lily: one round head of narrow, ruffled petals that curl back, and long stamens ----
+  var lily=document.getElementById('lily'), petalG=document.getElementById('petals'), stamenG=document.getElementById('stamens');
+  var seed=7; function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647;}
+  var petals=[], stamens=[];
+  for(var i=0;i<28;i++){
+    // spread round the whole circle; the lower ones are shorter, hidden behind the head
+    var a=(i/28)*Math.PI*2+(rnd()-.5)*.25, down=Math.max(0,Math.sin(a));
+    var side=Math.cos(a)>.05?1:Math.cos(a)<-.05?-1:(rnd()<.5?-1:1);
+    petals.push({a:a,L:(100+rnd()*48)*(1-down*.4),W:9+rnd()*5,curl:(2.1+rnd()*1.3)*side,ph:rnd()*6,
+      el:mk('path',{fill:'url(#petalGrad)',stroke:'#ff7a85','stroke-opacity':.35,'stroke-width':.6},petalG),d:i*.012});
+  }
+  for(var j=0;j<40;j++){
+    // stamens fan through the upper half, arcing out and lifting at the tips
+    var sa=-Math.PI*(.06+.88*rnd()), L=150+rnd()*110;
+    var ex=Math.cos(sa)*L, ey=Math.sin(sa)*L*.92-L*.12;
+    var d='M'+(Math.cos(sa)*12).toFixed(1)+' '+(Math.sin(sa)*12).toFixed(1)+' C'+(Math.cos(sa)*L*.45).toFixed(1)+' '+(Math.sin(sa)*L*.45+L*.14).toFixed(1)+' '+(ex*.96).toFixed(1)+' '+(ey+L*.2).toFixed(1)+' '+ex.toFixed(1)+' '+ey.toFixed(1);
+    var g=mk('g',{},stamenG);
+    stamens.push({path:mk('path',{class:'stamen',pathLength:1,d:d},g),dot:mk('ellipse',{class:'anther',cx:ex.toFixed(1),cy:ey.toFixed(1),rx:3.2,ry:1.4,transform:'rotate('+(sa*57.3).toFixed(0)+' '+ex.toFixed(1)+' '+ey.toFixed(1)+')'},g),d:rnd()*.2});
+  }
+  function petalPath(p,e){
+    // walk a centre line that bends further back the more the petal opens, then give it a ruffled edge
+    var N=26,x=0,y=0,step=p.L*(.25+.75*e)/N,L=[],R=[];
+    for(var k=0;k<=N;k++){
+      var t=k/N, th=p.a+p.curl*e*Math.pow(t,2.4), w=p.W*Math.pow(Math.sin(Math.PI*Math.min(t*1.08,1)),.55)*(1+.22*Math.sin(t*15+p.ph))*(.5+.5*e)/2;
+      var nx=-Math.sin(th), ny=Math.cos(th);
+      L.push((x+nx*w).toFixed(1)+' '+(y+ny*w).toFixed(1)); R.unshift((x-nx*w).toFixed(1)+' '+(y-ny*w).toFixed(1));
+      x+=Math.cos(th)*step; y+=Math.sin(th)*step;
+    }
+    return 'M'+L.join(' L')+' L'+R.join(' L')+'Z';
+  }
+  function ease(t){t=t<0?0:t>1?1:t;return 1-Math.pow(1-t,3);}
+  function bloom(b){
+    petals.forEach(function(p){p.el.setAttribute('d',petalPath(p,ease((b-p.d)/.6)));});
+    stamens.forEach(function(s){var e=ease((b-.3-s.d)/.55);s.path.style.strokeDashoffset=1-e;s.dot.setAttribute('opacity',e>.95?1:e*.6);});
+    document.getElementById('halo').setAttribute('opacity',(.25+.75*b).toFixed(2));
+  }
 
-  // the closing lily is the same drawing as the opening one
-  var lily1=document.getElementById('lily1'), lily2=document.getElementById('lily2');
-  lily2.innerHTML=lily1.innerHTML;
-
-  // scroll-driven chapters: each pinned section exposes its progress (0..1) as --p
+  // ---- scroll-driven chapters ----
   var pins=[].slice.call(document.querySelectorAll('.pin')), bar=document.getElementById('bar');
-  var steps=document.getElementById('steps'), close=document.getElementById('close'), introDone=reduce;
+  var steps=document.getElementById('steps'), heroText=document.getElementById('heroText'), introDone=reduce, intro=0;
   function clamp(v){return v<0?0:v>1?1:v;}
   function update(){
     var vh=innerHeight, y=scrollY;
-    root.style.setProperty('--read',clamp(y/(document.body.scrollHeight-vh)));
     bar.classList.toggle('solid',y>40);
     pins.forEach(function(sec){
       var p=clamp((y-sec.offsetTop)/(sec.offsetHeight-vh));
       sec.querySelectorAll('[data-at]').forEach(function(el){el.classList.toggle('on',p>=+el.dataset.at);});
-      if(sec.id==='hero'&&introDone) lily1.style.setProperty('--draw',Math.min(1,.35+p*1.3));
+      if(sec.id==='hero'){
+        if(introDone) bloom(Math.max(intro,Math.min(1,.7+p*1.2)));
+        // once fully open, the flower and text drift up and fade as the story begins
+        var out=clamp((p-.68)/.32);
+        lily.style.transform='translateY('+(-out*12)+'vh) scale('+(1-out*.15)+')';
+        lily.style.opacity=1-out*.85; heroText.style.opacity=1-out;
+      }
       if(sec.classList.contains('build')) steps.style.setProperty('--p',clamp((p-.14)/.64));
     });
-    var c=close.getBoundingClientRect();
-    lily2.style.setProperty('--draw',clamp((vh-c.top)/(vh*.9)));
   }
   var queued=false;
   addEventListener('scroll',function(){if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}},{passive:true});
   addEventListener('resize',update);
-  update();
-  if(!reduce){
-    // draw the first strokes on arrival, then hand the drawing over to scrolling
+  if(reduce){ bloom(1); }
+  else {
+    // a slow first opening on arrival; scrolling carries it the rest of the way
+    bloom(0);
     var t0=performance.now();
-    (function intro(now){
-      var k=Math.min((now-t0)/1600,1);
-      if(scrollY<5) lily1.style.setProperty('--draw',.35*(1-Math.pow(1-k,3)));
-      if(k<1&&scrollY<5) requestAnimationFrame(intro); else { introDone=true; update(); }
+    (function open(now){
+      var k=Math.min((now-t0)/2600,1); intro=.7*(1-Math.pow(1-k,2));
+      if(!introDone) bloom(intro);
+      if(k<1&&scrollY<5) requestAnimationFrame(open); else { introDone=true; update(); }
     })(t0);
   }
+  update();
 
-  // work rows rise in as they enter
+  // ---- work rows rise in as they enter ----
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.2});
   document.querySelectorAll('.row').forEach(function(r,i){r.style.transitionDelay=(i%4)*80+'ms';io.observe(r);});
 
-  // the latest numbers from the public pipeline
+  // ---- the latest numbers from the public pipeline ----
   fetch('https://sidantap.github.io/nightly-311-pipeline/data.json',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
     var r=d.runs&&d.runs[0], k=d.kpis||{}, m=(d.live_metrics||[]).slice(-1)[0], fmt=function(n){return Number(n).toLocaleString('en-US');};
     if(r) document.getElementById('lvIngest').textContent='last run '+r.started.slice(0,10)+', '+r.seconds+'s';
@@ -346,6 +374,25 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     if(k.requests_30d!=null) document.getElementById('lvRows').textContent=fmt(k.requests_30d)+' requests in 30 days';
     if(m) document.getElementById('lvAcc').textContent=(m.accuracy*100).toFixed(1)+'% correct on '+fmt(m.rows)+' complaints';
   }).catch(function(){});
+
+  // ---- embers: a few slow sparks rising through the dark ----
+  if(reduce) return;
+  var cv=document.getElementById('embers'), ctx=cv.getContext('2d'), dpr=Math.min(devicePixelRatio||1,2), sparks=[];
+  function size(){cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px';}
+  size(); addEventListener('resize',size);
+  function spark(fresh){return {x:Math.random()*innerWidth,y:fresh?innerHeight+10:Math.random()*innerHeight,r:.6+Math.random()*1.6,vy:.15+Math.random()*.45,vx:(Math.random()-.5)*.25,ph:Math.random()*6.28};}
+  for(var i=0;i<(innerWidth<640?22:42);i++) sparks.push(spark(false));
+  (function frame(){
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,innerWidth,innerHeight);
+    sparks.forEach(function(s,i){
+      s.y-=s.vy; s.x+=s.vx+Math.sin(s.ph+=.015)*.2;
+      if(s.y<-10) sparks[i]=spark(true);
+      var a=.35+.35*Math.sin(s.ph*3);
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,6.283);
+      ctx.fillStyle='rgba(255,'+(70+Math.round(40*a))+',80,'+a.toFixed(2)+')'; ctx.shadowColor='#ff3b4f'; ctx.shadowBlur=8; ctx.fill();
+    });
+    requestAnimationFrame(frame);
+  })();
 })();
 </script>
 </body>
