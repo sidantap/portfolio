@@ -59,12 +59,19 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 .game .msg.win{color:var(--accent)}
 :root[data-theme="light"] .game .msg{color:#b07c00}
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .game .msg{color:#b07c00}}
+/* arcade prompt beside the maze, blinking until the game starts */
+.game .start{position:absolute;right:calc(100% + 10px);top:50%;writing-mode:vertical-rl;transform:translateY(-50%) rotate(180deg);font:9px/1 "Press Start 2P",var(--mono);letter-spacing:.12em;color:#f4c430;white-space:nowrap;animation:blink 1.1s linear infinite;transition:opacity .4s}
+.game .start.gone{opacity:0;animation:none}
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
+:root[data-theme="light"] .game .start{color:#b07c00}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .game .start{color:#b07c00}}
 @media (min-width:861px) and (max-width:1419px){main,footer,.bar{padding-right:190px}}
 @media (max-width:860px){
   .game{left:0;right:0;top:auto;bottom:0;width:auto;height:112px;padding:8px 16px 10px;gap:6px;background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(6px)}
   .game .msg{top:auto;bottom:40px}
+  .game .start{right:0;left:0;top:auto;bottom:calc(100% + 12px);writing-mode:horizontal-tb;transform:none;text-align:center;font-size:10px}
+  .game .start::after{content:"\25BC";margin:0 0 0 10px}
   body{padding-bottom:112px}
-  .scroll-hint{bottom:132px}
 }
 @media print{.game{display:none}}
 
@@ -79,8 +86,6 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 .hero h1{font-size:clamp(2.6rem,7vw,5.6rem);line-height:1.02;max-width:12ch}
 .hero .lead{color:var(--muted);font-size:clamp(1.05rem,1.6vw,1.25rem);max-width:46ch;margin:28px 0 0}
 .hero .meta{display:flex;gap:10px 24px;flex-wrap:wrap;color:var(--faint);margin-top:36px}
-.scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:8px}
-.scroll-hint i{display:block;width:1px;height:38px;background:linear-gradient(var(--faint),transparent)}
 
 /* story */
 .story .lines{display:grid;gap:2px 48px;grid-template-columns:repeat(2,max-content)}
@@ -150,6 +155,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
+  .game .start{animation:none}
   .pin{height:auto!important}.stage{position:relative;height:auto;min-height:100vh;padding:100px 0}
   [data-at],.row{opacity:1;transform:none;transition:none}
   .steps{--p:1!important}.step::before{background:var(--accent);border-color:var(--accent)}
@@ -162,6 +168,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="hud"><span>SCORE</span><b id="score">00000</b></div>
   <canvas id="maze"></canvas>
   <div class="msg" id="msg"><span>READY!</span></div>
+  <div class="start" id="start">SCROLL TO START</div>
 </div>
 
 <header class="bar" id="bar">
@@ -187,7 +194,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <p class="lead">Pipelines, warehouses and the dashboards on top of them, plus a fine-tuned language model or two.</p>
         <div class="meta mono"><span>Open to data engineering roles</span><span>Open to relocation</span></div>
       </div>
-      <div class="scroll-hint mono" aria-hidden="true">scroll to play<i></i></div>
     </div>
   </section>
 
@@ -326,6 +332,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     var GC=['#e5534b','#f19ac0','#5fc9dc','#f0a04b'];
     var W,H,dpr,G,rec,N,jobId=0,worker=null,shown=0,target=0,won=false,wonAt=0;
 
+    var FOOD=.2;
     function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 
     // a braided maze on a grid: a random spanning tree, extra loops, and no dead ends
@@ -339,7 +346,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         if(!opts.length){st.pop();continue;} var nx=opts[Math.floor(r()*opts.length)];vis[nx]=1;link(cur,nx);st.push(nx);}
       for(i=0;i<n;i++) nb(i).forEach(function(j){if(j>i&&r()<.22)link(i,j);});
       for(i=0;i<n;i++) if(adj[i].length<2){var o=nb(i).filter(function(j){return adj[i].indexOf(j)<0;});link(i,o[Math.floor(r()*o.length)]);}
-      var edges=Object.keys(has).map(function(k){var p=k.split('-');return[+p[0],+p[1]];});
+      // only some corridors carry pellets, so the whole game is a calm walk rather than a sprint
+      var edges=Object.keys(has).map(function(k){var p=k.split('-');return[+p[0],+p[1],r()<FOOD];});
       return {nodes:nodes,adj:adj,edges:edges,cols:cols,rows:rows};
     }
 
@@ -352,11 +360,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       var key=function(a,b){return a<b?a+'-'+b:b+'-'+a;};
       var pel=[], onEdge={}, onNode={};
       g.edges.forEach(function(e){var a=nd[e[0]],b=nd[e[1]],L=Math.hypot(b.x-a.x,b.y-a.y),k=Math.max(1,Math.round(L/11)),list=[];
-        for(var j=1;j<k;j++){pel.push({x:a.x+(b.x-a.x)*j/k,y:a.y+(b.y-a.y)*j/k,e:key(e[0],e[1]),at:Infinity,big:false});list.push(pel.length-1);} onEdge[key(e[0],e[1])]=list;});
-      nd.forEach(function(p,i){pel.push({x:p.x,y:p.y,node:i,at:Infinity,big:false});onNode[i]=pel.length-1;});
-      var C=g.cols,R=g.rows,corner=[0,C-1,C*(R-1),C*R-1].concat(R>5?[C*Math.floor(R/2)]:[]);
+        if(e[2]) for(var j=1;j<k;j++){pel.push({x:a.x+(b.x-a.x)*j/k,y:a.y+(b.y-a.y)*j/k,e:key(e[0],e[1]),at:Infinity,big:false});list.push(pel.length-1);} onEdge[key(e[0],e[1])]=list;});
+      var fed={}; g.edges.forEach(function(e){if(e[2]){fed[e[0]]=1;fed[e[1]]=1;}});
+      var C=g.cols,R=g.rows,corner=[0,C-1,C*(R-1),C*R-1];
+      corner.forEach(function(i){fed[i]=1;});
+      nd.forEach(function(p,i){pel.push({x:p.x,y:p.y,node:i,at:fed[i]?Infinity:-1,big:false});onNode[i]=pel.length-1;});
       corner.forEach(function(i){pel[onNode[i]].big=true;});
-      var left=pel.length, eatCount=new Array(nd.length).fill(0);
+      var left=pel.filter(function(p){return p.at===Infinity;}).length, eatCount=new Array(nd.length).fill(0);
       function food(i){if(pel[onNode[i]].at===Infinity)return true;for(var j=0;j<g.adj[i].length;j++){var l=onEdge[key(i,g.adj[i][j])];for(var q=0;q<l.length;q++)if(pel[l[q]].at===Infinity)return true;}return false;}
       function elen(a,b){return Math.hypot(nd[b].x-nd[a].x,nd[b].y-nd[a].y);}
       // shortest distances in pixels from several starting points; ok(v,d) can refuse a junction
@@ -439,12 +449,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       return {steps:steps,pel:pel};
     }
 
-    // games get a little easier on each failed try until Pac-Man clears the board
-    function search(G){for(var t=0;t<40;t++){var lvl=t<10?[.8,450]:t<20?[.7,560]:[.6,700],res=play(G,100+t,lvl[0],lvl[1]);if(res)return res;}return null;}
+    // games get a little easier on each failed try until Pac-Man clears the board;
+    // of the first few winning games, keep the shortest so Pac-Man strolls rather than races
+    function search(G){var best=null,wins=0;for(var t=0;t<40&&wins<6;t++){var lvl=t<10?[.8,450]:t<20?[.7,560]:[.6,700],res=play(G,100+t,lvl[0],lvl[1]);if(res){wins++;if(!best||res.steps.length<best.steps.length)best=res;}}return best;}
 
     function setup(){
       dpr=Math.min(devicePixelRatio||1,2); W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr;
-      var wide=W>H, m=wide?10:12, cw=wide?15:19, gap=wide?24:30;
+      var wide=W>H, m=wide?10:12, cw=wide?15:19, gap=wide?24:40;
       var cols=Math.max(3,Math.floor((W-2*m)/gap)+1), rows=Math.max(2,Math.floor((H-2*m)/gap)+1);
       var sx=(W-2*m)/(cols-1), sy=(H-2*m)/(rows-1);
       // one maze per screen size; the game is worked out in a background worker so scrolling never stalls
@@ -486,7 +497,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       var C=colors();
       ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
       if(!rec){walls(C,false);msg.classList.add('show');msg.firstChild.textContent='READY!';requestAnimationFrame(frame);return;}
-      shown=reduce?target:shown+(target-shown)*.14; if(Math.abs(target-shown)<.3) shown=target;
+      shown=reduce?target:shown+(target-shown)*.22; if(Math.abs(target-shown)<.3) shown=target;
       var f=Math.max(0,Math.min(N-1,shown)), i=Math.floor(f), u=f-i, A=rec.steps[i], B=rec.steps[Math.min(N-1,i+1)];
       function lerp(k){return Math.abs(B[k]-A[k])>20?A[k]:A[k]+(B[k]-A[k])*u;}
 
@@ -514,7 +525,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       msg.firstChild.textContent=won?'YOU WIN!':'READY!';
       requestAnimationFrame(frame);
     }
-    function sync(){var max=document.body.scrollHeight-innerHeight,p=max>0?scrollY/max:0;if(p>.985)p=1;target=p*(N-1);}
+    var startEl=document.getElementById('start');
+    function sync(){var max=document.body.scrollHeight-innerHeight,p=max>0?scrollY/max:0;startEl.classList.toggle('gone',scrollY>30);if(p>.985)p=1;target=p*(N-1);}
     setup(); sync(); shown=target;
     addEventListener('scroll',sync,{passive:true});
     var rt; addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){var w=cv.clientWidth,h=cv.clientHeight;if(w!==W||h!==H){setup();sync();shown=target;}},150);});
