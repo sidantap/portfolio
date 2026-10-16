@@ -36,7 +36,7 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 /* top bar */
 .bar{position:fixed;inset:0 0 auto;z-index:20;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
 .bar.solid{background:color-mix(in srgb,var(--bg) 90%,transparent);border-bottom-color:var(--line);backdrop-filter:blur(6px)}
-.bar .wrap{display:flex;justify-content:space-between;align-items:center;height:64px;gap:16px}
+.bar .wrap{display:flex;justify-content:flex-end;align-items:center;height:64px;gap:16px;max-width:none}
 .name{font-family:var(--display);font-style:italic;font-weight:400;font-size:clamp(1.35rem,2.2vw,1.6rem);letter-spacing:-.01em;text-decoration:none}
 .bar nav{display:flex;align-items:center;gap:clamp(12px,2.5vw,28px);font-size:.95rem}
 .bar nav a{text-decoration:none;color:var(--muted)}
@@ -61,9 +61,7 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 #bloom{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
 .hero .wrap{position:relative;width:100%;transform:translateY(calc(var(--hp,0) * -18vh));opacity:calc(1 - var(--hp,0) * 1.4)}
 .hero .inner{max-width:min(640px,54%)}
-.hero .hello{display:flex;align-items:center;gap:12px;font-family:var(--display);font-style:italic;font-weight:300;font-size:clamp(1.25rem,2vw,1.6rem);color:var(--fg);margin:0 0 14px;opacity:0;animation:rise .7s ease forwards .2s}
-.hero .hello .wave{display:inline-block;font-style:normal;transform-origin:70% 80%;animation:wave 1.6s ease-in-out .9s 2}
-@keyframes wave{0%,100%{transform:none}15%,45%{transform:rotate(16deg)}30%,60%{transform:rotate(-10deg)}}
+.hero .hello{font-family:var(--display);font-style:italic;font-weight:300;font-size:clamp(1.25rem,2vw,1.6rem);color:var(--fg);margin:0 0 14px;opacity:0;animation:rise .7s ease forwards .2s}
 .hero h1{font-weight:600;font-size:clamp(2.5rem,5.4vw,4.9rem);line-height:1;letter-spacing:-.035em;max-width:none;perspective:900px}
 .hero h1 .w{display:inline-block;opacity:0;transform:translateY(.45em) rotateX(70deg);transform-origin:50% 90%;animation:land .8s cubic-bezier(.2,.85,.25,1.12) forwards;animation-delay:calc(450ms + var(--i) * 85ms)}
 @keyframes land{60%{opacity:1}to{opacity:1;transform:none}}
@@ -75,15 +73,14 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 @keyframes swipe{to{transform:scaleX(1) rotate(-1.2deg)}}
 @keyframes scrawl{to{stroke-dashoffset:0}}
 .hero h1 .scrib .w{position:relative}
-.hero .roles{font-size:clamp(1.02rem,1.5vw,1.2rem);color:var(--muted);max-width:44ch;margin:22px 0 0;opacity:0;animation:rise .8s ease forwards 2.2s}
-.hero .under{display:flex;align-items:center;gap:10px;margin-top:28px;opacity:0;animation:rise .8s ease forwards 2.4s}
-.hero .meta{display:flex;gap:6px 20px;flex-wrap:wrap;color:var(--faint);margin-top:22px;opacity:0;animation:rise .8s ease forwards 2.55s}
-.hero .round{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;text-decoration:none;color:var(--fg);transition:border-color .25s,transform .25s}
-.hero .pill{font-family:var(--display);font-style:italic;font-size:1.02rem;text-decoration:none;padding:9px 20px;border:1px solid var(--line);border-radius:999px;transition:border-color .25s}
-.hero .round:hover,.hero .pill:hover{border-color:var(--accent)}.hero .round:hover{transform:translateY(2px)}
+.hero .roles{font-family:var(--display);font-style:italic;font-weight:300;font-size:clamp(.95rem,1.15vw,1.08rem);line-height:1.55;letter-spacing:.005em;color:var(--muted);max-width:40ch;margin:20px 0 0;opacity:0;animation:rise .8s ease forwards 2.2s}
+.hero .meta{display:flex;gap:6px 20px;flex-wrap:wrap;color:var(--faint);margin-top:26px;opacity:0;animation:rise .8s ease forwards 2.4s}
+.scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadein .8s ease forwards 2.6s}
+.scroll-hint i{display:block;width:1px;height:38px;background:linear-gradient(var(--faint),transparent)}
+@keyframes fadein{to{opacity:1}}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media (max-width:760px){
-  .hero .stage{justify-content:flex-end;padding-bottom:clamp(28px,6vh,60px)}
+  .hero .stage{justify-content:flex-end;padding-bottom:104px}
   .hero .inner{max-width:100%}
   .hero h1{font-size:clamp(2.3rem,10.5vw,3.4rem)}
 }
@@ -164,7 +161,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .pin{height:auto!important}.stage{position:relative;height:auto;min-height:100vh;padding:100px 0}
   [data-at],.row{opacity:1;transform:none;transition:none}
   .lily{--draw:1!important}
-  .hero h1 .w,.hero .hello,.hero .roles,.hero .under,.hero .meta{animation:none;opacity:1;transform:none}
+  .scroll-hint{animation:none;opacity:1}
+  .hero h1 .w,.hero .hello,.hero .roles,.hero .meta{animation:none;opacity:1;transform:none}
   .hero .scrib::before{animation:none;transform:rotate(-1.2deg)}.hero .scrib path{animation:none;stroke-dashoffset:0}
   .hero .wrap{transform:none;opacity:1}
   .steps{--p:1!important}.step::before{background:var(--accent);border-color:var(--accent)}
@@ -177,7 +175,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <header class="bar" id="bar">
   <div class="wrap">
     <nav aria-label="Main">
-      <a class="cta" href="portfolio.html">Portfolio</a>
       <button class="theme" id="theme" type="button" aria-label="Switch color theme">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
       </button>
@@ -224,15 +221,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </svg>
       <canvas id="bloom" aria-hidden="true"></canvas>
       <div class="wrap"><div class="inner">
-        <p class="hello"><span class="wave" aria-hidden="true">👋</span> Hey, I'm Sid</p>
+        <p class="hello">hey, i'm sid</p>
         <h1 aria-label="Building pipelines that don't break at 2 a.m."><span class="w" style="--i:0">Building</span> <span class="w" style="--i:1">pipelines</span> <span class="w" style="--i:2">that</span> <span class="w" style="--i:3">don’t</span> <span class="scrib"><span class="w" style="--i:4">break</span> <span class="w" style="--i:5">at</span> <span class="w" style="--i:6">2&nbsp;a.m.</span><svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M1 13 C14 7 22 15 34 10 S55 6 66 11 S86 14 99 6"/></svg></span></h1>
         <p class="roles">I engineer, analyze, experiment, and occasionally spend three hours choosing a shade of blue.</p>
-        <div class="under">
-          <a class="round" href="#story" aria-label="Scroll to the story"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
-          <a class="pill" href="mailto:sidanth445@gmail.com">Contact</a>
-        </div>
         <div class="meta mono"><span>Sidanta Parajuli · Cincinnati</span><span>Open to data engineering roles</span><span>Open to relocation</span></div>
       </div></div>
+      <div class="scroll-hint mono" aria-hidden="true">scroll<i></i></div>
     </div>
   </section>
 
@@ -393,7 +387,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     function layout(){
       dpr=Math.min(devicePixelRatio||1,2); W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr;
       // the bloom sits centred, above and behind the name
-      var wide=W>760, h=wide?Math.min(H*.8,W*1.25):H*.4, sc=h/430, cx=wide?W*.69:W/2, ox=cx-150*sc, oy=H*.05;
+      var wide=W>760, h=wide?Math.min(H*.8,W*1.25):H*.4, sc=h/430, cx=wide?W*.76:W/2, ox=cx-150*sc, oy=H*.05;
       var light=getComputedStyle(root).colorScheme==='light', r=rngFor(7);
       parts=PTS.map(function(p,i){
         var hx=ox+p[0]*sc, hy=oy+p[1]*sc, old=parts[i];
