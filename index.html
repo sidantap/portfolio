@@ -381,7 +381,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     function layout(){
       dpr=Math.min(devicePixelRatio||1,2); W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr;
       // the bloom sits centred, above and behind the name
-      var h=Math.min(H*.8,W*1.25), sc=h/430, ox=W/2-(150-10)*sc-10*sc, oy=H*.05;
+      var h=Math.min(H*.8,W*1.25), sc=h/430, cx=W>760?W*.64:W/2, ox=cx-150*sc, oy=H*.05;
       var light=getComputedStyle(root).colorScheme==='light', r=rngFor(7);
       parts=PTS.map(function(p,i){
         var hx=ox+p[0]*sc, hy=oy+p[1]*sc, old=parts[i];
