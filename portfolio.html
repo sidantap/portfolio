@@ -57,6 +57,30 @@ h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
 .cv-btn{font-size:.85rem;font-weight:600;text-decoration:none;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
 @media (max-width:880px){.links{display:none}}
 
+/* section rail: a fixed index on the left that tracks where you are */
+.rail{display:none}
+@media (min-width:1180px){
+  .links{display:none}
+  main,footer,.nav{padding-left:max(0px,calc(210px - (100vw - var(--wrap)) / 2))}
+  .rail{display:block;position:fixed;left:max(24px,calc((100vw - var(--wrap)) / 2 - 150px));top:134px;z-index:9;width:150px}
+  .rail ol{list-style:none;margin:0;padding:0 0 0 22px;position:relative;display:grid;gap:clamp(14px,2.6vh,24px)}
+  .rail ol::before{content:"";position:absolute;left:3px;top:6px;bottom:6px;width:1px;background:var(--line)}
+  .rail .fill{position:absolute;left:3px;top:6px;width:1px;height:var(--fill,0px);background:var(--accent);box-shadow:0 0 8px color-mix(in srgb,var(--accent) 60%,transparent);transition:height .15s linear}
+  .rail li{position:relative}
+  .rail li::before{content:"";position:absolute;left:-22px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--bg);border:1px solid var(--faint);transition:all .3s}
+  .rail a{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--faint);opacity:.55;transition:color .3s,opacity .3s,transform .3s}
+  .rail a .n{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em}
+  .rail a .t{font-family:var(--display);font-size:1.02rem;font-weight:300;transition:font-size .3s}
+  .rail a:hover{opacity:1;color:var(--muted)}
+  .rail li.on a{color:var(--fg);opacity:1;transform:translateX(4px)}
+  .rail li.on a .t{font-style:italic;font-size:1.22rem;font-weight:400}
+  .rail li.on a .n{color:var(--accent)}
+  .rail li.on::before,.rail li.past::before{background:var(--accent);border-color:var(--accent)}
+  .rail li.on::before{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+  .rail li.past a{opacity:.7}
+}
+@media (min-width:1180px) and (prefers-reduced-motion:reduce){.rail a,.rail .fill{transition:none}}
+
 /* hero */
 .hero{padding-block:clamp(40px,6vw,72px) 0}
 .meta{display:flex;justify-content:space-between;gap:8px 16px;color:var(--faint);flex-wrap:wrap;margin-bottom:28px}
@@ -341,6 +365,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </header>
 
 <main id="portfolio">
+  <nav class="rail" id="rail" aria-label="Sections"><span class="fill" aria-hidden="true"></span><ol><li data-s="about"><a href="#about"><span class="n">01</span><span class="t">About</span></a></li><li data-s="ai"><a href="#ai"><span class="n">02</span><span class="t">AI &amp; LLMs</span></a></li><li data-s="work"><a href="#work"><span class="n">03</span><span class="t">Experience</span></a></li><li data-s="builds"><a href="#builds"><span class="n">04</span><span class="t">Projects</span></a></li><li data-s="stack"><a href="#stack"><span class="n">05</span><span class="t">Stack</span></a></li><li data-s="contact"><a href="#contact"><span class="n">06</span><span class="t">Contact</span></a></li></ol></nav>
   <div class="wrap hero" id="top">
     <div class="meta mono"><span>-- data engineer · analytics · ai and llms</span><span>Greater Cincinnati · open to relocation</span></div>
     <h1>Hi, I'm Sidanta. I build data pipelines, and I've been <em>training language models</em> since college.</h1>
@@ -1102,6 +1127,29 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     io.observe(document.getElementById('pipeline'));
   }
 })();
+
+  // section rail: highlight the section you're in and fill the blue line up to it
+  (function(){
+    var rail=document.getElementById('rail'); if(!rail) return;
+    var lis=[].slice.call(rail.querySelectorAll('li')), fill=rail.querySelector('.fill');
+    var secs=lis.map(function(li){return document.getElementById(li.dataset.s);});
+    function update(){
+      if(document.getElementById('portfolio').hidden||getComputedStyle(rail).display==='none') return;
+      var mark=scrollY+innerHeight*.35, cur=-1, frac=0;
+      secs.forEach(function(sec,i){if(sec&&sec.offsetTop<=mark){cur=i;}});
+      var dot=function(i){return lis[i].offsetTop+lis[i].offsetHeight/2-6;};
+      var end=document.body.scrollHeight-innerHeight;
+      if(scrollY>=end-2) cur=lis.length-1;
+      if(cur<0){var t0=secs[0].offsetTop; frac=Math.max(0,Math.min(1,mark/t0)); fill.style.height=(dot(0)*frac)+'px';}
+      else if(cur<lis.length-1){var a=secs[cur].offsetTop,b=secs[cur+1].offsetTop; frac=Math.max(0,Math.min(1,(mark-a)/(b-a))); fill.style.height=(dot(cur)+(dot(cur+1)-dot(cur))*frac)+'px';}
+      else fill.style.height=dot(lis.length-1)+'px';
+      lis.forEach(function(li,i){li.classList.toggle('on',i===cur);li.classList.toggle('past',i<cur);});
+    }
+    var q=false;
+    addEventListener('scroll',function(){if(!q){q=true;requestAnimationFrame(function(){q=false;update();});}},{passive:true});
+    addEventListener('resize',update); addEventListener('hashchange',function(){setTimeout(update,50);}); addEventListener('load',update);
+    update();
+  })();
 
   // Drug and Alcohol Testing Portal: a from-scratch demo with made-up employees.
   (function(){
