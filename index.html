@@ -61,8 +61,8 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 #bloom{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
 .hero .wrap{position:relative;width:100%;transform:translateY(calc(var(--hp,0) * -18vh));opacity:calc(1 - var(--hp,0) * 1.4)}
 .hero .inner{max-width:min(640px,54%)}
-.hero .hello{font-family:var(--display);font-style:italic;font-weight:300;font-size:clamp(1.25rem,2vw,1.6rem);color:var(--fg);margin:0 0 14px;opacity:0;animation:rise .7s ease forwards .2s}
-.hero h1{font-weight:600;font-size:clamp(2.5rem,5.4vw,4.9rem);line-height:1;letter-spacing:-.035em;max-width:none;perspective:900px}
+.hero .hello{font-family:var(--display);font-style:normal;font-weight:300;letter-spacing:-.01em;font-size:clamp(1.25rem,2vw,1.6rem);color:var(--fg);margin:0 0 14px;opacity:0;animation:rise .7s ease forwards .2s}
+.hero h1{font-weight:300;font-size:clamp(2.6rem,5.8vw,5.2rem);line-height:1.02;letter-spacing:-.02em;max-width:none;perspective:900px}
 .hero h1 .w{display:inline-block;opacity:0;transform:translateY(.45em) rotateX(70deg);transform-origin:50% 90%;animation:land .8s cubic-bezier(.2,.85,.25,1.12) forwards;animation-delay:calc(450ms + var(--i) * 85ms)}
 @keyframes land{60%{opacity:1}to{opacity:1;transform:none}}
 /* the crossed-out bit: a marker swipe, then a scribble drawn through it */
