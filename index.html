@@ -7,22 +7,23 @@
 <meta name="description" content="Sidanta Parajuli, data engineer and analyst in Cincinnati. Scroll for the story, the work, and a link to the full portfolio.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <script>try{var t=localStorage.getItem('sp-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <style>
 /* Same palette and type as the full portfolio, plus one deep red for the spider lily. */
 :root{
   --bg:#1c1915; --surface:#24201b; --line:#3a342c; --fg:#eee9df; --muted:#b2aa9c; --faint:#857d70;
   --accent:#86bfdc; --lily:#b5443a;
+  --metal-1:#ffffff; --metal-2:#cfc9bf; --metal-3:#5f5a52;
   --display:"Fraunces",Georgia,serif; --body:"Instrument Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
   color-scheme:dark;
 }
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
   --bg:#eeebe4; --surface:#e5e1d8; --line:#cdc6b8; --fg:#1d1a16; --muted:#565046; --faint:#7d7568;
-  --accent:#1f6a8e; --lily:#9e2f27; color-scheme:light}}
+  --accent:#1f6a8e; --lily:#9e2f27; --metal-1:#6f6a62; --metal-2:#2c2822; --metal-3:#0f0d0a; color-scheme:light}}
 :root[data-theme="light"]{
   --bg:#eeebe4; --surface:#e5e1d8; --line:#cdc6b8; --fg:#1d1a16; --muted:#565046; --faint:#7d7568;
-  --accent:#1f6a8e; --lily:#9e2f27; color-scheme:light}
+  --accent:#1f6a8e; --lily:#9e2f27; --metal-1:#6f6a62; --metal-2:#2c2822; --metal-3:#0f0d0a; color-scheme:light}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -55,17 +56,29 @@ h1,h2,h3{font-family:var(--display);font-weight:300;margin:0;letter-spacing:-.02
 [data-at]{opacity:.08;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
 [data-at].on{opacity:1;transform:none}
 
-/* hero */
-.hero h1{font-size:clamp(2.6rem,7vw,5.6rem);line-height:1.02;max-width:12ch}
-.hero .lead{color:var(--muted);font-size:clamp(1.05rem,1.6vw,1.25rem);max-width:46ch;margin:28px 0 0}
-.hero .meta{display:flex;gap:10px 24px;flex-wrap:wrap;color:var(--faint);margin-top:36px}
-.scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:8px}
-.scroll-hint i{display:block;width:1px;height:38px;background:linear-gradient(var(--faint),transparent)}
-.lily{position:absolute;right:max(-60px,calc(50% - 650px));top:10vh;width:min(48vw,500px);height:auto;pointer-events:none}
+/* hero: the name assembles letter by letter, then the lily forms from particles behind it */
+.hero .stage{flex-direction:column;justify-content:flex-end;align-items:stretch;padding-bottom:clamp(36px,9vh,90px)}
+#bloom{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.hero .wrap{position:relative;width:100%;transform:translateY(calc(var(--hp,0) * -18vh));opacity:calc(1 - var(--hp,0) * 1.4)}
+.hero h1{font-weight:600;font-size:clamp(3.6rem,15.5vw,13.5rem);line-height:.86;letter-spacing:-.035em;text-transform:uppercase;max-width:none;white-space:nowrap;perspective:900px}
+.hero h1 .l{display:inline-block;background:linear-gradient(180deg,var(--metal-1) 8%,var(--metal-2) 55%,var(--metal-3) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  transform-origin:50% 80%;opacity:0;transform:translateY(-.5em) rotateX(80deg) rotateZ(var(--rz,0deg));animation:land .95s cubic-bezier(.2,.85,.25,1.15) forwards;animation-delay:calc(250ms + var(--i) * 95ms)}
+@keyframes land{60%{opacity:1}to{opacity:1;transform:none}}
+.hero .under{display:flex;align-items:center;justify-content:space-between;gap:18px 28px;flex-wrap:wrap;margin-top:clamp(10px,2vh,22px);opacity:0;animation:rise .8s ease forwards 1.2s}
+.hero .tag{font-family:var(--display);font-size:clamp(1.15rem,2.2vw,1.7rem);line-height:1.2;margin:0}
+.hero .tag b{font-weight:600}.hero .tag i{font-weight:300;color:var(--muted)}
+.hero .meta{display:flex;gap:6px 20px;flex-wrap:wrap;color:var(--faint);margin-top:12px;opacity:0;animation:rise .8s ease forwards 1.45s}
+.hero .acts{display:flex;align-items:center;gap:10px}
+.hero .round{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;text-decoration:none;color:var(--fg);transition:border-color .25s,transform .25s}
+.hero .pill{font-family:var(--display);font-style:italic;font-size:1.02rem;text-decoration:none;padding:9px 20px;border:1px solid var(--line);border-radius:999px;transition:border-color .25s}
+.hero .round:hover,.hero .pill:hover{border-color:var(--accent)}.hero .round:hover{transform:translateY(2px)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.lily-src{display:none}
+.hero .inner{width:fit-content;max-width:100%;margin:0 auto}
+.lily{position:absolute;right:max(-40px,calc(50% - 600px));width:min(38vw,360px);height:auto;pointer-events:none}
 .lily path{fill:none;stroke:var(--lily);stroke-width:1.3;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--draw,0))}
 .lily circle{fill:var(--lily);opacity:var(--draw,0)}
 .lily .stem{stroke:var(--faint);opacity:.6}
-@media (max-width:760px){.lily{width:66vw;right:-20vw;top:auto;bottom:5vh;opacity:.4}}
 
 /* story */
 .story .lines{display:grid;gap:2px 48px;grid-template-columns:repeat(2,max-content)}
@@ -139,6 +152,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   .pin{height:auto!important}.stage{position:relative;height:auto;min-height:100vh;padding:100px 0}
   [data-at],.row{opacity:1;transform:none;transition:none}
   .lily{--draw:1!important}
+  .hero h1 .l,.hero .under,.hero .meta{animation:none;opacity:1;transform:none}
+  .hero .wrap{transform:none;opacity:1}
   .steps{--p:1!important}.step::before{background:var(--accent);border-color:var(--accent)}
 }
 </style>
@@ -160,9 +175,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <main id="top">
 
   <!-- 1. who -->
-  <section class="pin hero" id="hero" style="height:170vh">
+  <section class="pin hero" id="hero" style="height:160vh">
     <div class="stage">
-      <svg class="lily" id="lily1" viewBox="10 0 280 430" aria-hidden="true">
+      <svg class="lily-src" id="lily1" viewBox="10 0 280 430" aria-hidden="true">
         <path class="stem" pathLength="1" d="M150 160 C153 240 145 322 158 430"/>
         <path pathLength="1" d="M150.0 150.0 C128.9 130.9 104.4 123.1 88.5 131.4 C80.5 129.0 76.8 141.3 87.2 144.4 M88.5 131.4 C101.8 131.8 125.3 142.7 150.0 150.0"/>
         <path pathLength="1" d="M150.0 150.0 C142.9 122.0 126.6 101.6 108.6 99.3 C103.2 92.8 93.1 101.0 100.1 109.6 M108.6 99.3 C119.6 107.3 133.3 129.9 150.0 150.0"/>
@@ -194,18 +209,23 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <path pathLength="1" d="M150.0 150.0 C190.2 157.2 235.4 149.4 250.4 131.3"/>
         <circle cx="54.6" cy="120.3" r="2.3"/><circle cx="41.2" cy="100.8" r="2.3"/><circle cx="63.2" cy="90.6" r="2.3"/><circle cx="67.9" cy="71.2" r="2.3"/><circle cx="72.8" cy="32.4" r="2.3"/><circle cx="97.6" cy="40.2" r="2.3"/><circle cx="121.6" cy="22.3" r="2.3"/><circle cx="144.3" cy="10.2" r="2.3"/><circle cx="161.5" cy="25.0" r="2.3"/><circle cx="185.5" cy="29.0" r="2.3"/><circle cx="198.2" cy="38.1" r="2.3"/><circle cx="219.6" cy="61.4" r="2.3"/><circle cx="240.6" cy="53.6" r="2.3"/><circle cx="255.3" cy="76.4" r="2.3"/><circle cx="249.5" cy="105.2" r="2.3"/><circle cx="250.4" cy="131.3" r="2.3"/>
       </svg>
-      <div class="wrap" style="width:100%">
-        <span class="chap mono">Data engineer and analyst · Cincinnati</span>
-        <h1>I'm Sidanta. I build the data people decide with.</h1>
-        <p class="lead">Pipelines, warehouses and the dashboards on top of them, plus a fine-tuned language model or two.</p>
-        <div class="meta mono"><span>Open to data engineering roles</span><span>Open to relocation</span></div>
-      </div>
-      <div class="scroll-hint mono" aria-hidden="true">scroll<i></i></div>
+      <canvas id="bloom" aria-hidden="true"></canvas>
+      <div class="wrap"><div class="inner">
+        <h1 aria-label="Sidanta Parajuli"><span aria-hidden="true"><span class="l" style="--i:0;--rz:-24deg">S</span><span class="l" style="--i:1;--rz:18deg">I</span><span class="l" style="--i:2;--rz:-12deg">D</span><span class="l" style="--i:3;--rz:30deg">A</span><span class="l" style="--i:4;--rz:-20deg">N</span><span class="l" style="--i:5;--rz:14deg">T</span><span class="l" style="--i:6;--rz:-28deg">A</span></span></h1>
+        <div class="under">
+          <p class="tag"><b>I build the data</b> <i>people decide with.</i></p>
+          <div class="acts">
+            <a class="round" href="#story" aria-label="Scroll to the story"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+            <a class="pill" href="mailto:sidanth445@gmail.com">Contact</a>
+          </div>
+        </div>
+        <div class="meta mono"><span>Data engineer and analyst · Cincinnati</span><span>Open to data engineering roles</span><span>Open to relocation</span></div>
+      </div></div>
     </div>
   </section>
 
   <!-- 2. story -->
-  <section class="pin story" style="height:260vh">
+  <section class="pin story" id="story" style="height:260vh">
     <div class="stage">
       <div class="wrap" style="width:100%">
         <span class="chap mono" data-at="0">-- 01 where I've worked</span>
@@ -321,7 +341,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
   // scroll-driven chapters: each pinned section exposes its progress (0..1) as --p
   var pins=[].slice.call(document.querySelectorAll('.pin')), bar=document.getElementById('bar');
-  var steps=document.getElementById('steps'), close=document.getElementById('close'), introDone=reduce;
+  var steps=document.getElementById('steps'), close=document.getElementById('close');
   function clamp(v){return v<0?0:v>1?1:v;}
   function update(){
     var vh=innerHeight, y=scrollY;
@@ -330,7 +350,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     pins.forEach(function(sec){
       var p=clamp((y-sec.offsetTop)/(sec.offsetHeight-vh));
       sec.querySelectorAll('[data-at]').forEach(function(el){el.classList.toggle('on',p>=+el.dataset.at);});
-      if(sec.id==='hero'&&introDone) lily1.style.setProperty('--draw',Math.min(1,.35+p*1.3));
       if(sec.classList.contains('build')) steps.style.setProperty('--p',clamp((p-.14)/.64));
     });
     var c=close.getBoundingClientRect();
@@ -340,15 +359,82 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   addEventListener('scroll',function(){if(!queued){queued=true;requestAnimationFrame(function(){queued=false;update();});}},{passive:true});
   addEventListener('resize',update);
   update();
-  if(!reduce){
-    // draw the first strokes on arrival, then hand the drawing over to scrolling
-    var t0=performance.now();
-    (function intro(now){
-      var k=Math.min((now-t0)/1600,1);
-      if(scrollY<5) lily1.style.setProperty('--draw',.35*(1-Math.pow(1-k,3)));
-      if(k<1&&scrollY<5) requestAnimationFrame(intro); else { introDone=true; update(); }
-    })(t0);
-  }
+  // ---- first screen: the name assembles, stars come out, and the lily forms from particles ----
+  (function(){
+    var hero=document.getElementById('hero'), cv=document.getElementById('bloom'), ctx=cv.getContext('2d'), src=document.getElementById('lily1');
+    var W,H,dpr,parts=[],stars=[],mouse={x:-1e4,y:-1e4},t0=performance.now(),heroP=0,running=true;
+    var ASSEMBLE=reduce?0:1500;   // particles start flying in once the name has landed
+
+    // sample the line-drawn lily into points: draw it big off-screen and keep lit pixels on a grid
+    function sample(){
+      var vb=[10,0,280,430], S=3, oc=document.createElement('canvas'), o=oc.getContext('2d');
+      oc.width=vb[2]*S; oc.height=vb[3]*S; o.scale(S,S); o.translate(-vb[0],-vb[1]);
+      o.lineCap='round'; o.strokeStyle='#fff'; o.fillStyle='#fff';
+      [].forEach.call(src.querySelectorAll('path'),function(p){o.lineWidth=p.classList.contains('stem')?3:2.7;o.stroke(new Path2D(p.getAttribute('d')));});
+      [].forEach.call(src.querySelectorAll('circle'),function(c){o.beginPath();o.arc(+c.getAttribute('cx'),+c.getAttribute('cy'),3.4,0,7);o.fill();});
+      var d=o.getImageData(0,0,oc.width,oc.height).data, pts=[], step=3.5;
+      for(var y=0;y<oc.height;y+=step) for(var x=0;x<oc.width;x+=step) if(d[(Math.round(y)*oc.width+Math.round(x))*4+3]>120) pts.push([x/S+vb[0],y/S+vb[1],y/oc.height]);
+      return pts;
+    }
+    var PTS=sample();
+
+    function layout(){
+      dpr=Math.min(devicePixelRatio||1,2); W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr;
+      // the bloom sits centred, above and behind the name
+      var h=Math.min(H*.8,W*1.25), sc=h/430, ox=W/2-(150-10)*sc-10*sc, oy=H*.05;
+      var light=getComputedStyle(root).colorScheme==='light', r=rngFor(7);
+      parts=PTS.map(function(p,i){
+        var hx=ox+p[0]*sc, hy=oy+p[1]*sc, old=parts[i];
+        var sx0=r()*W, sy0=r()*H;
+        var tone=r(), col=tone<.12?(light?'#6f6a62':'#f3ece4'):tone<.3?(light?'#c2463a':'#ff7a6e'):(light?'#9e2f27':'#c9483d');
+        return {hx:hx,hy:hy,x:old?old.x:sx0,y:old?old.y:sy0,vx:0,vy:0,c:col,
+          s:(p[2]>.42?1.6:2.1)*(.8+r()*.5),delay:r()*900+(1-p[2])*300,tw:r()*6.283,sx:(r()-.5)*2,sy:-r()};
+      });
+      stars=[]; for(var k=0;k<Math.round(W*H/5200);k++) stars.push({x:r()*W,y:r()*H,s:r()*1.3+.3,tw:r()*6.283,v:.4+r()*1.4});
+    }
+    function rngFor(a){return function(){a=(a*16807)%2147483647;return a/2147483647;};}
+
+    function frame(now){
+      if(!running){requestAnimationFrame(frame);return;}
+      var t=now-t0, light=getComputedStyle(root).colorScheme==='light';
+      ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+      // stars fade in after the name
+      var sa=reduce?1:Math.min(1,Math.max(0,(t-900)/1400))*(1-heroP*.6);
+      ctx.fillStyle=light?'#1d1a16':'#eee9df';
+      stars.forEach(function(s){ctx.globalAlpha=sa*(.25+.35*Math.sin(t/900*s.v+s.tw)**2)*(light?.5:1);ctx.fillRect(s.x,s.y-heroP*60*s.v,s.s,s.s);});
+      // particles: fly home, shy away from the pointer, drift apart as you scroll on
+      var R=90, fade=1-Math.max(0,heroP-.35)/.65;
+      parts.forEach(function(p){
+        var go=reduce?1:Math.min(1,Math.max(0,(t-ASSEMBLE-p.delay)/1200)), e=1-Math.pow(1-go,3);
+        var tx=p.hx+p.sx*heroP*220, ty=p.hy+(p.sy*260-80)*heroP;
+        if(!reduce){
+          var dx=p.x-mouse.x, dy=p.y-mouse.y, d2=dx*dx+dy*dy;
+          if(d2<R*R&&go>=1){var d=Math.sqrt(d2)||1,f=(1-d/R)*2.2;p.vx+=dx/d*f-dy/d*f*.6;p.vy+=dy/d*f+dx/d*f*.6;}
+          var k=go>0?.012+.07*e:0; p.vx+=(tx-p.x)*k; p.vy+=(ty-p.y)*k;
+          p.vx*=.82; p.vy*=.82; p.x+=p.vx; p.y+=p.vy;
+          if(go<=0){p.x+=Math.sin(t/900+p.tw)*.15; p.y-=.08;}
+        } else {p.x=tx;p.y=ty;}
+        ctx.globalAlpha=Math.max(0,(.25+.75*e)*fade*(.75+.25*Math.sin(t/500+p.tw)));
+        ctx.fillStyle=p.c; ctx.fillRect(p.x,p.y,p.s,p.s);
+      });
+      ctx.globalAlpha=1;
+      requestAnimationFrame(frame);
+    }
+
+    function onScroll(){
+      var vh=innerHeight; heroP=Math.max(0,Math.min(1,(scrollY-hero.offsetTop)/(hero.offsetHeight-vh)));
+      running=scrollY<hero.offsetTop+hero.offsetHeight;
+      hero.style.setProperty('--hp',heroP.toFixed(3));
+    }
+    addEventListener('scroll',onScroll,{passive:true});
+    addEventListener('pointermove',function(e){var r=cv.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;},{passive:true});
+    addEventListener('pointerleave',function(){mouse.x=mouse.y=-1e4;});
+    document.addEventListener('pointerout',function(e){if(!e.relatedTarget){mouse.x=mouse.y=-1e4;}});
+    var rt; addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(layout,120);});
+    document.getElementById('theme').addEventListener('click',function(){setTimeout(layout,0);});
+    layout(); onScroll(); requestAnimationFrame(frame);
+  })();
+
 
   // work rows rise in as they enter
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.2});
