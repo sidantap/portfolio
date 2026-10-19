@@ -202,6 +202,15 @@ section.s{padding-block:clamp(56px,7vw,88px);border-top:1px solid var(--line)}
 .ai-stats b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(1.8rem,3.4vw,2.4rem);line-height:1;font-variant-numeric:tabular-nums;color:var(--accent)}
 .ai-stats span{display:block;margin-top:8px;color:var(--muted);font-size:.88rem}
 .ai-card .ai-stats.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* highlighted project: comply. */
+.spot{margin:0 0 34px}
+.spot h3 .cl-dot{color:#f2b100}
+.spot .lede{color:var(--fg);font-size:1.08rem}
+.spot .lanes{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline}
+.spot .lane{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.spot .lane b{font-weight:500;color:var(--fg);margin-right:6px}
+.spot .lane.now b{color:var(--ok)}
+.spot .lane.next b{color:var(--warn)}
 .qa{border-left:2px solid var(--accent);padding:4px 0 4px 14px;display:grid;gap:6px}
 .qa p{margin:0;color:var(--fg)}.qa .k{margin-right:8px}
 .note-small{font-size:.9rem;color:var(--faint)!important}
@@ -603,8 +612,24 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="s-head">
         <span class="mark mono">-- 04 projects</span>
         <h2>Selected projects</h2>
-        <p>Things I've built at work and on my own. Open a row to see what it does and what it runs on. The AI and LLM work is <a href="#ai">covered above</a>.</p>
+        <p>Things I've built at work and on my own, starting with the product I'm building now. Open a row to see what it does and what it runs on. The AI and LLM work is <a href="#ai">covered above</a>.</p>
       </div>
+      <article class="ai-card feat spot" id="comply">
+        <div class="ai-top mono"><span class="k">highlight · my own product · 2026</span><span>founder, design and engineering</span></div>
+        <h3>comply<span class="cl-dot">.</span> <span style="color:var(--muted);font-weight:300">a system of record for DOT drug and alcohol testing</span></h3>
+        <p class="lede">Employers that run DOT random testing often keep the pool in spreadsheets and send it to an outside administrator they can't see into. comply keeps that program in one place, from the HR system to the inspector.</p>
+        <p>It syncs employees from the HR system and routes every pool change through an approval queue with the HR reason attached. It runs random selections that anyone can re-run to prove they were fair, then tracks each test from the notice and nearest open collection site to the MRO result. Person-level alerts flag what the FAA has actually fined employers for in 2026, and the audit report and draft MIS numbers are always ready for an inspection. The program manager makes every decision; the software keeps the record.</p>
+        <ol class="flow mono"><li>HR sync</li><li>coverage rules</li><li>approved pool</li><li>seeded random draw</li><li>notice + collection site</li><li>MRO result</li><li>audit packet</li></ol>
+        <div class="ai-stats">
+          <div><b>6</b><span>2026 FAA enforcement cases mapped to the alerts that would have caught them</span></div>
+          <div><b>28</b><span>unit tests on the selection, rate and compliance logic</span></div>
+          <div><b>5</b><span>HR systems in the demo: Workday, Paycor, ADP, UKG and BambooHR (simulated feeds)</span></div>
+        </div>
+        <div class="lanes"><span class="lane now"><b>Live</b>FAA, 14 CFR Part 120</span><span class="lane next"><b>Next</b>FMCSA, FRA, FTA, PHMSA and USCG</span></div>
+        <p class="note-small">Selections use a seeded xoshiro128** generator with an unbiased Fisher–Yates shuffle, so every draw can be re-checked. Rate math follows FAA AC 120-126A. The demo runs on a fictional airline with made-up people.</p>
+        <div class="impact"><span class="k mono">see it</span><a class="extlink" href="comply.html" target="_blank" rel="noopener">play the brand intro</a><span class="mono" style="color:var(--faint)">the product demo goes public soon</span></div>
+        <div class="tags"><span class="tag">React 19</span><span class="tag">TypeScript</span><span class="tag">Vite</span><span class="tag">three.js</span><span class="tag">Vitest</span><span class="tag">Vercel</span><span class="tag">14 CFR Part 120</span><span class="tag">49 CFR Part 40</span></div>
+      </article>
       <ul class="builds">
         <li class="build">
           <button type="button" aria-expanded="true"><span class="n mono">a</span><h3>Nightly 311 pipeline, running in public</h3><span class="where mono">Live, open source<span class="tog">+</span></span></button>
