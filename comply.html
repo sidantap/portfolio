@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>comply. brand intro</title>
+<meta name="description" content="Brand intro and firefly mascot for comply., a DOT drug and alcohol testing compliance startup. Built by Sidanta Parajuli.">
+<style>
+/* Layout: a landing page with a fixed nav. The intro plays full screen, then docks the logo into the nav. */
+:root {
+  --bg: #ffffff; --ink: #1d1d1f; --ink-2: #48484d; --ink-3: #6e6e73; --shell: #3a3a3f; --wing: #b9c6d6;
+  --soft: #f5f5f7; --line: #e3e3e8; --socket: #c7c7cc; --amber: #f2b100; --amber-ink: #8a6200; --on-amber: #1d1d1f;
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0a0a0b; --ink: #f5f5f7; --ink-2: #c7c7cc; --ink-3: #98989f; --shell: #c9c9ce; --wing: #8fa0b4; --soft: #1c1c1e; --line: #2c2c2e; --socket: #48484d; --amber: #ffc21a; --amber-ink: #ffd60a; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #0a0a0b; --ink: #f5f5f7; --ink-2: #c7c7cc; --ink-3: #98989f; --shell: #c9c9ce; --wing: #8fa0b4; --soft: #1c1c1e; --line: #2c2c2e; --socket: #48484d; --amber: #ffc21a; --amber-ink: #ffd60a; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--sans); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0; overflow-x: hidden }
+body.locked { overflow: hidden }
+.col { max-width: 960px; margin: 0 auto }
+h1, h2, p { margin: 0 }
+h2 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); letter-spacing: -0.03em; line-height: 1.1; text-wrap: balance }
+button { font-family: var(--sans) }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px }
+
+/* ---------- Lockup: [firefly seat] comply . ---------- */
+.lock { display: inline-flex; align-items: baseline; white-space: nowrap; user-select: none; font-weight: 560; letter-spacing: -0.045em; line-height: 1 }
+.seat { display: inline-block; width: 0.82em; height: 0.1em; flex: none }
+.base { display: inline-block; width: 0; height: 0 }
+.letters { display: inline-flex; align-items: baseline }
+.ltr { display: inline-block; transform-origin: 50% 100% }
+.dot { position: relative; display: inline-block; width: 0.19em; height: 0.19em; margin-left: 0.045em; border-radius: 50%; background: var(--socket) }
+.dot.lit { background: var(--amber) }
+.dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 0.02em solid var(--amber); opacity: 0 }
+
+/* ---------- Nav ---------- */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 20; padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); background: var(--bg); border-bottom: 1px solid var(--line) }
+.nav__in { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 16px }
+.nav .lock { font-size: 30px; cursor: pointer }
+.nav .lock.hide { visibility: hidden }
+.nav__links { margin-left: auto; display: flex; gap: 4px; align-items: center }
+.nav__links a { color: var(--ink-2); text-decoration: none; font-size: 0.92rem; padding: 0.4rem 0.7rem; border-radius: 999px }
+.nav__links a:hover { background: var(--soft); color: var(--ink) }
+.ghost { font: 500 0.88rem var(--sans); color: var(--ink); background: var(--soft); border: 0; border-radius: 999px; padding: 0.45rem 0.9rem; cursor: pointer }
+.ghost:active { transform: scale(0.97) }
+@media (max-width: 640px) { .nav__links a { display: none } }
+
+/* ---------- Intro stage ---------- */
+.stage { position: fixed; inset: 0; z-index: 40; background: var(--bg); display: grid; place-items: center; transition: background-color 700ms ease }
+.stage.clear { background: transparent; pointer-events: none }
+.stage[hidden] { display: none !important }
+.stage .lock { font-size: clamp(3.4rem, 13vw, 8rem); transform-origin: 0 0 }
+.stage .lock.dock { transition: transform 1000ms cubic-bezier(0.65, 0, 0.3, 1) }
+.stage .dot { transform: scale(0) }
+.stage.s-dot .dot { animation: dotin 420ms var(--ease) both }
+@keyframes dotin { 0% { transform: scale(0) } 60% { transform: scale(1.25) } 100% { transform: scale(1) } }
+.stage .letters { transform: translateX(-120vw) }
+.stage.s-slide .letters { animation: slide 430ms cubic-bezier(0.55, 0, 1, 0.65) forwards }
+@keyframes slide { from { transform: translateX(-120vw) } to { transform: translateX(0) } }
+.stage.s-hit .letters { transform: none; animation: recoil 700ms cubic-bezier(0.2, 0.9, 0.3, 1) }
+@keyframes recoil { 0% { transform: translateX(0.04em) } 25% { transform: translateX(-0.07em) } 50% { transform: translateX(0.02em) } 75% { transform: translateX(-0.008em) } 100% { transform: none } }
+.stage.s-hit .ltr { animation: jiggle 900ms linear both; animation-delay: calc((5 - var(--i)) * 38ms) }
+@keyframes jiggle {
+  0% { transform: none }
+  10% { transform: scale(0.84, 1.16) skewX(-9deg) }
+  24% { transform: scale(1.12, 0.9) skewX(7deg) }
+  38% { transform: scale(0.94, 1.06) skewX(-4.5deg) }
+  52% { transform: scale(1.05, 0.96) skewX(2.6deg) }
+  66% { transform: scale(0.98, 1.02) skewX(-1.4deg) }
+  82% { transform: scale(1.01, 0.995) skewX(0.6deg) }
+  100% { transform: none }
+}
+.stage.s-hit .dot { transform: none; animation: knock 950ms linear }
+@keyframes knock {
+  0% { transform: translateX(0) scale(1.3, 0.7) }
+  14% { transform: translateX(0.5em) scale(0.9, 1.1) }
+  30% { transform: translateX(-0.12em) scale(1.08, 0.92) }
+  46% { transform: translateX(0.07em) scale(0.97, 1.03) }
+  62% { transform: translateX(-0.03em) }
+  80% { transform: translateX(0.01em) }
+  100% { transform: none }
+}
+.dot.ignite { animation: ignite 760ms var(--ease) !important }
+@keyframes ignite { 0% { transform: scale(0.4) } 35% { transform: scale(1.7) } 62% { transform: scale(0.88) } 100% { transform: none } }
+.dot.ignite::after { animation: ring 900ms ease-out }
+@keyframes ring { 0% { opacity: 0.9; transform: scale(1) } 100% { opacity: 0; transform: scale(3.6) } }
+
+/* ---------- Page content ---------- */
+main { padding-top: 96px }
+.hero { padding-block: clamp(40px, 8vw, 90px) 48px; display: grid; gap: 1rem }
+.hero h1 { font-size: clamp(2.3rem, 6vw, 4rem); letter-spacing: -0.04em; line-height: 1.04; font-weight: 700; max-width: 14em; text-wrap: balance }
+.hero h1 em { font-style: normal; color: var(--amber-ink) }
+.hero p { color: var(--ink-3); font-size: 1.12rem; max-width: 34em }
+.tour { padding-block: 40px }
+.lede { color: var(--ink-3); font-size: 1.05rem; margin-top: 0.6rem; max-width: 34em }
+.win { margin-top: 1.5rem; border-radius: 22px; background: var(--soft); padding: 18px; display: grid; gap: 14px }
+.win__bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.9rem; color: var(--ink-3) }
+.win__bar b { color: var(--ink); font-weight: 600 }
+.acts { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) }
+.act { text-align: left; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; cursor: pointer; display: grid; gap: 2px; transition: transform 120ms ease, border-color 200ms ease, box-shadow 200ms ease }
+.act:active { transform: scale(0.97) }
+.act b { font-weight: 600; letter-spacing: -0.01em }
+.act span { color: var(--ink-3); font-size: 0.86rem }
+.act.is-target { border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber) }
+.act.is-done b::after { content: " ✓"; color: var(--amber-ink) }
+.cta { justify-self: start; font: 600 0.95rem var(--sans); color: var(--on-amber); background: var(--amber); border: 0; border-radius: 999px; padding: 0.7rem 1.2rem; cursor: pointer }
+.cta:active { transform: scale(0.97) }
+.secs { padding-block: 24px 40vh }
+.sec { min-height: 55vh; display: grid; align-content: center; gap: 0.4rem; border-top: 1px solid var(--line) }
+.sec p { color: var(--ink-3); max-width: 32em }
+
+/* ---------- Firefly ---------- */
+.ff { position: fixed; left: 0; top: 0; z-index: 50; pointer-events: none; will-change: transform; transform-origin: 0 0 }
+.ff svg { display: block; overflow: visible }
+.bubble { position: fixed; left: 0; top: 0; z-index: 51; max-width: min(260px, calc(100vw - 32px)); padding: 10px 14px; border-radius: 16px; background: var(--ink); color: var(--bg); font-size: 0.92rem; line-height: 1.35; pointer-events: none; will-change: transform }
+.bubble b { color: var(--amber) }
+
+@media (prefers-reduced-motion: reduce) {
+  .stage * { animation: none !important; transition: none !important }
+}
+</style>
+
+</head>
+<body>
+<header class="nav">
+  <div class="nav__in">
+    <span class="lock hide" id="navLock" aria-label="comply."><span class="seat" id="navSeat"></span><span class="letters">comply</span><span class="base" id="navBase"></span><span class="dot lit" id="navDot"></span></span>
+    <nav class="nav__links" aria-label="Sections"><a href="#tour">The guide</a><a href="#about">How it works</a><a href="portfolio.html">Portfolio</a></nav>
+    <button type="button" class="ghost" id="replay">Replay intro</button>
+  </div>
+</header>
+
+<div class="stage" id="stage" aria-hidden="true">
+  <span class="lock" id="lock"><span class="seat" id="seat"></span><span class="letters" id="letters"><span class="ltr" style="--i:0">c</span><span class="ltr" style="--i:1">o</span><span class="ltr" style="--i:2">m</span><span class="ltr" style="--i:3">p</span><span class="ltr" style="--i:4">l</span><span class="ltr" style="--i:5">y</span></span><span class="base" id="base"></span><span class="dot" id="dot"></span></span>
+</div>
+
+<main class="col">
+  <section class="hero">
+    <h1>The AI-native <em>compliance OS</em> for DOT testing.</h1>
+    <p>Brand intro and mascot for comply., a startup I’m building for DOT drug and alcohol testing programs. Hover the firefly in the nav, scroll, or start the tour.</p>
+  </section>
+
+  <section class="tour" id="tour">
+    <h2>It guides the demo</h2>
+    <p class="lede">The firefly leaves the nav, flies to the next button, says what to press, and goes home when you’re done.</p>
+    <div class="win">
+      <div class="win__bar"><span><b>Larkspur Air</b> demo</span><span id="status">Tour not started</span></div>
+      <div class="acts">
+        <button type="button" class="act" id="a0"><b>Approve HR changes</b><span>4 hires, 2 leaves</span></button>
+        <button type="button" class="act" id="a1"><b>Run the Q3 draw</b><span>FAA pool, 206 people</span></button>
+        <button type="button" class="act" id="a2"><b>Send test notices</b><span>Nearest open site</span></button>
+      </div>
+      <button type="button" class="cta" id="start">Start the tour</button>
+    </div>
+  </section>
+
+  <section class="secs" id="about" aria-label="How it works">
+    <div class="sec"><h2>The dot is the mascot</h2><p>The period in “comply.” is the firefly’s lantern. The intro crashes the word into the dot, the firefly circles, lights it, lands in front of the name, and the whole logo docks into the nav.</p></div>
+    <div class="sec"><h2>Flight is simulated, not keyframed</h2><p>The firefly steers toward a target with arrival braking and a slow wander, pitches with its speed, beats its wings in flight and folds them when it lands. Its light flashes on its own and brightens when you scroll or come close.</p></div>
+    <div class="sec"><h2>It doubles as the demo guide</h2><p>In the product demo it flies to the next button and says what to press. Plain SVG, CSS and JavaScript, no libraries, and it holds still for visitors who turn motion off.</p><p><a href="portfolio.html#builds" style="color:var(--amber-ink)">Back to the portfolio</a></p></div>
+  </section>
+</main>
+
+<!-- Side view, facing right. The lantern at (22,42) is the anchor: it is the brand's dot. -->
+<div class="ff" id="ff" aria-hidden="true">
+  <svg width="100" height="70" viewBox="0 0 100 70">
+    <circle id="glow2" cx="22" cy="42" r="24" fill="var(--amber)" opacity="0.08"/>
+    <circle id="glow1" cx="22" cy="42" r="15" fill="var(--amber)" opacity="0.16"/>
+    <g id="body">
+      <g id="wings">
+        <ellipse class="wg" cx="40" cy="25" rx="26" ry="6.5" fill="var(--wing)" opacity="0.14"/>
+        <ellipse class="wg" cx="40" cy="25" rx="26" ry="6.5" fill="var(--wing)" opacity="0.14"/>
+        <ellipse class="wg" cx="40" cy="25" rx="26" ry="6.5" fill="var(--wing)" opacity="0.5" stroke="var(--wing)" stroke-width="0.8"/>
+      </g>
+      <g fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M54 43 L50 51 L45 54"/>
+        <path d="M60 44 L59 53 L56 56"/>
+        <path d="M65 43 L69 51 L74 53"/>
+      </g>
+      <g transform="translate(0 9.4) scale(1 0.77)">
+        <path d="M14 41 Q14 30 30 30 L52 31 Q60 33 60 41 Q58 49 44 50 L26 51 Q14 51 14 41Z" fill="var(--ink)"/>
+        <path d="M12.5 42 Q12.5 33.5 22 33 L32 33.5 L32 50.5 L22 51 Q12.5 50.5 12.5 42Z" fill="var(--amber)"/>
+        <path d="M27 34 L27 50.5" stroke="var(--bg)" stroke-width="1.2" opacity="0.55"/>
+      </g>
+      <g id="ant" fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round">
+        <path d="M75 34 C80 25 87 20 96 19"/>
+        <path d="M73 33 C76 22 81 16 89 12"/>
+      </g>
+      <circle cx="72.5" cy="38.5" r="5.4" fill="var(--ink)"/>
+      <circle cx="74.8" cy="37.6" r="2.1" fill="var(--bg)"/>
+      <circle cx="75.3" cy="37.3" r="1" fill="var(--ink)"/>
+      <path d="M53 32 Q62 28 69 33 Q70 38 65 41 Q58 42 54 39Z" fill="var(--shell)"/>
+      <path d="M57 33.5 Q62 31 65.5 34 Q65 37 61.5 37.5 Q58 37.5 57 35.5Z" fill="var(--ink)"/>
+      <g id="elytra"><path d="M19 36 Q25 30 40 29.5 L56 31 Q59 33 56 35.5 L34 38 Q24 38.5 19 36Z" fill="var(--ink)" stroke="var(--shell)" stroke-width="0.9"/></g>
+    </g>
+  </svg>
+</div>
+<div class="bubble" id="bubble" hidden></div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ff = $('ff'), body = $('body'), wings = [...document.querySelectorAll('.wg')], elytra = $('elytra');
+  const g1 = $('glow1'), g2 = $('glow2'), ant = $('ant'), bubble = $('bubble');
+  const stage = $('stage'), lock = $('lock'), seat = $('seat'), base = $('base'), dot = $('dot');
+  const navLock = $('navLock'), navSeat = $('navSeat'), navBase = $('navBase');
+  const acts = [$('a0'), $('a1'), $('a2')];
+  const STEPS = [
+    'First, <b>approve the HR changes</b>. New hires join the pool here.',
+    'Now <b>run the Q3 draw</b>. Everyone gets the same chance.',
+    'Last one: <b>send the test notices</b>. Each person gets the nearest open site.',
+  ];
+  const AX = 22, AY = 42, FEET = 55 - AY, BODY = 84, MID = 55;
+
+  // ---------- state ----------
+  let phase = 'off', phaseAt = 0, tour = -1, lapUntil = 0, wanderPt = null;
+  const pos = { x: -200, y: -200 }, vel = { x: 0, y: 0 };
+  let scale = 1, face = 1, tilt = 0, open = 0, flap = 0, landed = false;
+  let flash = 0, nextFlash = 0, lastY = scrollY, speed = 0;
+  let mouse = { x: -999, y: -999, t: 0 }, sayUntil = 0;
+  const timers = [];
+  const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+
+  // ---------- geometry ----------
+  const R = (el) => el.getBoundingClientRect();
+  // a seat's perch: lantern placed so the body sits centered on the seat, feet on the baseline
+  function perch(seatEl, baseEl) {
+    const s = R(seatEl), b = R(baseEl);
+    const em = s.width / 0.82;                          // the seat is 0.82em wide (in screen px, after any transform)
+    const sc = (em * 0.74) / BODY;
+    return { x: s.left + s.width / 2 - (MID - AX) * sc, y: b.bottom - FEET * sc, s: sc, perch: true };
+  }
+  const stageEm = () => R(seat).width / 0.82;
+  function dotPoint() { const d = R(dot); return { x: d.left + d.width / 2, y: d.top + d.height / 2 }; }
+
+  function target(now) {
+    const sc = (stageEm() * 0.74) / BODY;
+    if (phase === 'orbit') {
+      const w = R(lock), cx = w.left + w.width / 2, cy = w.top + w.height * 0.5;
+      const a = -0.3 - Math.PI * 2 * Math.min(1, (now - phaseAt) / 2200);
+      return { x: cx + Math.cos(a) * (w.width / 2 + stageEm() * 0.55), y: cy + Math.sin(a) * (w.height / 2 + stageEm() * 0.5), s: sc, speed: 12, arrive: 40 };
+    }
+    if (phase === 'wander') return { ...wanderPt, s: sc, speed: 4, arrive: 70 };
+    if (phase === 'descend' || phase === 'touch') { const d = dotPoint(); return { x: d.x, y: d.y, s: sc, speed: 2.8, arrive: 30, calm: true }; }
+    if (phase === 'land') return { ...perch(seat, base), speed: 8, arrive: 90 };
+    if (phase === 'dock') return { ...perch(seat, base), glue: true };
+    // living on the page
+    if (now < lapUntil) {
+      const w = R(navLock), a = Math.PI * 2 * (1 - (lapUntil - now) / 2200);
+      return { x: w.left + w.width / 2 - Math.cos(a) * (w.width / 2 + 26), y: w.top + w.height / 2 + Math.sin(a) * (w.height / 2 + 22), s: 0.42, speed: 8, arrive: 40 };
+    }
+    if (tour >= 0 && tour < 3) { const r = R(acts[tour]); return { x: Math.min(r.right - 14, innerWidth - 50), y: r.top - 16, s: 0.62, speed: 9, arrive: 110 }; }
+    return { ...perch(navSeat, navBase), speed: 9, arrive: 110 };
+  }
+
+  // ---------- speech ----------
+  function talk(html, ms = 0) { sayUntil = ms ? performance.now() + ms : Infinity; bubble.innerHTML = html; bubble.hidden = false; }
+  function hush() { bubble.hidden = true; }
+
+  // ---------- intro timeline ----------
+  function setPhase(p) { phase = p; phaseAt = performance.now(); }
+  function intro() {
+    timers.splice(0).forEach(clearTimeout);
+    hush(); tour = -1; mark(); lapUntil = 0;
+    scrollTo(0, 0);
+    stage.hidden = false; stage.className = 'stage'; lock.classList.remove('dock'); lock.style.transform = '';
+    dot.classList.remove('lit', 'ignite'); navLock.classList.add('hide');
+    if (reduce) { finish(); return; }
+    document.body.classList.add('locked');
+    phase = 'off'; ff.style.opacity = 0;
+    later(60, () => stage.classList.add('s-dot'));
+    later(420, () => stage.classList.add('s-slide'));
+    later(850, () => { stage.classList.remove('s-slide'); stage.classList.add('s-hit'); });
+    later(1250, () => {                                  // firefly enters from the right edge, low
+      const d = dotPoint();
+      pos.x = innerWidth + 60; pos.y = d.y + stageEm() * 0.4; vel.x = -9; vel.y = -1.5; landed = false; scale = (stageEm() * 0.74) / BODY;
+      ff.style.opacity = 1; setPhase('orbit');
+    });
+  }
+  function ignite() {
+    dot.classList.add('lit', 'ignite'); flash = 1;
+    later(900, () => dot.classList.remove('ignite'));
+  }
+  function dock() {
+    // FLIP the stage lockup onto the nav lockup; the firefly rides along on its seat
+    const a = R(lock), b = R(navLock);
+    const s = b.width / a.width;
+    lock.classList.add('dock');
+    lock.style.transform = `translate(${b.left - a.left}px, ${b.top - a.top}px) scale(${s})`;
+    stage.classList.add('clear');
+    setPhase('dock');
+    later(1050, finish);
+  }
+  function finish() {
+    stage.hidden = true; navLock.classList.remove('hide'); dot.classList.add('lit');
+    document.body.classList.remove('locked');
+    const p = perch(navSeat, navBase);
+    pos.x = p.x; pos.y = p.y; vel.x = vel.y = 0; scale = p.s; landed = true; open = 0; tilt = 0; face = 1;
+    ff.style.opacity = 1; setPhase('live');
+  }
+
+  // ---------- frame ----------
+  function frame(now) {
+    const dy = scrollY - lastY; lastY = scrollY;
+    speed = speed * 0.88 + Math.abs(dy) * 0.12;
+    if (!bubble.hidden && now > sayUntil) hush();
+
+    let t = target(now);
+    const dist = Math.hypot(t.x - pos.x, t.y - pos.y);
+    const since = now - phaseAt;
+    if (phase === 'orbit' && since > 2200) {
+      const d = dotPoint(), em = stageEm();
+      wanderPt = { x: d.x + em * 0.35, y: d.y - em * 0.55 }; setPhase('wander');
+    } else if (phase === 'wander') {
+      const d = dotPoint(), em = stageEm();
+      if (since > 1000) setPhase('descend');
+      else if (Math.hypot(wanderPt.x - pos.x, wanderPt.y - pos.y) < 22) {
+        // pick the next spot to dither around, staying clear of the letters (right of and above the dot)
+        wanderPt = { x: d.x + em * (0.15 + Math.random() * 0.45), y: d.y - em * (0.3 + Math.random() * 0.45) };
+      }
+    } else if (phase === 'descend' && dist < 4) { setPhase('touch'); ignite(); }
+    else if (phase === 'touch' && since > 600) setPhase('land');
+    else if (phase === 'land' && landed && since > 300) { later(650, dock); setPhase('rest'); }
+    t = target(now);
+    if (phase === 'off') { requestAnimationFrame(frame); return; }
+
+    // movement: glue to a moving seat during the dock, otherwise steer with a firefly's lazy wander
+    const dx = t.x - pos.x, dy2 = t.y - pos.y, d = Math.hypot(dx, dy2) || 0.0001;
+    if (phase === 'rest') { const p = perch(seat, base); pos.x = p.x; pos.y = p.y; scale = p.s; landed = true; }
+    else if (t.glue || reduce) { pos.x = t.x; pos.y = t.y; vel.x = vel.y = 0; scale = t.s; landed = true; }
+    else if (t.perch && (d < 3 && Math.hypot(vel.x, vel.y) < 1.4 || (landed && d < 6))) { pos.x = t.x; pos.y = t.y; vel.x = vel.y = 0; landed = true; }
+    else {
+      landed = false;
+      const arrive = t.arrive || 110, max = Math.max(t.perch || t.calm ? 0.6 : 0, t.speed * Math.min(1, d / arrive));
+      let sx = (dx / d) * max - vel.x, sy = (dy2 / d) * max - vel.y;
+      const f = Math.hypot(sx, sy), lim = t.speed > 9 ? 0.6 : 0.36;
+      if (f > lim) { sx *= lim / f; sy *= lim / f; }
+      const amp = t.calm ? 0.15 : t.perch ? Math.min(1, d / 30) : (d < 60 ? 0.6 : 1);
+      const wx = (Math.sin(now * 0.0021) + 0.6 * Math.sin(now * 0.0047 + 1.3)) * amp;
+      const wy = (Math.cos(now * 0.0017 + 0.5) + 0.5 * Math.sin(now * 0.0033)) * amp;
+      vel.x += sx + wx * 0.09; vel.y += sy + wy * 0.09;
+      vel.x *= 0.985; vel.y *= 0.985;
+      pos.x += vel.x; pos.y += vel.y;
+      scale += (t.s - scale) * 0.08;
+    }
+
+    // pose
+    const flying = !landed;
+    open += ((flying ? 1 : 0) - open) * (reduce ? 1 : 0.18);
+    if (Math.abs(vel.x) > 0.35) face = vel.x > 0 ? 1 : -1;
+    if (landed && (phase === 'rest' || phase === 'dock' || phase === 'live' || phase === 'land')) face = 1;
+    const wantTilt = flying ? -16 - Math.max(-14, Math.min(14, vel.y * 4)) + Math.min(10, Math.abs(vel.x) * 1.5) : 0;
+    tilt += (wantTilt - tilt) * 0.12;
+    flap += reduce ? 0 : 0.95;
+    body.setAttribute('transform', `translate(${AX} ${AY}) scale(${face} 1) rotate(${tilt.toFixed(2)}) translate(${-AX} ${-AY})`);
+    elytra.setAttribute('transform', `rotate(${(-40 * open).toFixed(2)} 54 31)`);
+    const wb = -22 + Math.sin(flap) * 34;
+    wings.forEach((w, i) => {
+      w.setAttribute('transform', `rotate(${((wb + (i - 2) * 16 * Math.cos(flap)) * open).toFixed(1)} 56 30)`);
+      w.style.display = open > 0.05 ? '' : 'none';
+    });
+    ant.setAttribute('transform', `rotate(${(Math.sin(now / 700) * (landed ? 4 : 2)).toFixed(2)} 74 34)`);
+
+    // light
+    const near = Math.hypot(mouse.x - pos.x, mouse.y - pos.y) < 90 && now - mouse.t < 1500;
+    if (!reduce && now > nextFlash) { flash = Math.max(flash, 0.7); nextFlash = now + 2200 + Math.random() * 2200; }
+    if (near) flash = Math.max(flash, 0.5);
+    flash *= 0.93;
+    const glow = Math.min(1, 0.25 + flash + speed * 0.02 + (flying ? 0.15 : 0));
+    g1.setAttribute('opacity', (0.1 + glow * 0.22).toFixed(3));
+    g2.setAttribute('opacity', (0.04 + glow * 0.12).toFixed(3));
+    g1.setAttribute('r', (13 + glow * 6).toFixed(1));
+    g2.setAttribute('r', (20 + glow * 12).toFixed(1));
+
+    ff.style.transform = `translate(${(pos.x - AX * scale).toFixed(1)}px, ${(pos.y - AY * scale).toFixed(1)}px) scale(${scale.toFixed(3)})`;
+    if (!bubble.hidden) {
+      const bw = bubble.offsetWidth, bh = bubble.offsetHeight;
+      let x = pos.x + 34 * scale, y = pos.y - 46 * scale - bh;
+      if (y < 70) y = pos.y + 30 * scale;
+      x = Math.max(12, Math.min(x, innerWidth - bw - 12)); y = Math.max(12, Math.min(y, innerHeight - bh - 12));
+      bubble.style.transform = `translate(${x}px, ${y}px)`;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // ---------- input ----------
+  addEventListener('pointermove', (e) => { mouse = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
+  function lap() {
+    if (phase !== 'live' || tour >= 0 || performance.now() < lapUntil) return;
+    lapUntil = performance.now() + (reduce ? 0 : 2200); flash = 1; talk('Hi. I keep the lights on.', 2000);
+  }
+  navLock.addEventListener('pointerenter', lap); navLock.addEventListener('click', lap);
+  $('replay').addEventListener('click', intro);
+
+  function mark() {
+    acts.forEach((a, i) => a.classList.toggle('is-target', i === tour));
+    $('status').textContent = tour < 0 ? 'Tour not started' : tour < 3 ? `Step ${tour + 1} of 3` : 'Quarter complete';
+  }
+  $('start').addEventListener('click', () => {
+    if (phase !== 'live') return;
+    tour = 0; acts.forEach((a) => a.classList.remove('is-done')); mark(); talk(STEPS[0]);
+    acts[0].scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+  });
+  acts.forEach((a, i) => a.addEventListener('click', () => {
+    if (tour !== i) { if (tour >= 0 && tour < 3) talk((i < tour ? 'Already done. ' : 'Not yet. ') + STEPS[tour]); return; }
+    a.classList.add('is-done'); tour++; flash = 1;
+    if (tour < 3) talk(STEPS[tour]);
+    else { talk('<b>Quarter complete.</b> Every step is on the record.', 2600); later(2600, () => { tour = -1; mark(); }); }
+    mark();
+  }));
+
+  intro();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
