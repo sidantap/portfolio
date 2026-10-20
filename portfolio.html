@@ -255,37 +255,6 @@ section.s{padding-block:clamp(56px,7vw,88px);border-top:1px solid var(--line)}
 .extlink{font-family:var(--mono);font-size:.82rem;color:var(--accent);text-underline-offset:3px;overflow-wrap:anywhere}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .build.wide .body>div{max-width:none}
-.dat{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);font-size:.92rem}
-.dat-top{display:flex;justify-content:space-between;gap:6px 16px;flex-wrap:wrap;padding:12px 16px;background:var(--fg);color:var(--bg)}
-.dat-top b{font-weight:600;letter-spacing:.03em;text-transform:uppercase;font-size:.85rem}.dat-top span{opacity:.75;font-size:.7rem}
-.dat-nav{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--bg)}
-.dat-nav button{font:500 .85rem var(--body);padding:11px 16px;border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);cursor:pointer}
-.dat-nav button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
-.dat-p{padding:16px;display:grid;gap:12px;min-width:0}
-.dat-p h4{margin:6px 0 0;font:600 .95rem var(--body)}
-.dat-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.dat-kpi{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--bg)}
-.dat-kpi span{display:block;font:.7rem var(--mono);color:var(--faint);text-transform:uppercase;letter-spacing:.04em}
-.dat-kpi b{display:block;font:400 1.7rem/1.2 var(--display);margin-top:4px;font-variant-numeric:tabular-nums}
-.dat-kpi small{color:var(--muted);font-size:.75rem}
-.dat-form{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:end}
-.dat-form label{display:grid;gap:4px;font:.72rem var(--mono);color:var(--faint)}
-.dat-form input,.dat-form select{font:.85rem var(--body);padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);min-width:9em;max-width:100%}
-.dat-run{font:600 .85rem var(--body);padding:9px 14px;border:0;border-radius:6px;background:var(--accent);color:var(--bg);cursor:pointer}
-.dat-btn{font:500 .8rem var(--body);padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer}
-.dat-btn:disabled{opacity:.6;cursor:default}
-.dat-empty{margin:0;padding:22px;border:1px dashed var(--line);border-radius:8px;color:var(--muted);text-align:center}
-.dat-sum{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
-.dat-chip{font:.75rem var(--mono);padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
-.dat-chip.c{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
-.dat-t{width:100%;border-collapse:collapse;font-size:.84rem}
-.dat-t th{text-align:left;font:500 .7rem var(--mono);color:var(--faint);padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-.dat-t td{padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-.dat-t td.c{color:var(--accent)}
-.dat-scroll{max-height:320px;overflow:auto}
-.dat-sub{display:flex;flex-wrap:wrap;gap:6px}
-.dat-sub button{font:.78rem var(--body);padding:6px 11px;border:1px solid var(--line);border-radius:999px;background:none;color:var(--muted);cursor:pointer}
-.dat-sub button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .st-Active{color:var(--ok)}.st-LOA{color:var(--gold)}.st-Terminated{color:var(--bad)}
 .tag{font-family:var(--mono);font-size:.72rem;padding:4px 9px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
 @media (max-width:640px){.build>button{grid-template-columns:24px minmax(0,1fr)}.build .where{display:none}.build .body{grid-template-columns:24px minmax(0,1fr)}}
@@ -649,51 +618,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <div class="tags"><span class="tag">JavaScript</span><span class="tag">SVG</span><span class="tag">CSS animation</span><span class="tag">Motion design</span><span class="tag">Brand identity</span></div>
           </div></div>
         </li>
-        <li class="build wide">
+        <li class="build">
           <button type="button" aria-expanded="false"><span class="n mono">c</span><h3>FAA drug and alcohol testing randomizer</h3><span class="where mono">Atlas Air<span class="tog">+</span></span></button>
           <div class="body" hidden><div>
             <p>Replaced a third-party process with an in-house R Shiny app. It builds eligible pools from the master employee list, calculates quarterly targets with rollover, deduplicates against prior selections, and writes results, history and audit logs back to SharePoint. Users get Excel exports and compliance KPIs.</p>
             <div class="impact"><span class="k mono">impact</span><span>Covers every FAA-regulated employee and meets all FAA guidelines</span></div>
-            <div class="impact"><span class="k mono">full rebuild</span><a class="extlink" href="https://sidantap.github.io/faa-testing-portal/" target="_blank" rel="noopener">open the R Shiny app</a><a class="extlink" href="https://github.com/sidantap/faa-testing-portal" target="_blank" rel="noopener">code on GitHub</a><span class="mono" style="color:var(--faint)">runs in your browser, about 20 seconds to load</span></div>
-<div class="dat" id="dat">
-              <div class="dat-top"><b>Drug and Alcohol Testing Portal</b><span class="mono">demo · made-up employees · rebuilt from scratch</span></div>
-              <div class="dat-nav" role="tablist">
-                <button type="button" role="tab" data-t="home" aria-selected="true">Home</button>
-                <button type="button" role="tab" data-t="audit">Audit Log</button>
-                <button type="button" role="tab" data-t="emp">Employee Management</button>
-              </div>
-              <section class="dat-p" data-p="home">
-                <h4>Key Performance Indicators</h4>
-                <div class="dat-kpis" id="datKpis"></div>
-                <h4>Randomizer Configuration</h4>
-                <div class="dat-form">
-                  <label>Drug + alcohol %<input id="datC" type="number" min="0" max="100" value="10"></label>
-                  <label>Drug %<input id="datD" type="number" min="0" max="100" value="25"></label>
-                  <label>Quarter<select id="datQ"><option>Q1</option><option>Q2</option><option selected>Q3</option><option>Q4</option></select></label>
-                  <button class="dat-run" type="button" id="datRun">Generate Random Selection</button>
-                </div>
-                <h4>Random Selection Results</h4>
-                <div id="datRes"></div>
-              </section>
-              <section class="dat-p" data-p="audit" hidden>
-                <h4>Audit Log – Randomizer Runs</h4>
-                <div class="dat-form"><label>From<input id="datFrom" type="date"></label><label>To<input id="datTo" type="date"></label></div>
-                <div class="tw"><table class="dat-t"><thead><tr><th>Run at</th><th>Period</th><th>Pool</th><th>Drug + alc.</th><th>Drug only</th><th>Seed</th><th>By</th></tr></thead><tbody id="datAudit"></tbody></table></div>
-              </section>
-              <section class="dat-p" data-p="emp" hidden>
-                <h4>Manage Employee Pool</h4>
-                <div class="dat-form">
-                  <label>Name<input id="datName" placeholder="Jordan Lee"></label>
-                  <label>Occupation<select id="datOcc"></select></label>
-                  <label>Base<select id="datBase"></select></label>
-                  <label>Status<select id="datSt"><option>Active</option><option>LOA</option><option>Terminated</option></select></label>
-                  <button class="dat-run" type="button" id="datAdd">Add Employee</button>
-                </div>
-                <div class="dat-form"><label>Filter occupation<select id="datFOcc"></select></label><label>Filter base<select id="datFBase"></select></label></div>
-                <div class="dat-sub" id="datStatus"></div>
-                <div class="tw dat-scroll"><table class="dat-t"><thead><tr><th>ID</th><th>Name</th><th>Occupation</th><th>Base</th><th>Status</th></tr></thead><tbody id="datEmp"></tbody></table></div>
-              </section>
-            </div>
             <div class="tags"><span class="tag">R Shiny</span><span class="tag">Microsoft Graph</span><span class="tag">Azure AD</span><span class="tag">OAuth 2.0</span><span class="tag">SharePoint</span></div>
           </div></div>
         </li>
@@ -1185,116 +1114,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     update();
   })();
 
-  // Drug and Alcohol Testing Portal: a from-scratch demo with made-up employees.
-  (function(){
-    var root=document.getElementById('dat'); if(!root) return;
-    var $=function(id){return document.getElementById(id);};
-    var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
-    var OCC={ACD:'Aircraft Dispatcher',ACM:'Aircraft Maintenance',FCR:'Flight Crewmember',FIN:'Flight Instructor',GSC:'Ground Security Coordinator'};
-    var BASES=['CVG','MIA','ANC','ORD','LAX'];
-    var FIRST=['Ava','Ben','Cara','Dev','Eli','Fay','Gus','Hana','Ivan','Jo','Kai','Lena','Mo','Nia','Omar','Pia','Raj','Sky','Tara','Uma','Vic','Wes'];
-    var LAST=['Reyes','Okafor','Lind','Patel','Moreau','Kim','Novak','Silva','Brandt','Haas','Quinn'];
-    var occCodes=Object.keys(OCC), emps=[], nextId=1001;
-    for(var i=0;i<60;i++){
-      var st=i%13===5?'LOA':i%17===9?'Terminated':'Active';
-      emps.push({id:'E'+(nextId++),name:FIRST[i%22]+' '+LAST[(i*7)%11],occ:occCodes[[2,2,2,1,1,0,3,4][i%8]],base:BASES[i%5],status:st});
-    }
-    var HC=[52,54,53,55];                  // eligible headcount recorded at each quarter's draw
-    var MISSED={2:[1,2],3:[0,1],4:[1,1]};  // last quarter: [drug+alcohol, drug-only] selected but not tested
-    var audit=[{at:'2026-01-08 09:12',per:'2026 Q1',pool:52,c:2,d:5,seed:31877,by:'compliance'},
-               {at:'2026-04-07 10:40',per:'2026 Q2',pool:54,c:3,d:6,seed:90214,by:'compliance'},
-               {at:'2026-07-09 08:55',per:'2026 Q3',pool:53,c:2,d:5,seed:44102,by:'compliance'}];
-    var last=null, stFilter='All';
-    function rng(seed){return function(){seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296;};}
-    function sample(a,n,r){a=a.slice();var out=[];while(out.length<n&&a.length)out.push(a.splice(Math.floor(r()*a.length),1)[0]);return out;}
-    function metrics(){
-      var q=+$('datQ').value.slice(1), cP=+$('datC').value||0, dP=+$('datD').value||0;
-      var elig=emps.filter(function(e){return e.status==='Active';});
-      var hc=HC.slice(0,q-1).concat([elig.length]), avg=hc.reduce(function(a,b){return a+b;},0)/hc.length;
-      var cG=Math.ceil(avg*cP/100), dG=Math.ceil(avg*dP/100);
-      return {q:q,elig:elig,avg:avg,cG:cG,dG:dG,cQ:Math.ceil(cG/4),dQ:Math.ceil(dG/4),roll:MISSED[q]||[0,0],cap:Math.floor(elig.length*.5)};
-    }
-    function kpis(){
-      var m=metrics();
-      $('datKpis').innerHTML=[['Total active employees',m.elig.length,emps.length+' in master pool'],['Annual drug goal',m.dG,'avg headcount '+m.avg.toFixed(1)],
-        ['Annual alcohol goal',m.cG,'tested as drug + alcohol'],['Last qtr rollover',m.roll[0]+m.roll[1],m.roll[1]+' drug · '+m.roll[0]+' d+a'],
-        ['Quarterly drug goal',m.dQ,'before rollover'],['Quarterly alcohol goal',m.cQ,'before rollover']]
-        .map(function(k){return '<div class="dat-kpi"><span>'+k[0]+'</span><b>'+k[1]+'</b><small>'+k[2]+'</small></div>';}).join('');
-    }
-    function generate(){
-      var m=metrics(), seed=Date.now()%100000, r=rng(seed);
-      var needC=Math.min(m.cQ+m.roll[0],m.cap);
-      var needD=Math.min(Math.max(m.dQ-m.cQ,0)+m.roll[1],m.cap);   // drug + alcohol tests already count toward the drug rate
-      var byOcc={}; m.elig.forEach(function(e){(byOcc[e.occ]=byOcc[e.occ]||[]).push(e);});
-      var onePer=Object.keys(byOcc).map(function(o){return sample(byOcc[o],1,r)[0];});   // every occupation is represented
-      var combo=sample(onePer,Math.min(onePer.length,needC),r), drug=onePer.filter(function(e){return combo.indexOf(e)<0;});
-      var rest=m.elig.filter(function(e){return onePer.indexOf(e)<0;});
-      combo=combo.concat(sample(rest,Math.max(needC-combo.length,0),r));
-      rest=rest.filter(function(e){return combo.indexOf(e)<0;});                          // no one is picked twice
-      drug=drug.concat(sample(rest,Math.max(needD-drug.length,0),r));
-      var rows=combo.map(function(e){return [e,'Drug + Alcohol'];}).concat(drug.map(function(e){return [e,'Drug Only'];}))
-        .sort(function(a,b){return (a[0].occ+a[0].name)<(b[0].occ+b[0].name)?-1:1;});
-      last={m:m,seed:seed,rows:rows,c:combo.length,d:drug.length,saved:false};
-      results();
-    }
-    function results(){
-      if(!last){$('datRes').innerHTML='<p class="dat-empty">Awaiting configuration. Set the rates and quarter, then generate a selection.</p>';return;}
-      var occCount={}; last.rows.forEach(function(x){occCount[x[0].occ]=(occCount[x[0].occ]||0)+1;});
-      $('datRes').innerHTML='<div class="dat-sum"><span class="dat-chip c">'+last.c+' drug + alcohol</span><span class="dat-chip">'+last.d+' drug only</span>'+
-        Object.keys(occCount).map(function(o){return '<span class="dat-chip">'+o+' '+occCount[o]+'</span>';}).join('')+
-        '<span class="dat-chip">seed '+last.seed+'</span></div>'+
-        '<div class="tw"><table class="dat-t"><thead><tr><th>ID</th><th>Name</th><th>Occupation</th><th>Base</th><th>Test</th></tr></thead><tbody>'+
-        last.rows.map(function(x){var e=x[0];return '<tr><td>'+e.id+'</td><td>'+esc(e.name)+'</td><td>'+OCC[e.occ]+'</td><td>'+e.base+'</td><td'+(x[1]==='Drug Only'?'':' class="c"')+'>'+x[1]+'</td></tr>';}).join('')+
-        '</tbody></table></div><div class="dat-form" style="margin-top:10px"><button class="dat-btn" type="button" data-a="dl">Download Results</button>'+
-        '<button class="dat-btn" type="button" data-a="save"'+(last.saved?' disabled':'')+'>'+(last.saved?'Saved to audit log':'Save Results')+'</button>'+
-        '<button class="dat-btn" type="button" data-a="clear">Clear Results</button></div>';
-    }
-    $('datRes').addEventListener('click',function(ev){
-      var a=ev.target.closest('button[data-a]'); if(!a||!last) return;
-      if(a.dataset.a==='dl'){
-        var csv='EmployeeID,Name,Occupation,Base,TestFor\n'+last.rows.map(function(x){return [x[0].id,x[0].name,OCC[x[0].occ],x[0].base,x[1]].join(',');}).join('\n');
-        var link=document.createElement('a'); link.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-        link.download='selection_2026_Q'+last.m.q+'.csv'; link.click(); setTimeout(function(){URL.revokeObjectURL(link.href);},1000);
-      } else if(a.dataset.a==='save'){
-        var now=new Date(), pad=function(n){return (n<10?'0':'')+n;};
-        audit.push({at:now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes()),
-          per:'2026 Q'+last.m.q,pool:last.m.elig.length,c:last.c,d:last.d,seed:last.seed,by:'you (demo)'});
-        last.saved=true; results(); auditTable();
-      } else { last=null; results(); }
-    });
-    function auditTable(){
-      var f=$('datFrom').value, t=$('datTo').value;
-      var rows=audit.filter(function(x){var d=x.at.slice(0,10);return (!f||d>=f)&&(!t||d<=t);}).slice().reverse();
-      $('datAudit').innerHTML=rows.map(function(x){return '<tr><td>'+x.at+'</td><td>'+x.per+'</td><td>'+x.pool+'</td><td>'+x.c+'</td><td>'+x.d+'</td><td>'+x.seed+'</td><td>'+esc(x.by)+'</td></tr>';}).join('')||'<tr><td colspan="7">No runs in this date range.</td></tr>';
-    }
-    function opts(el,list,all){el.innerHTML=(all?'<option value="">All</option>':'')+list.map(function(v){return '<option value="'+v[0]+'">'+v[1]+'</option>';}).join('');}
-    var occList=occCodes.map(function(c){return [c,OCC[c]];}), baseList=BASES.map(function(b){return [b,b];});
-    opts($('datOcc'),occList); opts($('datBase'),baseList); opts($('datFOcc'),occList,true); opts($('datFBase'),baseList,true);
-    function empTable(){
-      var fo=$('datFOcc').value, fb=$('datFBase').value, c={All:0,Active:0,LOA:0,Terminated:0};
-      var rows=emps.filter(function(e){return (!fo||e.occ===fo)&&(!fb||e.base===fb);});
-      rows.forEach(function(e){c.All++;c[e.status]++;});
-      $('datStatus').innerHTML=['All','Active','LOA','Terminated'].map(function(s){return '<button type="button" data-s="'+s+'" aria-pressed="'+(s===stFilter)+'">'+(s==='All'?'All Employees':s==='LOA'?'Leave of Absence (LOA)':s)+' · '+c[s]+'</button>';}).join('');
-      $('datEmp').innerHTML=rows.filter(function(e){return stFilter==='All'||e.status===stFilter;}).map(function(e){
-        return '<tr><td>'+e.id+'</td><td>'+esc(e.name)+'</td><td>'+OCC[e.occ]+'</td><td>'+e.base+'</td><td class="st-'+e.status+'">'+e.status+'</td></tr>';}).join('');
-    }
-    $('datStatus').addEventListener('click',function(ev){var b=ev.target.closest('button[data-s]');if(b){stFilter=b.dataset.s;empTable();}});
-    $('datAdd').addEventListener('click',function(){
-      var n=$('datName').value.trim(); if(!n){$('datName').focus();return;}
-      emps.unshift({id:'E'+(nextId++),name:n.slice(0,40),occ:$('datOcc').value,base:$('datBase').value,status:$('datSt').value});
-      $('datName').value=''; stFilter='All'; empTable(); kpis();
-    });
-    ['datFOcc','datFBase'].forEach(function(id){$(id).addEventListener('change',empTable);});
-    ['datFrom','datTo'].forEach(function(id){$(id).addEventListener('change',auditTable);});
-    ['datC','datD','datQ'].forEach(function(id){$(id).addEventListener('input',kpis);});
-    $('datRun').addEventListener('click',generate);
-    root.querySelector('.dat-nav').addEventListener('click',function(ev){
-      var b=ev.target.closest('button[data-t]'); if(!b) return;
-      root.querySelectorAll('.dat-nav button').forEach(function(x){x.setAttribute('aria-selected',x===b);});
-      root.querySelectorAll('.dat-p').forEach(function(p){p.hidden=p.dataset.p!==b.dataset.t;});
-    });
-    kpis(); results(); auditTable(); empTable();
-  })();
 </script>
 </body>
 </html>
