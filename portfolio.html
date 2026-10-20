@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Sidanta Parajuli</title>
-<meta name="description" content="Sidanta Parajuli, data engineer and analyst. Azure Data Factory, Databricks, SQL Server, Snowflake and dbt pipelines, Power BI, and fine-tuned language models.">
+<meta name="description" content="Sidanta Parajuli, data analytics engineer. Azure Databricks pipelines with PySpark, Delta Lake, SQL and Python, Power BI, and fine-tuned language models.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -345,9 +345,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <main id="portfolio">
   <nav class="rail" id="rail" aria-label="Sections"><span class="fill" aria-hidden="true"></span><ol><li data-s="about"><a href="#about"><span class="n">01</span><span class="t">About</span></a></li><li data-s="ai"><a href="#ai"><span class="n">02</span><span class="t">AI &amp; LLMs</span></a></li><li data-s="work"><a href="#work"><span class="n">03</span><span class="t">Experience</span></a></li><li data-s="builds"><a href="#builds"><span class="n">04</span><span class="t">Projects</span></a></li><li data-s="stack"><a href="#stack"><span class="n">05</span><span class="t">Stack</span></a></li><li data-s="contact"><a href="#contact"><span class="n">06</span><span class="t">Contact</span></a></li></ol></nav>
   <div class="wrap hero" id="top">
-    <div class="meta mono"><span>-- data engineer · analytics · ai and llms</span><span>Greater Cincinnati · open to relocation</span></div>
+    <div class="meta mono"><span>-- data analytics engineer · azure databricks · ai and llms</span><span>Erlanger, KY · open to relocation</span></div>
     <h1>Hi, I'm Sidanta. I build data pipelines, and I've been <em>training language models</em> since college.</h1>
-    <p class="lede">I'm the data person at the <strong>Northern Kentucky Water District</strong>, responsible for everything from SAP and Lucity to the Power BI reports seven departments open each morning. Before that I worked at an FAA-regulated airline, a clinical research company and a freight broker, and spent time in a university lab fine-tuning a <strong>1.5B-parameter language model</strong>. My favorite part of the job is the unglamorous middle of the stack, where data gets cleaned, tested and made trustworthy.</p>
+    <p class="lede">I'm a data analytics engineer at the <strong>Northern Kentucky Water District</strong>, building medallion pipelines on Azure Databricks with PySpark and Delta Lake, all the way to the Power BI reports seven departments open each morning. Before that I worked at an FAA-regulated airline, a clinical research company and a freight broker, and spent time in a university lab fine-tuning a <strong>1.5B-parameter language model</strong>. My favorite part of the job is the unglamorous middle of the stack, where data gets cleaned, tested and made trustworthy.</p>
     <div class="ctas">
       <a class="btn primary" href="#pipeline">Watch a pipeline run</a>
       <a class="btn" href="#ai">See my AI and LLM work</a>
@@ -388,14 +388,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       </div>
       <div class="about">
         <div class="prose">
-          <p>I started out building dashboards, and I kept running into the same issue: the numbers were already wrong before they reached the chart. So I started following them upstream. These days I write the SQL, run the Azure Data Factory and Databricks jobs, design the warehouse, and still build the dashboard at the end.</p>
+          <p>I started out building dashboards, and I kept running into the same issue: the numbers were already wrong before they reached the chart. So I started following them upstream. These days I build bronze, silver and gold pipelines on Azure Databricks, write the SQL, design the warehouse, and still build the dashboard at the end.</p>
           <p>I've worked in freight, clinical research, aviation and now a public water utility, and every one had the same problem. The data lived in four or five systems, the systems disagreed, and someone reconciled them by hand every Monday. I like being the one who works out why the systems disagree and fixes it at the source, so nobody has to do that job again.</p>
-          <p>For two and a half years in college I was also a campus lifeguard. Watching a pool and watching a pipeline take the same skill: you spot the problem before it turns into an emergency. My minor was 3D design and visual effects, which probably explains why I care so much about how a dashboard looks.</p>
+          <p>For two and a half years in college I was also a campus lifeguard. Watching a pool and watching a pipeline take the same skill: you spot the problem before it turns into an emergency. My minor was digital design, which probably explains why I care so much about how a dashboard looks.</p>
         </div>
         <div class="facts">
           <dl>
-            <div><dt>now</dt><dd>Data Analytics Specialist, Northern Kentucky Water District</dd></div>
-            <div><dt>studied</dt><dd>B.S. Computer Information Technology, NKU. Summa cum laude, 3.9 GPA</dd></div>
+            <div><dt>now</dt><dd>Data Analytics Engineer, Northern Kentucky Water District</dd></div>
+            <div><dt>studied</dt><dd>B.S. Information Technology, minor in Digital Design, NKU. Summa cum laude, 3.9 GPA</dd></div>
             <div><dt>scholarship</dt><dd>International Merit Scholarship, EDGE Award</dd></div>
             <div><dt>favorite problem</dt><dd>Two systems that should agree and don't</dd></div>
             <div><dt>this site</dt><dd>Built with Claude Code and subagents</dd></div>
@@ -403,8 +403,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
       </div>
       <div class="trio">
-        <div><span class="k mono">ingest</span><h3>Getting data in</h3><p>Pulling from SAP, Lucity, Medidata and SharePoint with Azure Data Factory, SSIS, Microsoft Graph and scheduled SQL Server Agent jobs.</p></div>
-        <div><span class="k mono">transform</span><h3>Making it right</h3><p>Staging, cleaning and conforming in T-SQL, dbt and Databricks, then modeling it into facts and dimensions people can query without a guide.</p></div>
+        <div><span class="k mono">ingest</span><h3>Getting data in</h3><p>Pulling SQL Server systems like CIS, Lucity and LIMS through config-driven pipelines, and REST APIs like Paycor and KnowBe4 through notebooks that handle auth and pagination, orchestrated with Azure Data Factory.</p></div>
+        <div><span class="k mono">transform</span><h3>Making it right</h3><p>Bronze, silver and gold layers in PySpark and Delta Lake, plus T-SQL and dbt, modeled into facts and dimensions with SCD Type 1 and 2 that people can query without a guide.</p></div>
         <div><span class="k mono">serve</span><h3>Getting it used</h3><p>Power BI, Tableau, R Shiny and Power Apps on top, with gateways, refresh schedules and training so it keeps working after launch.</p></div>
       </div>
     </div>
@@ -433,7 +433,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <p><span class="k mono">model response</span> "As a public comprehensive university located in a major metropolitan area, NKU delivers innovative, student-centered education and engages in impactful, scholarly, and creative endeavors. These efforts empower graduates to have fulfilling careers and meaningful lives while contributing to the economic, civic, and social vitality of the region."</p>
           </div>
           <p class="note-small">Next steps in the poster: more training data, and a user interface so the NKU community can use the chatbot.</p>
-          <div class="tags"><span class="tag">Python</span><span class="tag">GPT-2 (1.5B)</span><span class="tag">Fine-tuning</span><span class="tag">Transformers</span><span class="tag">Web scraping</span><span class="tag">Jina AI</span><span class="tag">GPT-4o data formatting</span></div>
+          <div class="tags"><span class="tag">Python</span><span class="tag">GPT-2 (1.5B)</span><span class="tag">Fine-tuning</span><span class="tag">Transformers</span><span class="tag">Web scraping</span><span class="tag">Jina AI</span><span class="tag">GPT-4o data formatting</span><span class="tag">AWS EC2 and S3</span></div>
         </article>
         <article class="ai-card">
           <div class="ai-top mono"><span class="k">nlp pipeline · 2025</span><span>NKU research</span></div>
@@ -478,16 +478,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <li class="role">
           <span class="when mono">Feb 2026 – now</span>
           <div>
-            <h3>Data Analytics Specialist</h3>
+            <h3>Data Analytics Engineer</h3>
             <div class="org">Northern Kentucky Water District, Erlanger, KY</div>
-            <div class="ctx">Public water utility. My first full-time role, spanning analytics, data engineering, BI and database work.</div>
+            <div class="ctx">Public water utility. My first full-time role: data engineering on Azure Databricks, plus BI and database work.</div>
             <ul>
+              <li>Build medallion (bronze, silver, gold) pipelines on Azure Databricks with PySpark and Delta Lake, loading raw data incrementally and modeling gold dimensions and facts with SCD Type 1 and 2 logic.</li>
+              <li>Ingest SQL Server sources (CIS, Lucity, LIMS, Antero) through config-driven JSON pipelines, and REST APIs (Paycor, KnowBe4, CivicPlus, ServiceDesk Plus) through custom notebooks that handle auth and pagination.</li>
+              <li>Orchestrate ingestion with Azure Data Factory, ADLS Gen2 and Key Vault, and ship through Azure DevOps CI/CD with automated pytest and code-quality checks (black, pylint).</li>
+              <li>Investigate pipeline failures in Data Factory and Databricks, and reconcile missing or duplicate records across SAP and Lucity with SQL validation. Write SQL Server stored procedures, SSIS transformations and SQL Agent jobs.</li>
               <li>Rebuilt 40 to 50 legacy Crystal Reports in Power BI, with on-premises gateways, scheduled refresh, workspace access and distribution. Along the way I fixed reports that ran in the designer but failed inside Lucity Web.</li>
               <li>Built 10 to 20 dashboards and data models (Power Query, DAX) on my own for HR, Legal, Engineering, IT, Customer Service, Finance and Operations. With the migration, that removes 20 to 40 hours of manual reporting a week.</li>
-              <li>Write the SQL underneath: views, stored procedures and CTE-heavy queries in SSMS, SSIS and SSDT transformations, SQL Server Agent schedules. Also work in BigQuery and Azure DevOps.</li>
-              <li>Monitor, schedule and troubleshoot Azure Data Factory and Databricks pipelines, and trace failed runs back to the transformation that broke.</li>
               <li>Defined KPI frameworks, dimensional models and source-to-target mappings across SAP, HR, Finance and Engineering data.</li>
-              <li>Investigate duplicates, missing records, source-system mismatches, unstandardized addresses and blank-or-zero artifacts before they reach a report. Support database maintenance, including SQL-based document path changes for Lucity shared storage.</li>
             </ul>
           </div>
         </li>
@@ -518,7 +519,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <li class="role">
           <span class="when mono">May – Dec 2025</span>
           <div>
-            <h3>Data Analysis and Development Intern</h3>
+            <h3>Data Analysis and Process Solutions Intern</h3>
             <div class="org">Atlas Air Worldwide, Erlanger, KY</div>
             <div class="ctx">Global cargo airline, FAA-regulated.</div>
             <ul>
@@ -539,7 +540,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
             <div class="org">Medpace, Cincinnati, OH</div>
             <div class="ctx">Global clinical contract research organization.</div>
             <ul>
-              <li>Prepared, cleaned, validated and transformed clinical research datasets with millions of records across multiple studies, using SQL, Python, R, Snowflake and dbt.</li>
+              <li>Built dbt and SQL transformations on Snowflake, and cleaned and validated millions of clinical trial records across multiple studies with Python, SQL and R.</li>
               <li>Pulled clinical trial data from Medidata and other clinical data systems.</li>
               <li>Built an R Shiny map of global clinical study distribution for research and proposal work, replacing repeated manual assembly.</li>
               <li>Built Power BI dashboards on Snowflake for analysts, engineers and leadership. Used SAS for hypothesis tests, ANOVA and regression models.</li>
@@ -680,7 +681,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <span class="k mono">education</span>
         <div>
           <h3>Northern Kentucky University</h3>
-          <p>B.S. Computer Information Technology, minor in 3D Digital Design and Visual Effects. January 2022 to December 2025. GPA 3.9, summa cum laude.</p>
+          <p>B.S. Information Technology, minor in Digital Design. January 2022 to December 2025. GPA 3.9, summa cum laude. Teaching assistant for web development.</p>
           <p>International Merit Scholarship, EDGE Award, President's and Dean's Honors Lists.</p>
         </div>
       </div>
@@ -698,17 +699,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="tbl"><span class="name mono">dbo.sql_server</span><h3>The database underneath</h3><p>Where most of my working hours go</p>
           <div class="tags"><span class="tag">T-SQL</span><span class="tag">SSMS</span><span class="tag">Stored procedures</span><span class="tag">Views</span><span class="tag">CTEs</span><span class="tag">SSIS</span><span class="tag">SSDT</span><span class="tag">SQL Server Agent</span><span class="tag">ETL troubleshooting</span></div></div>
         <div class="tbl"><span class="name mono">dbo.cloud_pipelines</span><h3>Pipelines and platforms</h3><p>Orchestration, lakehouse and warehouse</p>
-          <div class="tags"><span class="tag">Azure Data Factory</span><span class="tag">Databricks</span><span class="tag">Snowflake</span><span class="tag">dbt</span><span class="tag">BigQuery</span><span class="tag">Azure DevOps</span><span class="tag">Git</span></div></div>
+          <div class="tags"><span class="tag">Azure Databricks</span><span class="tag">PySpark</span><span class="tag">Apache Spark</span><span class="tag">Delta Lake</span><span class="tag">Medallion architecture</span><span class="tag">Unity Catalog</span><span class="tag">Azure Data Factory</span><span class="tag">ADLS Gen2</span><span class="tag">Key Vault</span><span class="tag">Snowflake</span><span class="tag">dbt</span><span class="tag">BigQuery</span><span class="tag">Azure DevOps CI/CD</span><span class="tag">pytest</span><span class="tag">black and pylint</span><span class="tag">Git</span></div></div>
         <div class="tbl"><span class="name mono">dbo.modeling</span><h3>Shaping the data</h3><p>Deciding grain, keys and what a metric means</p>
-          <div class="tags"><span class="tag">Dimensional modeling</span><span class="tag">Star schema</span><span class="tag">Source-to-target mapping</span><span class="tag">KPI frameworks</span><span class="tag">Data validation</span><span class="tag">Root cause analysis</span></div></div>
+          <div class="tags"><span class="tag">Dimensional modeling</span><span class="tag">Star schema</span><span class="tag">SCD Type 1 and 2</span><span class="tag">ETL/ELT</span><span class="tag">Source-to-target mapping</span><span class="tag">KPI frameworks</span><span class="tag">Data validation</span><span class="tag">Root cause analysis</span></div></div>
         <div class="tbl"><span class="name mono">dbo.languages</span><h3>Code</h3><p>When SQL isn't enough</p>
-          <div class="tags"><span class="tag">SQL</span><span class="tag">Python</span><span class="tag">R</span><span class="tag">DAX</span><span class="tag">Power Query M</span><span class="tag">PowerShell</span><span class="tag">JavaScript</span><span class="tag">TypeScript</span><span class="tag">HTML/CSS</span></div></div>
+          <div class="tags"><span class="tag">SQL</span><span class="tag">Python</span><span class="tag">PySpark</span><span class="tag">R</span><span class="tag">DAX</span><span class="tag">Power Query M</span><span class="tag">PowerShell</span><span class="tag">JavaScript</span><span class="tag">TypeScript</span><span class="tag">HTML/CSS</span></div></div>
         <div class="tbl"><span class="name mono">dbo.ai_ml</span><h3>AI, ML and language models</h3><p>Training, NLP and building with agents</p>
           <div class="tags"><span class="tag">LLM fine-tuning</span><span class="tag">GPT-2</span><span class="tag">TensorFlow</span><span class="tag">NLTK</span><span class="tag">scikit-learn</span><span class="tag">Pandas</span><span class="tag">AWS EC2/S3</span><span class="tag">Claude Code</span><span class="tag">GitHub Copilot</span></div></div>
         <div class="tbl"><span class="name mono">dbo.reporting</span><h3>What people open</h3><p>Dashboards and the plumbing behind them</p>
           <div class="tags"><span class="tag">Power BI</span><span class="tag">Gateways</span><span class="tag">Scheduled refresh</span><span class="tag">Tableau</span><span class="tag">Crystal Reports</span><span class="tag">SAS</span></div></div>
         <div class="tbl"><span class="name mono">dbo.apps</span><h3>Apps and automation</h3><p>For when a report isn't the answer</p>
-          <div class="tags"><span class="tag">R Shiny</span><span class="tag">Power Apps</span><span class="tag">Power Automate</span><span class="tag">SharePoint</span><span class="tag">Microsoft Graph</span><span class="tag">Azure AD / OAuth 2.0</span></div></div>
+          <div class="tags"><span class="tag">R Shiny</span><span class="tag">Power Apps</span><span class="tag">Power Automate</span><span class="tag">SharePoint</span><span class="tag">Microsoft Graph</span><span class="tag">Azure AD / OAuth 2.0</span><span class="tag">REST APIs</span></div></div>
         <div class="tbl dim"><span class="name mono">dbo.exposure</span><h3>Used, not owned</h3><p>Hands-on time, but not production depth yet</p>
           <div class="tags"><span class="tag">Microsoft Fabric</span><span class="tag">Palantir Foundry</span><span class="tag">Cognos</span><span class="tag">Java</span><span class="tag">MATLAB</span></div></div>
       </div>
@@ -725,9 +726,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="side">
         <div>
           <span class="k mono">email</span>
-          <div class="email"><span id="addr">sidanth445@gmail.com</span><button class="btn copy" data-target="addr" type="button">Copy</button></div>
+          <div class="email"><span id="addr">sidantaparajuli@gmail.com</span><button class="btn copy" data-target="addr" type="button">Copy</button></div>
         </div>
-        <div><span class="k mono">based in</span><p>Greater Cincinnati area, open to relocation</p></div>
+        <div><span class="k mono">based in</span><p>Erlanger, KY (Greater Cincinnati), open to relocation</p></div>
         <div><span class="k mono">elsewhere</span><ul><li><a href="https://www.linkedin.com/in/sid2003" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="#resume">Resume</a></li></ul></div>
       </div>
     </div>
@@ -741,18 +742,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <header class="cv-id">
       <div>
         <h1>Sidanta Parajuli</h1>
-        <div class="title">Data Engineer and Analyst · AI and LLM projects</div>
+        <div class="title">Data Analytics Engineer · Azure Databricks · AI and LLM projects</div>
       </div>
       <ul class="mono">
-        <li><span>sidanth445@gmail.com</span></li>
-        <li>Greater Cincinnati, open to relocation</li>
+        <li><span>sidantaparajuli@gmail.com</span></li>
+        <li>Erlanger, KY, open to relocation</li>
         <li><a href="https://www.linkedin.com/in/sid2003" target="_blank" rel="noopener">linkedin.com/in/sid2003</a></li>
       </ul>
     </header>
 
     <section class="cv-sec">
       <span class="mark mono">-- summary</span>
-      <p>Data analyst and engineer who builds the full path from source systems to decisions: SQL Server and Azure pipelines, validated dimensional models, and the Power BI dashboards and apps people use. Experience in a public water utility, an FAA-regulated airline, a clinical research organization and a freight brokerage. Also fine-tuned a 1.5B-parameter GPT-2 model into an NKU chatbot, and builds software with AI agents day to day. Looking for larger-scale data infrastructure and harder pipeline problems.</p>
+      <p>Data analytics engineer who builds Azure Databricks pipelines with PySpark, Delta Lake, SQL and Python. Experienced in data modeling, ETL/ELT, CI/CD and data quality, from source systems through to the Power BI reports people use. Brings data experience from operationally complex industries: aviation at Atlas Air, freight logistics, clinical research and a public utility. Also fine-tuned a 1.5B-parameter GPT-2 model into an NKU chatbot, and builds software with AI agents day to day.</p>
     </section>
 
     <section class="cv-sec">
@@ -768,14 +769,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <section class="cv-sec">
       <span class="mark mono">-- experience</span>
       <div>
-        <div class="cv-role"><div><h3>Data Analytics Specialist</h3><div class="org">Northern Kentucky Water District, Erlanger, KY</div></div><span class="when mono">02/2026 – present</span>
+        <div class="cv-role"><div><h3>Data Analytics Engineer</h3><div class="org">Northern Kentucky Water District, Erlanger, KY</div></div><span class="when mono">02/2026 – present</span>
           <ul>
-            <li>Migrated 40–50 Crystal Reports to Power BI with on-premises gateways, scheduled refresh and workspace distribution.</li>
-            <li>Built 10–20 Power BI dashboards and models solo for seven departments; saves 20–40 hours per week.</li>
-            <li>SQL Server views, stored procedures, SSIS/SSDT and SQL Agent jobs; BigQuery and Azure DevOps.</li>
-            <li>Monitor and troubleshoot Azure Data Factory and Databricks pipelines; investigate failed runs.</li>
-            <li>Dimensional models, KPI frameworks and source-to-target mappings across SAP, Lucity, HR and Finance data.</li>
-          </ul></div>
+          <li>Medallion pipelines on Azure Databricks with PySpark and Delta Lake; incremental loads; gold facts and dimensions with SCD Type 1 and 2.</li>
+          <li>Config-driven JSON ingestion from SQL Server (CIS, Lucity, LIMS, Antero) and REST APIs (Paycor, KnowBe4, CivicPlus, ServiceDesk Plus) with auth and pagination.</li>
+          <li>Azure Data Factory, ADLS Gen2 and Key Vault orchestration; Azure DevOps CI/CD with pytest, black and pylint.</li>
+          <li>Pipeline failure investigation and SAP/Lucity reconciliation; stored procedures, SSIS and SQL Agent jobs.</li>
+          <li>Built 10–20 Power BI reports and models solo for seven departments and migrated 40–50 Crystal Reports, saving 20–40 staff hours a week.</li>
+        </ul></div>
         <div class="cv-role"><div><h3>Teaching Assistant and Research Assistant</h3><div class="org">NKU College of Informatics, Highland Heights, KY</div></div><span class="when mono">Fall 2025</span>
           <ul>
             <li>TA for INF 286 Web Development: grading, exam review quiz, office hours.</li>
@@ -783,7 +784,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </ul></div>
         <div class="cv-role"><div><h3>Innovation Fellow</h3><div class="org">Kentucky Commercialization Ventures</div></div><span class="when mono">Fall 2025</span>
           <ul><li>One of ten fellows in KCV's Fall 2025 cohort, selected from a highly competitive applicant pool.</li><li>Customer discovery, SWOT, failure mode assessment and commercialization planning for VIDVO.</li></ul></div>
-        <div class="cv-role"><div><h3>Data Analysis and Development Intern</h3><div class="org">Atlas Air Worldwide, Erlanger, KY</div></div><span class="when mono">05/2025 – 12/2025</span>
+        <div class="cv-role"><div><h3>Data Analysis and Process Solutions Intern</h3><div class="org">Atlas Air Worldwide, Erlanger, KY</div></div><span class="when mono">05/2025 – 12/2025</span>
           <ul>
             <li>Led an FAA-compliant R Shiny testing randomizer for all regulated employees; full lifecycle owner.</li>
             <li>SharePoint integration through Microsoft Graph with Azure AD and OAuth 2.0; audit logs and history.</li>
@@ -792,7 +793,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </ul></div>
         <div class="cv-role"><div><h3>Data Science Intern</h3><div class="org">Medpace, Cincinnati, OH</div></div><span class="when mono">08/2024 – 12/2024</span>
           <ul>
-            <li>Cleaned and transformed clinical datasets with millions of records using SQL, Python, R, Snowflake and dbt.</li>
+            <li>dbt and SQL transformations on Snowflake; cleaned and validated millions of clinical trial records with Python, SQL and R.</li>
             <li>Queried Medidata; built an R Shiny global study map and Power BI dashboards on Snowflake.</li>
             <li>Led monthly dashboard design sessions for 10+ analysts in the US and UK.</li>
           </ul></div>
@@ -815,7 +816,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="cv-role"><div><h3>First-Year Nurse Sentiment Research</h3><div class="org">with Dr. Zhou, NKU</div></div><span class="when mono">07/2025 – 12/2025</span>
           <ul><li>Python scraping and NLP pipeline (NLTK, scikit-learn, Pandas) with an R Shiny dashboard; supports a planned conference paper.</li></ul></div>
         <div class="cv-role"><div><h3>NKU-Specified Chatbot Based on LLM</h3><div class="org">research poster, with S. Shrestha, P. Ward and Dr. J. Zhou, NKU</div></div><span class="when mono">02/2024 – 08/2024</span>
-          <ul><li>Built 1,611 NKU training samples (web scraping with Jina, GPT-4o formatting, manual review); fine-tuned GPT-2 (1.5B parameters); 10–15% better than ChatGPT on NKU questions.</li></ul></div>
+          <ul><li>Built 1,611 NKU training samples (web scraping with Jina, GPT-4o formatting, manual review); fine-tuned GPT-2 (1.5B parameters) on AWS EC2 and S3; 10–15% better than ChatGPT on NKU questions.</li></ul></div>
         <div class="cv-role"><div><h3>Cargo After COVID</h3><div class="org">R Shiny analytics app, <a class="extlink" href="https://sidantap.shinyapps.io/CargoAfterCOVID/" target="_blank" rel="noopener">live on shinyapps.io</a></div></div><span class="when mono">07/2025 – 12/2025</span>
           <ul><li>Interactive app on Bureau of Transportation Statistics data covering U.S. air cargo performance, 2003–2025.</li><li>Built the transformations, KPIs, filters and trend analysis that make the historical data explorable.</li></ul></div>
       </div>
@@ -824,9 +825,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <section class="cv-sec">
       <span class="mark mono">-- skills</span>
       <dl class="cv-skills">
-        <dt>data engineering</dt><dd>SQL Server, SSIS, SSDT, SQL Server Agent, Azure Data Factory, Databricks, Snowflake, dbt, BigQuery, Azure DevOps</dd>
-        <dt>modeling</dt><dd>T-SQL, stored procedures, views, CTEs, dimensional modeling, source-to-target mapping, data validation</dd>
-        <dt>languages</dt><dd>SQL, Python, R, DAX, Power Query M, PowerShell, JavaScript, TypeScript, SAS</dd>
+        <dt>data engineering</dt><dd>Azure Databricks, Apache Spark, PySpark, Delta Lake, medallion architecture, Unity Catalog, Azure Data Factory, ADLS Gen2, Key Vault, SQL Server, SSIS, SQL Server Agent, Snowflake, dbt, BigQuery, REST APIs</dd>
+        <dt>quality and delivery</dt><dd>Azure DevOps CI/CD, pytest, black, pylint, Git</dd>
+        <dt>modeling</dt><dd>T-SQL, stored procedures, views, CTEs, dimensional modeling, SCD Type 1 and 2, ETL/ELT, source-to-target mapping, data validation</dd>
+        <dt>languages</dt><dd>SQL, Python, PySpark, R, DAX, Power Query M, PowerShell, JavaScript, TypeScript, SAS</dd>
         <dt>reporting and apps</dt><dd>Power BI, Tableau, R Shiny, Power Apps, Power Automate, SharePoint, Microsoft Graph</dd>
         <dt>data science</dt><dd>Pandas, scikit-learn, NLTK, TensorFlow, forecasting, NLP, AWS EC2/S3</dd>
         <dt>ai engineering</dt><dd>Claude Code, Claude agents and skills, GitHub Copilot, prompt and context design, LLM fine-tuning (GPT-2, 1.5B parameters)</dd>
@@ -835,7 +837,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
     <section class="cv-sec">
       <span class="mark mono">-- education</span>
-      <div class="cv-role"><div><h3>B.S. Computer Information Technology</h3><div class="org">Northern Kentucky University. GPA 3.9, summa cum laude. Minor in 3D Digital Design and VFX.</div></div><span class="when mono">01/2022 – 12/2025</span></div>
+      <div class="cv-role"><div><h3>B.S. Information Technology, Minor in Digital Design</h3><div class="org">Northern Kentucky University. GPA 3.9, summa cum laude. Teaching assistant for web development; International Merit Scholarship; EDGE Award.</div></div><span class="when mono">01/2022 – 12/2025</span></div>
     </section>
   </article>
 </div>
